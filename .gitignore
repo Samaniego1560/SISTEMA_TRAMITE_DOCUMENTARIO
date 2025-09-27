@@ -1,0 +1,29 @@
+# =====================
+# Laravel / PHP
+# =====================
+/backend-php/vendor/
+/backend-php/node_modules/
+/backend-php/storage/
+/backend-php/bootstrap/cache/
+/backend-php/.env
+
+# =====================
+# Angular / Node
+# =====================
+/frontend-angular/node_modules/
+/frontend-angular/dist/
+/frontend-angular/.env
+
+# =====================
+# Logs y temporales
+# =====================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================
+# Archivos del sistema
+# =====================
+.DS_Store
+Thumbs.db
