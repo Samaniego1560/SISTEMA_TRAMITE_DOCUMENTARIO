@@ -1,0 +1,116 @@
+<div class="p-6 bg-gray-100 w-full h-full">
+    <!-- 📌 Título principal -->
+    <div class="mb-4">
+        <div class="flex justify-start items-center px-4 pt-2 pb-2 border-b border-gray-300">
+            <h2 class="text-2xl font-bold text-gray-900">📁 EXPEDIENTES</h2>
+        </div>
+    </div>
+    <app-toast></app-toast>
+    <div *ngIf="mostrarResultados; else dataInitial">
+        <app-modal-srq 
+            [participante] = "objParticipante"
+            [itemSrq] = "objItemSrq"
+            [questions] = "respuestas"
+            (closeInfo)="changeHistoryData($event)"
+        ></app-modal-srq>
+    </div>
+    <ng-template #dataInitial>
+        <!-- 📌 Formulario con filtro de fechas -->
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <form [formGroup]="searchForm" (ngSubmit)="getHistorial()">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <!-- 📌 Select -->
+                    <div class="relative">
+                        <label class="block text-gray-700 font-semibold mb-1">🔍 Filtro:</label>
+                        <select formControlName="filterType"
+                            class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-green-400">
+                            <option value="">--Seleccione una opción--</option>
+                            <option value="dni">DNI</option>
+                            <option value="apellido">APELLIDOS</option>
+                        </select>
+                    </div>
+
+                    <!-- 📌 Campo de búsqueda -->
+                    <div class="relative">
+                        <label class="block text-gray-700 font-semibold mb-1">🔠 Valor:</label>
+                        <input formControlName="filterValue" type="text" placeholder="Ingresa el valor..."
+                            class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-green-400" />
+                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+
+                    <!-- 📅 Fecha inicio -->
+                    <div class="relative">
+                        <label class="block text-gray-700 font-semibold mb-1">📅 Desde:</label>
+                        <input formControlName="fechaInicio" type="date"
+                            class="block w-full pl-3 pr-4 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-green-400" />
+                    </div>
+
+                    <!-- 📅 Fecha fin -->
+                    <div class="relative">
+                        <label class="block text-gray-700 font-semibold mb-1">📅 Hasta:</label>
+                        <input formControlName="fechaFin" type="date"
+                            class="block w-full pl-3 pr-4 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-green-400" />
+                    </div>
+
+                    <!-- 📌 Botón de búsqueda -->
+                    <div class="flex items-end gap-2">
+                        <button type="submit"
+                            class="w-full bg-[#1cbb9c] hover:bg-green-700 text-white px-6 py-2 rounded-md shadow-md transition-all duration-300 focus:ring-2 focus:ring-green-400 flex items-center justify-center">
+                            🔎 Buscar
+                        </button>
+                        <button type="button" (click)="resetForm()"
+                            class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-md shadow-md transition-all duration-300 focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
+                            🗑 Limpiar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 📌 Contenedor de resultados -->
+        <div class="flex-grow bg-white shadow-md rounded-lg p-4">
+            <!-- 📌 Spinner de carga -->
+            <div *ngIf="isLoading" class="flex justify-center items-center h-32">
+                <svg class="animate-spin h-10 w-10 text-[#1cbb9c]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+                </svg>
+            </div>
+
+            <!-- 📌 Mensajes de estado -->
+            <div *ngIf="!isLoading && !srqList.length"
+                class="flex flex-col items-center justify-center h-full text-gray-600">
+                <p class="text-lg font-medium">🛑 Seleccione un filtro y escriba un valor</p>
+                <p class="text-sm text-gray-500">Para comenzar, elija un criterio y escriba un valor en el campo de
+                    búsqueda.</p>
+            </div>
+
+            <!-- 📌 Sección de resultados -->
+            <div *ngIf="!isLoading && srqList.length > 0">
+                <div class="bg-green-100 text-lg font-semibold p-3 rounded-md text-green-900">
+                    🎯 Resultado para: <span class="font-bold">{{ fullName }}</span>
+                </div>
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 px-4 overflow-y-auto max-h-[500px] bg-white shadow-sm">
+                    <div *ngFor="let srq of srqList" class="p-4 bg-gray-50 border border-gray-300 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-gray-900">{{ srq.name }}</h3>
+                            <span class="text-[#1cbb9c] text-xl">🏢</span>
+                        </div>
+                        <p class="text-gray-600">📅 Fecha de registro: <span class="text-gray-800">{{ srq.date }}</span>
+                        </p>
+                        <button
+                            class="bg-[#1cbb9c] hover:bg-green-700 text-white px-4 py-2 mt-2 rounded-md transition-all duration-300"
+                            (click)="handleClickViewInfoSRQ(srq.id)">
+                            👀 VER
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>

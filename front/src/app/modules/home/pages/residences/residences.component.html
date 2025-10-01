@@ -1,0 +1,275 @@
+@if (view === 'list') {
+  <div class="w-full h-full flex p-8 flex-col gap-8 mb-16">
+    <div class="w-full flex justify-between">
+      <div class="text-slate-500 font-bold text-xl">
+        <span>Lista de Residencias</span>
+      </div>
+      <div class="flex flex-row space-x-4">
+        <div>
+          <button (click)="onCreateResidence()"
+                  class="b-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 512 512">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="32" d="M256 112v288M400 256H112"/>
+            </svg>
+            Crear residencia
+          </button>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+    <div class="flex space-x-4 w-1/3">
+      <div class="text-sm text-slate-500 flex gap-2 flex-col">
+          <select [(ngModel)]="filterGender" (change)="onFilterGender()" class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+            <option *ngFor="let type of [{name:'Todos',value:'todos'},{name:'Varones',value:'masculino'},{name:'Mujeres',value:'femenino'}]" [value]="type.value">
+                {{ type.name }}
+            </option>
+          </select>
+      </div>
+      <div class="flex-grow">
+        <input [(ngModel)]="filterName" (input)="onFilterName()" type="text" name="filter" id="filter"
+                class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 w-full"
+                required placeholder="Buscar por residencia"/>
+      </div>
+    </div>
+
+    <!--  -->
+    <section class="container mx-auto space-y-4">
+      <!-- Grilla de cuadros de pabellones -->
+      <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div *ngFor="let residencia of residencesFiltered" class="bg-gray-200 rounded-lg shadow p-6 flex flex-col justify-between">
+            <!-- Título con icono de edificio y fecha alineada a la derecha -->
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <!-- Icono de edificio y título -->
+            <div class="flex items-center gap-2 min-w-0">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 6H13C13.2652 6 13.5196 5.89464 13.7071 5.70711C13.8946 5.51957 14 5.26522 14 5C14 4.73478 13.8946 4.48043 13.7071 4.29289C13.5196 4.10536 13.2652 4 13 4H12C11.7348 4 11.4804 4.10536 11.2929 4.29289C11.1054 4.48043 11 4.73478 11 5C11 5.26522 11.1054 5.51957 11.2929 5.70711C11.4804 5.89464 11.7348 6 12 6V6ZM12 10H13C13.2652 10 13.5196 9.89464 13.7071 9.70711C13.8946 9.51957 14 9.26522 14 9C14 8.73478 13.8946 8.48043 13.7071 8.29289C13.5196 8.10536 13.2652 8 13 8H12C11.7348 8 11.4804 8.10536 11.2929 8.29289C11.1054 8.48043 11 8.73478 11 9C11 9.26522 11.1054 9.51957 11.2929 9.70711C11.4804 9.89464 11.7348 10 12 10V10ZM7 6H8C8.26522 6 8.51957 5.89464 8.70711 5.70711C8.89464 5.51957 9 5.26522 9 5C9 4.73478 8.89464 4.48043 8.70711 4.29289C8.51957 4.10536 8.26522 4 8 4H7C6.73478 4 6.48043 4.10536 6.29289 4.29289C6.10536 4.48043 6 4.73478 6 5C6 5.26522 6.10536 5.51957 6.29289 5.70711C6.48043 5.89464 6.73478 6 7 6V6ZM7 10H8C8.26522 10 8.51957 9.89464 8.70711 9.70711C8.89464 9.51957 9 9.26522 9 9C9 8.73478 8.89464 8.48043 8.70711 8.29289C8.51957 8.10536 8.26522 8 8 8H7C6.73478 8 6.48043 8.10536 6.29289 8.29289C6.10536 8.48043 6 8.73478 6 9C6 9.26522 6.10536 9.51957 6.29289 9.70711C6.48043 9.89464 6.73478 10 7 10V10ZM19 18H18V1C18 0.734784 17.8946 0.48043 17.7071 0.292893C17.5196 0.105357 17.2652 0 17 0H3C2.73478 0 2.48043 0.105357 2.29289 0.292893C2.10536 0.48043 2 0.734784 2 1V18H1C0.734784 18 0.48043 18.1054 0.292893 18.2929C0.105357 18.4804 0 18.7348 0 19C0 19.2652 0.105357 19.5196 0.292893 19.7071C0.48043 19.8946 0.734784 20 1 20H19C19.2652 20 19.5196 19.8946 19.7071 19.7071C19.8946 19.5196 20 19.2652 20 19C20 18.7348 19.8946 18.4804 19.7071 18.2929C19.5196 18.1054 19.2652 18 19 18ZM11 18H9V14H11V18ZM16 18H13V13C13 12.7348 12.8946 12.4804 12.7071 12.2929C12.5196 12.1054 12.2652 12 12 12H8C7.73478 12 7.48043 12.1054 7.29289 12.2929C7.10536 12.4804 7 12.7348 7 13V18H4V2H16V18Z" fill="#10B981"/>
+              </svg>
+              <h3 class="text-lg font-semibold text-gray-800 truncate w-full">{{ residencia.name }}</h3>
+            </div>
+            <!-- Botón de eliminar -->
+            <button (click)="toogleDeleteModal(residencia)" class="p-1 border border-red-500 rounded hover:bg-red-100 w-auto">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3H15C15.2652 3 15.5196 3.10536 15.7071 3.29289C15.8946 3.48043 16 3.73478 16 4H20C20.2652 4 20.5196 4.10536 20.7071 4.29289C20.8946 4.48043 21 4.73478 21 5C21 5.26522 20.8946 5.51957 20.7071 5.70711C20.5196 5.89464 20.2652 6 20 6H4C3.73478 6 3.48043 5.89464 3.29289 5.70711C3.10536 5.51957 3 5.26522 3 5C3 4.73478 3.10536 4.48043 3.29289 4.29289C3.48043 4.10536 3.73478 4 4 4H8C8 3.73478 8.10536 3.48043 8.29289 3.29289C8.48043 3.10536 8.73478 3 9 3ZM6 7H18V18C18 18.7956 17.6839 19.5587 17.1213 20.1213C16.5587 20.6839 15.7956 21 15 21H9C8.20435 21 7.44129 20.6839 6.87868 20.1213C6.31607 19.5587 6 18.7956 6 18V7ZM10 9V17H11V9H10ZM13 9V17H14V9H13Z" fill="#FF0000"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Descripción -->
+          <p class="text-sm text-gray-500 mt-2">{{ residencia.description }}</p>
+          <p class="text-sm text-gray-500 mt-2">{{ residencia.address }}</p>
+
+          <!-- Botones alineados en la parte inferior -->
+          <div class="flex flex-wrap items-center justify-between mt-4 gap-2">
+            <button (click)="onUpdateResidence(residencia)"
+              class="w-full sm:w-auto flex items-center text-emerald-500 border border-emerald-500 rounded py-2 px-4 gap-2 hover:bg-emerald-500 hover:text-white transition-all duration-200">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3.99997H6C4.89543 3.99997 4 4.8954 4 5.99997V18C4 19.1045 4.89543 20 6 20H18C19.1046 20 20 19.1045 20 18V12M18.4142 8.41417L19.5 7.32842C20.281 6.54737 20.281 5.28104 19.5 4.5C18.7189 3.71895 17.4526 3.71895 16.6715 4.50001L15.5858 5.58575M18.4142 8.41417L12.3779 14.4505C12.0987 14.7297 11.7431 14.9201 11.356 14.9975L8.41422 15.5858L9.00257 12.6441C9.08001 12.2569 9.27032 11.9013 9.54951 11.6221L15.5858 5.58575M18.4142 8.41417L15.5858 5.58575" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p> Editar</p>
+            </button>
+
+            <button (click)="onListResidents(residencia)" class="items-center p-2 md:w-1/3 sm:w-auto bg-emerald-500 text-white rounded py-2 px-4 hover:bg-emerald-600 transition-all duration-200">
+              <p> Ver</p>
+            </button>
+
+            <button (click)="onUpdateRules(residencia)"
+              class="w-full sm:w-auto bg-emerald-500 text-white rounded py-2 px-4 hover:bg-emerald-600 transition-all duration-200">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.017 14.669L23 13.564l-.012-3.208-2.996-1.085a8.455 8.455 0 0 0-.437-1.05l1.329-2.893-2.277-2.26-2.886 1.351a8.396 8.396 0 0 0-1.052-.436L13.564 1l-3.208.012-1.085 2.996a8.485 8.485 0 0 0-1.05.437L5.328 3.116l-2.26 2.276L4.419 8.28a8.378 8.378 0 0 0-.436 1.052L1 10.436l.012 3.208 2.996 1.085a8.46 8.46 0 0 0 .437 1.05l-1.329 2.893 2.276 2.26 2.887-1.351a8.383 8.383 0 0 0 1.052.436L10.436 23l3.208-.012 1.085-2.996a8.478 8.478 0 0 0 1.05-.437l2.893 1.329 2.26-2.276-1.351-2.887a8.382 8.382 0 0 0 .436-1.052zm-.287 3.73l-1.275 1.285-2.694-1.238-.429.215a7.612 7.612 0 0 1-.928.385l-.452.156-1.01 2.789-1.81.007-1.03-2.779-.456-.151a7.394 7.394 0 0 1-.926-.385l-.43-.21-2.688 1.257-1.286-1.275 1.239-2.695-.216-.43a7.551 7.551 0 0 1-.386-.926l-.155-.452-2.79-1.01-.005-1.81 2.777-1.03.152-.456a7.46 7.46 0 0 1 .384-.927l.212-.43L4.27 5.601l1.275-1.285 2.694 1.238.429-.215a7.612 7.612 0 0 1 .928-.385l.452-.156 1.01-2.789 1.81-.007 1.03 2.779.456.151a7.35 7.35 0 0 1 .925.385l.43.211L18.4 4.27l1.285 1.275-1.239 2.695.216.43a7.551 7.551 0 0 1 .386.926l.155.452 2.79 1.01.005 1.81-2.777 1.03-.152.456a7.46 7.46 0 0 1-.384.927l-.212.43zM12 7.2a4.8 4.8 0 1 0 4.8 4.8A4.8 4.8 0 0 0 12 7.2zm0 8.6a3.8 3.8 0 1 1 3.8-3.8 3.804 3.804 0 0 1-3.8 3.8z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+} @else {
+  <app-residents view='list' (cerrarHijo)="hiddenViewResidents()" [residence]="residenceSelected"></app-residents>
+}
+
+<app-modal [(show)]="showModal">
+  <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6">
+      <!-- Formulario Principal -->
+      <form class="space-y-4" [formGroup]="formResidence">
+        <h2 *ngIf="typeModal === 'create'" class="text-xl font-semibold text-emerald-600 text-center mb-1">Crear nuevo pabellón</h2>
+        <h2 *ngIf="typeModal === 'update'" class="text-xl font-semibold text-emerald-600 text-center mb-1">Actualizar pabellón</h2>
+        <p class="text-gray-500 text-center mb-6">Ingrese los detalles del nuevo pabellón aquí.</p>
+
+        <div>
+          <label class="block text-gray-700">Nombre</label>
+          <input type="text" formControlName="name" placeholder="Introducir nombre del pabellón ..." class="w-full border border-gray-300 rounded-md p-2" />
+        </div>
+
+        <div>
+          <label class="block text-gray-700">Descripción</label>
+          <input type="text" formControlName="description" placeholder="Introducir descripción del pabellón ..." class="w-full border border-gray-300 rounded-md p-2" />
+        </div>
+        <div>
+          <label class="block text-gray-700">Direccion</label>
+          <input type="text" formControlName="address" placeholder="Introducir la dirección del pabellón ..." class="w-full border border-gray-300 rounded-md p-2" />
+        </div>
+
+        <div>
+          <label class="block text-gray-700">Género</label>
+          <select class="w-full border border-gray-300 rounded-md p-2" formControlName="gender">
+            <option selected hidden>Seleccione una Opción</option>
+            <option
+                *ngFor="let sexo of [{name:'Varones',value:'masculino'},{name:'Mujeres',value:'femenino'}]"
+                [value]="sexo.value">
+              {{ sexo.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Listado de Pisos -->
+        <div *ngIf="typeModal === 'create'">
+          <label class="block text-gray-700">Pisos</label>
+          <div class="bg-gray-100 rounded p-2 space-y-2">
+            <div *ngFor="let floor of floors; let i = index" class="flex justify-between items-center bg-white p-2 rounded border border-gray-300">
+              <span class="text-sm">Piso: {{ floor.floor }}</span>
+              <span class="text-sm">Cuartos: {{ floor.q_rooms || floor.rooms.length }}</span>
+              <span class="text-sm">Espacios: {{ floor.space_rooms || floor.rooms[0].capacity }}</span>
+              <button *ngIf="this.typeModal === 'create'" (click)="onDeleteFloor(floor)" class="text-red-500 hover:text-red-700">
+                ✖
+              </button>
+            </div>
+            <button *ngIf="!showFloorCreator && this.typeModal === 'create'" type="button" (click)="toggleFloorCreator()" class="flex items-center text-center justify-center text-green-500 hover:text-green-700 text-sm mt-2">
+              + Agregar piso
+            </button>
+          </div>
+        </div>
+
+        <!-- Botones del formulario principal -->
+        <div *ngIf="!showFloorCreator" class="flex justify-between mt-6 gap-4">
+          <button (click)="closeModal()" class="w-full bg-white border border-emerald-500 text-emerald-500 rounded py-2 hover:bg-emerald-100">
+            Cancelar
+          </button>
+          <button (click)="saveResidence()" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600">
+            {{ typeModal == 'update' ? 'Actualizar' : 'Crear residencia' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Formulario Secundario -->
+      <form *ngIf="showFloorCreator" [formGroup]="formFloor">
+        <h3 class="text-lg font-semibold text-emerald-600 text-center mb-4">Agregar Piso</h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700">Número de Piso</label>
+            <input type="number" formControlName="floor" placeholder="N° de piso ..." class="w-full border border-gray-300 rounded-md p-2" />
+          </div>
+          <div>
+            <label class="block text-gray-700">Número de Cuartos</label>
+            <input type="number" formControlName="q_rooms" placeholder="N° de cuartos ..." class="w-full border border-gray-300 rounded-md p-2" />
+          </div>
+          <div>
+            <label class="block text-gray-700">Espacios por Cuarto</label>
+            <input type="number" formControlName="space_rooms" placeholder="N° de espacios ..." class="w-full border border-gray-300 rounded-md p-2" />
+          </div>
+        </div>
+
+        <!-- Botones del formulario secundario -->
+        <div class="flex justify-between mt-6 gap-4">
+          <button (click)="cancelFloorCreator()" class="w-full bg-white border border-red-500 text-red-500 rounded py-2 hover:bg-red-100">
+            Cancelar
+          </button>
+          <button (click)="addFloor()" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600">
+            Guardar Piso
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [(show)]="showRulesModal">
+  <form class="space-y-4" [formGroup]="formRulesAssgination">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6">
+        <!-- Título del modal -->
+        <h2 class="text-xl font-semibold text-emerald-600 text-center mb-1">Asignar reglas a residencia</h2>
+        <p class="text-gray-500 text-center mb-6">Ingrese las reglas que desea configurar.</p>
+
+        <!-- Formulario del modal -->
+        <div class="space-y-4">
+          <!-- Campo de nombre -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700">% Asignación FCEA</label>
+              <input type="number" placeholder="Porcentaje para FACEA" formControlName="percentage_fcea" class="w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-gray-700">% Asignación Ingeniería</label>
+              <input type="text" placeholder="Porcentaje para ingeniería" formControlName="percentage_engineering" class="w-full border border-gray-300 rounded-md p-2" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700">Nota mínima FACEA</label>
+              <input type="number" placeholder="Ingrese la nota mínima" formControlName="minimum_grade_fcea" class="w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-gray-700">Nota mínima ingeniería</label>
+              <input type="text" placeholder="Ingrese la nota mínima" formControlName="minimum_grade_engineering" class="w-full border border-gray-300 rounded-md p-2" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <label class="block text-gray-700">¿El internado está destinado para alumnos nuevos?</label>
+              <select class="w-full border border-gray-300 rounded-md p-2" formControlName="is_newbie">
+                <option selected hidden>Seleccione una Opción</option>
+                <option
+                    *ngFor="let nuevo of [{name:'Si',value:'true'},{name:'No',value:'false'}]"
+                    [value]="nuevo.value">
+                  {{ nuevo.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- Botones de acción en la parte inferior -->
+          <div class="flex justify-between mt-6 gap-4">
+            <button type="button" (click)="closeRulesModal(); $event.stopPropagation()" class="w-full flex items-center justify-center bg-white border border-emerald-500 text-emerald-500 rounded py-2 hover:bg-emerald-100 transition duration-200">
+              <!-- Icono de cerrar -->
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Cancelar
+            </button>
+
+            <button (click)="saveRulesModal(); $event.stopPropagation()" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600 transition duration-200" >
+              Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</app-modal>
+
+<app-modal [(show)]="deleteModal" [showHeader]="false" buttonSuccess="Aceptar" [showButtonCancel]="true" (onNext)="deleteResidence()" (showChange)="cancelDeleteResidence()">
+    <div class="flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-amber-300" viewBox="0 0 512 512">
+        <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+              stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        <path d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z" fill="none"
+              stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+        <path d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z" stroke="currentColor" class="fill-amber-300"/>
+      </svg>
+    </div>
+    <div class="flex justify-center items-center text-slate-500 font-bold text-xl">
+      <span>¿Esta seguro de eliminar esta residencia?</span>
+    </div>
+    <div class="text-slate-500 text-sm">
+      <span>¡Si realiza esta acción, la residencia será eliminada junto a la configuración realizada!</span>
+    </div>
+</app-modal>
+
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+<app-toast></app-toast>
+

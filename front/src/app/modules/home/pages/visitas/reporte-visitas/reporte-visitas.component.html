@@ -1,0 +1,295 @@
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+<div
+  class="w-full px-8 py-12 overflow-auto pb-24"
+  style="height: calc(100vh - 64px)"
+>
+  <div class="flex flex-col space-y-8">
+    <div
+      class="w-full text-slate-500 text-center uppercase font-bold text-xl flex space-x-4 justify-between items-center"
+    >
+      <h1>Reporte de Visitas a Residentes Universitarios</h1>
+    </div>
+    <div class="flex items-center space-x-4 justify-between">
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">Convocatoria:</label>
+        <select
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 min-w-48"
+          [value]="convocatoriaId"
+          (change)="onConvocatoriaChange($event)"
+          [disabled]="isLoadingConvocatorias"
+        >
+          <option value="">Seleccione para filtros específicos</option>
+          <option *ngFor="let convocatoria of convocatorias" [value]="convocatoria.id">
+            {{ convocatoria.nombre }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="convocatoriaId" class="flex items-center space-x-3">
+        <button
+          type="button"
+          (click)="openExportModal()"
+          [disabled]="isLoading"
+          class="focus:outline-none h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style="background: #1abb9c"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-white fill-white"
+            viewBox="0 0 24 24"
+          >
+            <g id="file-excel">
+              <path
+                d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z"
+              />
+              <path
+                d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z"
+              />
+            </g>
+          </svg>
+          Exportar Sin Visita
+        </button>
+        <!-- <button
+          type="button"
+          (click)="exportCompletesDataToExcel()"
+          [disabled]="isLoading"
+          class="focus:outline-none h-full text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style="background: #1abb9c"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-white fill-white"
+            viewBox="0 0 24 24"
+          >
+            <g id="file-excel">
+              <path
+                d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z"
+              />
+              <path
+                d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z"
+              />
+            </g>
+          </svg>
+          Exportar 
+        </button> -->
+      </div>
+    </div>
+
+    <div *ngIf="isLoadingConvocatorias" class="text-center py-8">
+      <div class="inline-flex items-center space-x-2">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <span class="text-gray-600">Cargando convocatorias...</span>
+      </div>
+    </div>
+
+    <div
+      *ngIf="reporteData"
+      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-center items-center gap-4 w-full"
+    >
+      <div class="chip-status-total flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Total Visitas</h6>
+          <h1 class="text-2xl font-bold">{{ reporteData.total_visitas }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7v10c0 5.55 3.84 9.739 9 11 5.16-1.261 9-5.45 9-11V7l-10-5z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-pendiente flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Pendientes</h6>
+          <h1 class="text-2xl font-bold">{{ convocatoriaId ? residentesPendientes.length : (reporteData.pendientes || 0) }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-verificada flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Verificadas</h6>
+          <h1 class="text-2xl font-bold">{{ reporteData.verificadas }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-observada flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Observadas</h6>
+          <h1 class="text-2xl font-bold">{{ reporteData.observadas }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-mes flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Este Mes</h6>
+          <h1 class="text-2xl font-bold">{{ reporteData.visitas_del_mes }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid gap-8">
+      <div *ngIf="reporteData" class="grid grid-cols-1 gap-8">
+        <div class="bg-white rounded-lg p-6 shadow-xl">
+          <apx-chart
+            #chartDonut
+            [series]="chartOptionsDonut.series"
+            [chart]="chartOptionsDonut.chart"
+            [labels]="chartOptionsDonut.labels"
+            [colors]="chartOptionsDonut.colors"
+            [title]="chartOptionsDonut.title"
+            [responsive]="chartOptionsDonut.responsive"
+          ></apx-chart>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div *ngIf="ReportePorEscuelaProfesional.length > 0" class="bg-white rounded-lg p-6 shadow-xl">
+          <apx-chart
+            #chartBar
+            [series]="chartOptionsBar.series"
+            [chart]="chartOptionsBar.chart"
+            [dataLabels]="chartOptionsBar.dataLabels"
+            [plotOptions]="chartOptionsBar.plotOptions"
+            [yaxis]="chartOptionsBar.yaxis"
+            [xaxis]="chartOptionsBar.xaxis"
+            [fill]="chartOptionsBar.fill"
+            [tooltip]="chartOptionsBar.tooltip"
+            [stroke]="chartOptionsBar.stroke"
+            [legend]="chartOptionsBar.legend"
+            [title]="chartOptionsBar.title"
+            [colors]="chartOptionsBar.colors"
+          ></apx-chart>
+        </div>
+
+        <div *ngIf="reportePorProcedencia.length > 0" class="bg-white rounded-lg p-6 shadow-xl">
+          <apx-chart
+            #chartProcedencia
+            [series]="chartOptionsProcedencia.series"
+            [chart]="chartOptionsProcedencia.chart"
+            [dataLabels]="chartOptionsProcedencia.dataLabels"
+            [plotOptions]="chartOptionsProcedencia.plotOptions"
+            [yaxis]="chartOptionsProcedencia.yaxis"
+            [xaxis]="chartOptionsProcedencia.xaxis"
+            [fill]="chartOptionsProcedencia.fill"
+            [tooltip]="chartOptionsProcedencia.tooltip"
+            [stroke]="chartOptionsProcedencia.stroke"
+            [legend]="chartOptionsProcedencia.legend"
+            [title]="chartOptionsProcedencia.title"
+            [colors]="chartOptionsProcedencia.colors"
+          ></apx-chart>
+        </div>
+      </div>
+      <div *ngIf="ReportePorEscuelaProfesional.length === 0 && reportePorProcedencia.length === 0 && !isLoading" class="text-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <h3 class="text-lg font-medium text-gray-700 mb-2">No hay datos de estadísticas disponibles</h3>
+        <p class="text-gray-500">Los gráficos de facultad y lugar de procedencia aparecerán cuando los datos estén disponibles.</p>
+      </div>
+    </div>
+
+    <div *ngIf="getSelectedConvocatoria()" class="bg-gray-50 rounded-lg p-4">
+      <h4 class="text-sm font-semibold text-gray-700 mb-2">Información de la Convocatoria</h4>
+      <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
+        <div>
+          <span class="font-medium">Nombre:</span> {{ getSelectedConvocatoria()?.nombre }}
+        </div>
+        <div *ngIf="getSelectedConvocatoria()?.fecha_inicio">
+          <span class="font-medium">Fecha de Inicio:</span> {{ getSelectedConvocatoria()?.fecha_inicio | date:'dd/MM/yyyy' }}
+        </div>
+        <div *ngIf="getSelectedConvocatoria()?.fecha_fin">
+          <span class="font-medium">Fecha de Fin:</span> {{ getSelectedConvocatoria()?.fecha_fin | date:'dd/MM/yyyy' }}
+        </div>
+        
+      </div>
+    </div>
+    <div *ngIf="!reporteData && !isLoading" class="text-center py-12">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+      <h3 class="text-lg font-medium text-gray-700 mb-2">No hay datos disponibles</h3>
+      <p class="text-gray-500">No se encontraron datos de visitas en el sistema.</p>
+    </div>
+
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <div>
+          <h4 class="text-sm font-semibold text-red-800">Error al cargar el reporte</h4>
+          <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+        </div>
+      </div>
+      <button
+        (click)="loadReporteData()"
+        class="mt-3 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+      >
+        Reintentar
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+<app-toast key="reporte-visitas"></app-toast>
+
+<app-modal
+  [(show)]="showExportModal"
+  title="Exportar Alumnos Sin Visita por Departamento"
+  buttonSuccess="Exportar Excel"
+  [showButtonCancel]="true"
+  [showFooter]="true"
+  (onNext)="exportToExcel()"
+  (onCancel)="closeExportModal()"
+>
+  <div class="space-y-4">
+   <div>
+      <label for="departamento" class="block text-sm font-medium text-gray-700 mb-2">
+        Departamento <span class="text-red-500">*</span>
+      </label>
+      <select
+        id="departamento"
+        [formControl]="departamentoControl"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [class.border-red-500]="departamentoControl.invalid && departamentoControl.touched"
+      >
+        <option value="" disabled>Seleccione un departamento</option>
+        <option *ngFor="let departamento of departamentosDisponibles" [value]="departamento">
+          {{ departamento }}
+        </option>
+      </select>
+      <div *ngIf="departamentoControl.invalid && departamentoControl.touched" class="mt-1 text-sm text-red-600">
+        Por favor seleccione un departamento
+      </div>
+    </div>
+
+    <div *ngIf="isExporting" class="flex items-center justify-center py-4">
+      <div class="inline-flex items-center space-x-2">
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+        <span class="text-gray-600 text-sm">Generando archivo Excel...</span>
+      </div>
+    </div>
+  </div>
+</app-modal>

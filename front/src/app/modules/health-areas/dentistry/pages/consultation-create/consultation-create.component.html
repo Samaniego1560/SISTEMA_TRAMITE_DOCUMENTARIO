@@ -1,0 +1,13 @@
+<ec-dialog [visible]="true" [style]="{width: '90%', 'max-height': '80vh', height: '100%'}">
+  <ng-template ecTemplate="header">
+    <div class="w-full px-4 py-2 bg-brand text-center text-white sticky top-0 z-10 rounded-t-lg">
+      <div class="t-h2 font-bold">Registro atención</div>
+    </div>
+  </ng-template>
+
+  <app-consultation-form
+    (save)="onCreateConsultation($event)"
+    (cancel)="onCancelCreate()"/>
+</ec-dialog>
+
+<app-block-ui [show]="isBlockPage()"></app-block-ui>

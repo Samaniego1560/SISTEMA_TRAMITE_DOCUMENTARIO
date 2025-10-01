@@ -1,0 +1,368 @@
+<div class="fixed top-0 w-full h-16 "><app-header (openSidenav)="toggleMenu()"></app-header></div>
+<div class="bg-slate-50 py-16 img-srq min-h-screen">
+    <div *ngIf="showFormSRQ; else ingreseDocumento">
+        <div class="w-11/12 md:w-9/12 lg:w-8/12 mx-auto mb-6 bg-white shadow m-6">
+            <div class="bg-blue-900 text-white p-6">
+                <h1 class="text-2xl font-bold">Encuesta S.R.Q</h1>
+                <p class="mt-2 text-sm">
+                    Esta encuesta busca comprender mejor tus patrones de comportamiento, emociones y bienestar general.
+                    Las respuestas que brindes serán confidenciales y se utilizarán para desarrollar estrategias de
+                    apoyo
+                    personalizadas que favorezcan tu desarrollo emocional y psicológico.
+                </p>
+            </div>
+
+            <div class="p-6 bg-gray-50">
+                <div *ngIf="isSend; else enterForm">
+                    <div class="flex items-center justify-center">
+                        <div class="w-full">
+                            <h1 class="text-2xl font-bold text-gray-800 mb-4">¡Gracias por completar la Encuesta S.R.Q!
+                            </h1>
+                            <p class="text-gray-700 mb-4">
+                                Tu participación es muy importante para ayudarnos a comprender mejor tus patrones de
+                                comportamiento y bienestar general. La información proporcionada será utilizada
+                                exclusivamente para fines relacionados con este proceso y mantenida de manera
+                                confidencial.
+                            </p>
+                            <!-- Mensaje para resultado negativo -->
+                            <div *ngIf="negativeResult" class="mb-4">
+                                <p class="text-gray-700">
+                                    En los próximos días, nos estaremos contactando contigo
+                                    al número de teléfono que proporcionaste para brindarte el apoyo necesario.
+                                </p>
+                            </div>
+
+                            <!-- Mensaje para resultado positivo -->
+                            <div *ngIf="!negativeResult" class="mb-4">
+                                <p class="text-gray-700">
+                                    Te agradecemos tu tiempo y esperamos que continúes con
+                                    tu bienestar.
+                                </p>
+                            </div>
+
+                            <p class="text-gray-700 mb-4">
+                                Si tienes alguna duda o necesitas más información, no dudes en comunicarte con nosotros:
+                            </p>
+
+                            <ul class="list-disc list-inside text-gray-700">
+                                <!-- <li><strong>Correo electrónico:</strong> <a href="mailto:soporte@srqpsicologia.com"
+                                        class="text-blue-500 hover:underline">soportesrqpsicologia.com</a></li> -->
+                                <li><strong>Teléfono:</strong> <a href="tel:062-562342"
+                                        class="text-blue-500 hover:underline">062-562342</a></li>
+                            </ul>
+
+                            <p class="mt-4 text-gray-500 text-sm">¡Gracias por tu colaboración!</p>
+                        </div>
+                    </div>
+
+                </div>
+                <ng-template #enterForm>
+                    <p class="mb-4">
+                        Hola, <span class="font-semibold">{{fullName}}</span>. Al enviar este formulario,
+                        se compartirá tu información como estudiante con el propietario para fines exclusivos de este
+                        proceso.
+                    </p>
+
+                    <form (ngSubmit)="onSubmit()" #formRef="ngForm" class="space-y-6" novalidate>
+
+                        <div *ngIf="!hideForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="degree" class="block text-gray-700 font-semibold mb-2">
+                                    Grado de instrucción <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="degree"
+                                    [(ngModel)]="degree"
+                                    name="degree"
+                                    required
+                                    #degreeRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Ingrese tu grado de instrucción"
+                                />
+                                <div *ngIf="degreeRef.invalid && degreeRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="profession" class="block text-gray-700 font-semibold mb-2">
+                                    Profesión <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="profession"
+                                    [(ngModel)]="profession"
+                                    name="profession"
+                                    required
+                                    #professionRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Ingrese tu Profesión"
+                                />
+                                <div *ngIf="professionRef.invalid && professionRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="gender" class="block text-gray-700 font-semibold mb-2">
+                                    Sexo<span class="text-red-500">*</span>
+                                </label>
+                                <select id="gender" #genderRef="ngModel" [(ngModel)]="gender" name="gender"
+                                    required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="" disabled selected>Seleccione una opción</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div *ngIf="genderRef.invalid && genderRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="age" class="block text-gray-700 font-semibold mb-2">
+                                    Edad<span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="age" #ageRef="ngModel" [(ngModel)]="age" name="age"
+                                    required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                                <div *ngIf="ageRef.invalid && ageRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="birthPlace" class="block text-gray-700 font-semibold mb-2">
+                                    Lugar de nacimiento<span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="birthPlace" #birthPlaceRef="ngModel" [(ngModel)]="birthPlace" name="birthPlace" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                                 <div *ngIf="birthPlaceRef.invalid && birthPlaceRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="birthDate" class="block text-gray-700 font-semibold mb-2">
+                                    Fecha de Nacimiento<span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" id="birthDate" #birthDateRef="ngModel" [(ngModel)]="birthDate"  name="birthDate" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                                <div *ngIf="birthDateRef.invalid && birthDateRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <div *ngIf="typeUser === 'Tesista'">
+                                <label for="maritalStatus" class="block text-gray-700 font-semibold mb-2">
+                                    Estado Civil<span class="text-red-500">*</span>
+                                </label>
+                                <select id="maritalStatus" #maritalStatusRef="ngModel" [(ngModel)]="maritalStatus"  name="maritalStatus" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Soltero">Soltero/a</option>
+                                    <option value="Casado">Casado/a</option>
+                                    <option value="Divorciado">Divorciado/a</option>
+                                    <option value="Viudo">Viudo/a</option>
+                                </select>
+                                 <div *ngIf="maritalStatusRef.invalid && maritalStatusRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <!-- Campo: Ciclo Acual -->
+                            <div *ngIf="typeUser === 'Alumno'">
+                                <label for="currentSemester" class="block text-gray-700 font-semibold ">
+                                    Ciclo actual <span class="text-red-500">*</span>
+                                </label>
+                                
+                                <select 
+                                    id="currentSemester"
+                                    [(ngModel)]="currentSemester"
+                                    name="currentSemester"
+                                    required
+                                    #currentSemesterRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                >
+                                    <option value="" disabled selected>Selecciona tu ciclo</option>
+                                    <option *ngFor="let ciclo of ciclos" [value]="ciclo">{{ ciclo }}</option>
+                                </select>
+                                
+                                <div *ngIf="currentSemesterRef.invalid && currentSemesterRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                        
+                            <!-- Campo: Colegio de procedencia -->
+                            <div *ngIf="typeUser === 'Alumno'">
+                                <label for="schoolOrigin" class="block text-gray-700 font-semibold mb-2">
+                                    Colegio de procedencia <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="schoolOrigin"
+                                    [(ngModel)]="schoolOrigin"
+                                    name="schoolOrigin"
+                                    required
+                                    #schoolOriginRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Escribe el colegio de procedencia"
+                                />
+                                <div *ngIf="schoolOriginRef.invalid && schoolOriginRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                        
+                            <!-- Campo: Año que ingresó a la universidad -->
+                            <div *ngIf="typeUser === 'Alumno'">
+                                <label for="universityYear" class="block text-gray-700 font-semibold mb-2">
+                                    Año que ingresó a la universidad <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="universityYear"
+                                    [(ngModel)]="universityYear"
+                                    name="universityYear"
+                                    required
+                                    #universityYearRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Escribe el año que ingresaste"
+                                />
+                                <div *ngIf="universityYearRef.invalid && universityYearRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                        
+                            <!-- Campo: Teléfono -->
+                            <div class="">
+                                <label for="phone" class="block text-gray-700 font-semibold mb-2">
+                                    Teléfono <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    [(ngModel)]="phone"
+                                    name="phone"
+                                    required
+                                    pattern="9[0-9]{8}"
+                                    #phoneRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Escribe tu número de teléfono"
+                                />
+                                
+                                <!-- Mensaje si el campo está vacío -->
+                                <div *ngIf="phoneRef.invalid && phoneRef.touched" class="text-red-500 text-sm">
+                                    <span *ngIf="phoneRef.errors?.['required']">Este campo es obligatorio.</span>
+                                    <span *ngIf="phoneRef.errors?.['pattern']">Debe tener 9 dígitos y empezar con 9.</span>
+                                </div>
+                            </div>
+                            
+                        
+                            <!-- Campo: Con quién vive actualmente -->
+                            <div class="">
+                                <label for="livingWith" class="block text-gray-700 font-semibold mb-2">
+                                    ¿Con quién vive actualmente? <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="livingWith"
+                                    [(ngModel)]="livingWith"
+                                    name="livingWith"
+                                    required
+                                    #livingWithRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Ejemplo: Padres, solo, compañeros, etc."
+                                />
+                                <div *ngIf="livingWithRef.invalid && livingWithRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+
+                            <!-- Campo: Colegio de procedencia -->
+                            <div class="">
+                                <label for="direccion" class="block text-gray-700 font-semibold mb-2">
+                                    Direción <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="direccion"
+                                    [(ngModel)]="direccion"
+                                    name="direccion"
+                                    required
+                                    #direccionRef="ngModel"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2"
+                                    placeholder="Escribe tu Direción actual"
+                                />
+                                <div *ngIf="direccionRef.invalid && direccionRef.touched" class="text-red-500 text-sm">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
+                        <!-- Preguntas dinámicas -->
+                        <div *ngFor="let question of questions; let i = index"
+                            class="mb-6 pb-4 border-b border-gray-300">
+                            <!-- Texto de la pregunta -->
+                            <p class="text-gray-700 font-semibold mb-4">
+                                {{ i + 1 }}. {{ question.texto_pregunta }} <span class="text-red-500">*</span>
+                            </p>
+                            <!-- Opciones de respuesta -->
+                            <div class="flex flex-col space-y-2">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" [name]="'question' + question.id" value="Si" [(ngModel)]="responses[question.id]"
+                                        required class="mr-2" />
+                                    <span>Si</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" [name]="'question' + question.id" value="No" [(ngModel)]="responses[question.id]"
+                                        required class="mr-2" />
+                                    <span>No</span>
+                                </label>
+                            </div>
+                            <!-- Validación de respuesta requerida -->
+                            <div *ngIf="!responses[question.id]" class="text-red-500 text-sm">
+                                Por favor, selecciona una respuesta.
+                            </div>
+                        </div>
+
+
+                        <!-- Botón de envío -->
+                        <div class="text-right">
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                Enviar
+                            </button>
+                        </div>
+                    </form>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <ng-template #ingreseDocumento>
+        <app-pre-questions (getData)="fetchStudentData($event)" (sendIdEncuesta)="addIdEncuesta($event)"></app-pre-questions>
+    </ng-template>
+    <app-toast></app-toast>
+    <app-block-ui [show]="isLoad"></app-block-ui>
+</div>
+<footer class="mt-1 flex justify-between items-center py-4 bottom-0 px-8 bg-white fixed" style="width: 100%">
+    <div>
+        <div class="font-bold">
+            <span style="color: #0f75bc">Direción de Bienestar Universitario</span>
+        </div>
+        <div class="text-sm text-slate-400">
+            <span>© 2012 - {{currentDate}} Área de Soporte Informático</span>
+        </div>
+    </div>
+    <div>
+        <div class="font-bold">
+            <span style="color: #1abb9c">Universidad Nacional Agraria de la Selva</span>
+        </div>
+        <div class="text-sm text-slate-400">
+            <span>UNAS / Tingo María - Perú</span>
+        </div>
+    </div>
+</footer>

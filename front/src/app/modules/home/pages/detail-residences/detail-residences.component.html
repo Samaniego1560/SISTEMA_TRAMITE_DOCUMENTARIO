@@ -1,0 +1,644 @@
+<div class="w-full h-full flex p-8 flex-col gap-8">
+    <div class="w-full flex justify-between">
+      <div class="text-slate-500 font-bold text-xl">
+        <div [hidden]="!residence">
+          <span>Residentes de {{ residence.name }}</span>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <button (click)="onBackResidences()"
+                class="flex items-center justify-center capitalize px-5 py-2 text-sm text-gray-500 transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="32" d="M244 400L100 256l144-144M120 256h292"/>
+            </svg>
+          Volver a residencias
+        </button>
+        <button *ngIf="role === 1" (click)="onBalanceModal()" class="bg-emerald-500 text-white rounded-lg py-2 px-4 hover:bg-emerald-600 transition-all duration-200" title="Ejecutar balanceo de alumnos de acuerdo a reglas configuradas">
+          <p>Asignar residentes</p>
+        </button>
+      </div>
+    </div>
+    <section class="container mx-auto space-y-4">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-2/3">
+          <div class="text-sm text-slate-500 flex gap-2 flex-col">
+            <select
+            class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            (change)="onChangeListType($event)"
+            >
+            <option selected hidden>Filtrar por listado</option>
+            <!-- <option *ngFor="let type of [{name:'Listado de alumnos',value:'alumnos'},{name:'Listado de cuartos',value:'cuartos'}]" [value]="type.value">
+                {{ type.name }}
+            </option> -->
+            <option selected value="cuartos" *ngIf="residence">Listado de cuartos</option>
+            <option value="alumnos">Listado de alumnos</option>
+            </select>
+          </div>
+          <select  (change)="onChangeAnnouncement($event)" class="truncate border border-gray-200 text-gray-500 h-10 text-sm rounded-md md:w-1/3 p-2.5">
+            <option selected hidden>{{announcementSelected.nombre||'Seleccione una convocatoria'}}</option>
+            <option *ngFor="let announcement of annoucements" [value]="announcement.id" >
+              {{ announcement.nombre }}
+            </option>
+          </select>
+          @if (typeListSelected == 'alumnos') {
+            <input
+            [(ngModel)]="filter"
+            type="text"
+            name="filter"
+            id="filter"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 md:w-1/4 p-2.5"
+            placeholder="Filtrar"
+            required
+            (input)="findResidents()"
+            />
+            <!-- <button
+              (click)="findResidents()"
+              class="md:w-32 flex items-center justify-center capitalize text-sm text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100  p-2.5"
+            >
+              Buscar
+            </button> -->
+          }
+
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end" *ngIf="false">
+        <div class="inline-flex overflow-hidden bg-white divide-x rounded-lg rtl:flex-row-reverse">
+          <input type="text" class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none"
+                 placeholder="Buscar usuario"/>
+          <button
+            class="flex items-center justify-center px-4 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+              <!-- Listado por cuartos -->
+              <table *ngIf="typeListSelected == 'cuartos'" class="min-w-full divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"> Id </th>
+                  <th scope="col" class="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    Cuarto
+                  </th>
+
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    Capacidad
+                  </th>
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    Piso
+                  </th>
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    Ocupantes
+                  </th>
+
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    N° Ocupantes
+                  </th>
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal rtl:text-right text-gray-500 text-center">
+                    Estado
+                  </th>
+                  <th scope="col"
+                      class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                    Acciones
+                  </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  @for (room of rooms; track []; let i = $index) {
+                      <tr>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500">{{getRowIndex(i)}}</h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500">{{room.number}}</h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500">{{ room.capacity }}</h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500">{{ room.floor }}</h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div class="flex flex-col w-full justify-center">
+                            <!-- <h2 class="font-medium text-slate-500">{{ room.students? room.capacity - room.students.length : room.capacity }}</h2> -->
+                              <h2 *ngFor="let item of room.students" class="font-medium text-slate-500 block">{{ item.full_name }}</h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                          <div>
+                            <h2
+                              class="inline px-3 py-1 text-sm font-normal select-none rounded-full">
+                              {{ room.students? room.students.length : 0 }}
+                            </h2>
+                          </div>
+                        </td>
+                        <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          @if (room.status === 'habilitado') {
+                            <div class="flex w-full justify-center">
+                              <div
+                                class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60">
+                                Activo
+                              </div>
+                            </div>
+                          } @else {
+                            <div class="flex w-full justify-center">
+                              <div
+                                class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-red-500 gap-x-2 bg-red-100/60">
+                                Eliminado
+                              </div>
+                            </div>
+                          }
+                        </td>
+                        <td class="px-12 py-4 text-sm font-medium whitespace-nowrap flex gap-4 justify-center">
+                          <button title="Ver" (click)="onShowRoomAssignation(room)" title="Ver cuarto">
+                            <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M6.30147 15.5771C4.77832 14.2684 3.6904 12.7726 3.18002 12C3.6904 11.2274 4.77832 9.73158 6.30147 8.42294C7.87402 7.07185 9.81574 6 12 6C14.1843 6 16.1261 7.07185 17.6986 8.42294C19.2218 9.73158 20.3097 11.2274 20.8201 12C20.3097 12.7726 19.2218 14.2684 17.6986 15.5771C16.1261 16.9282 14.1843 18 12 18C9.81574 18 7.87402 16.9282 6.30147 15.5771ZM12 4C9.14754 4 6.75717 5.39462 4.99812 6.90595C3.23268 8.42276 2.00757 10.1376 1.46387 10.9698C1.05306 11.5985 1.05306 12.4015 1.46387 13.0302C2.00757 13.8624 3.23268 15.5772 4.99812 17.0941C6.75717 18.6054 9.14754 20 12 20C14.8525 20 17.2429 18.6054 19.002 17.0941C20.7674 15.5772 21.9925 13.8624 22.5362 13.0302C22.947 12.4015 22.947 11.5985 22.5362 10.9698C21.9925 10.1376 20.7674 8.42276 19.002 6.90595C17.2429 5.39462 14.8525 4 12 4ZM10 12C10 10.8954 10.8955 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8955 14 10 13.1046 10 12ZM12 8C9.7909 8 8.00004 9.79086 8.00004 12C8.00004 14.2091 9.7909 16 12 16C14.2092 16 16 14.2091 16 12C16 9.79086 14.2092 8 12 8Z" fill="#000000"/>
+                            </svg>
+                          </button>
+                          <div *ngIf="false" class="cursor-pointer flex justify-center" (click)="onUpdateRoom(room)" title="Editar">
+                            <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 3.99997H6C4.89543 3.99997 4 4.8954 4 5.99997V18C4 19.1045 4.89543 20 6 20H18C19.1046 20 20 19.1045 20 18V12M18.4142 8.41417L19.5 7.32842C20.281 6.54737 20.281 5.28104 19.5 4.5C18.7189 3.71895 17.4526 3.71895 16.6715 4.50001L15.5858 5.58575M18.4142 8.41417L12.3779 14.4505C12.0987 14.7297 11.7431 14.9201 11.356 14.9975L8.41422 15.5858L9.00257 12.6441C9.08001 12.2569 9.27032 11.9013 9.54951 11.6221L15.5858 5.58575M18.4142 8.41417L15.5858 5.58575" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </div>
+                          <button title="Ver" (click)="onUpdateRoomAssignation(room)" *ngIf="(announcementSelected.estado === 'Activa' && role === 1) || role === 1" title="Gestionar asignación">
+                            <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none"><path fill="#000000" fill-rule="evenodd" d="M10.138 1.815A3 3 0 0 1 14 4.688v14.624a3 3 0 0 1-3.862 2.873l-6-1.8A3 3 0 0 1 2 17.512V6.488a3 3 0 0 1 2.138-2.873l6-1.8zM15 4a1 1 0 0 1 1-1h3a3 3 0 0 1 3 3v1a1 1 0 1 1-2 0V6a1 1 0 0 0-1-1h-3a1 1 0 0 1-1-1zm6 12a1 1 0 0 1 1 1v1a3 3 0 0 1-3 3h-3a1 1 0 1 1 0-2h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1zM9 11a1 1 0 1 0 0 2h.001a1 1 0 1 0 0-2H9z" clip-rule="evenodd"/><path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12h-5m0 0 2-2m-2 2 2 2"/></svg>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                </tbody>
+              </table>
+              <!-- Listado por alumnos -->
+              <table *ngIf="typeListSelected == 'alumnos'" class="min-w-full divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col"  class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                      Codigo de estudiante
+                    </th>
+                    <th scope="col" class="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500">
+                      <button class="flex items-center gap-x-3 focus:outline-none">
+                        <span>Nombres</span>
+                      </button>
+                    </th>
+                    <th scope="col" class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                      Escuela
+                    </th>
+
+                    <th scope="col" class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                      N° de Cuarto
+                    </th>
+                    <th scope="col" class="px-6 py-3.5 text-sm font-normal rtl:text-right text-gray-500 text-center">
+                      Estado
+                    </th>
+                    <th scope="col" class="px-6 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  @if(!studentsResidence || (studentsResidence && studentsResidence.length === 0)) {
+                    <tr>
+                      <td class="px-4 py-4 text-sm font-medium whitespace-nowrap" colspan="6">
+                        <div class="flex justify-center">
+                          <h2 class="font-medium text-slate-500">No se encontraron resultados</h2>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                  @for (item of filterStudentResidence; track []; let i = $index) {
+                    <tr>
+                      <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                        <div>
+                          <h2 class="font-medium text-slate-500">{{ item.student.code }}</h2>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                        <div>
+                          <h2 class="font-medium text-slate-500">{{ item.student.full_name  }}</h2>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                        <div>
+                          <h2 class="font-medium text-slate-500">{{  item.student.professional_school}}</h2>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                        <div>
+                          <h2
+                            class="inline px-3 py-1 text-sm font-normal select-none rounded-full">
+                            {{ item.student.room? item.student.room.number : '' }}
+                          </h2>
+                        </div>
+                      </td>
+                      <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          <div class="flex w-full justify-center">
+                            <div
+                              class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60">
+                              {{item.student.room? 'Asignado' : 'No asignado'}}
+                            </div>
+                          </div>
+                          <!-- <div class="flex w-full justify-center">
+                            <div
+                              class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-red-500 gap-x-2 bg-red-100/60">
+                              No asignado
+                            </div>
+                          </div> -->
+                      </td>
+                      <td class="px-12 py-4 text-sm font-medium whitespace-nowrap flex gap-4 justify-center">
+                        <button title="Ver" (click)="onShowStudentAssignation(item)">
+                          <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.30147 15.5771C4.77832 14.2684 3.6904 12.7726 3.18002 12C3.6904 11.2274 4.77832 9.73158 6.30147 8.42294C7.87402 7.07185 9.81574 6 12 6C14.1843 6 16.1261 7.07185 17.6986 8.42294C19.2218 9.73158 20.3097 11.2274 20.8201 12C20.3097 12.7726 19.2218 14.2684 17.6986 15.5771C16.1261 16.9282 14.1843 18 12 18C9.81574 18 7.87402 16.9282 6.30147 15.5771ZM12 4C9.14754 4 6.75717 5.39462 4.99812 6.90595C3.23268 8.42276 2.00757 10.1376 1.46387 10.9698C1.05306 11.5985 1.05306 12.4015 1.46387 13.0302C2.00757 13.8624 3.23268 15.5772 4.99812 17.0941C6.75717 18.6054 9.14754 20 12 20C14.8525 20 17.2429 18.6054 19.002 17.0941C20.7674 15.5772 21.9925 13.8624 22.5362 13.0302C22.947 12.4015 22.947 11.5985 22.5362 10.9698C21.9925 10.1376 20.7674 8.42276 19.002 6.90595C17.2429 5.39462 14.8525 4 12 4ZM10 12C10 10.8954 10.8955 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8955 14 10 13.1046 10 12ZM12 8C9.7909 8 8.00004 9.79086 8.00004 12C8.00004 14.2091 9.7909 16 12 16C14.2092 16 16 14.2091 16 12C16 9.79086 14.2092 8 12 8Z" fill="#000000"/>
+                          </svg>
+                        </button>
+                        <div *ngIf="(announcementSelected.estado === 'Activa' && role === 1) || role === 1" class="cursor-pointer flex justify-center" (click)="onDeleteAssignationRoom(item.student.id, item.student.room.id)" title="Retirar asignación">
+                          <svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none"><path fill="#000000" fill-rule="evenodd" d="M10.138 1.815A3 3 0 0 1 14 4.688v14.624a3 3 0 0 1-3.862 2.873l-6-1.8A3 3 0 0 1 2 17.512V6.488a3 3 0 0 1 2.138-2.873l6-1.8zM15 4a1 1 0 0 1 1-1h3a3 3 0 0 1 3 3v1a1 1 0 1 1-2 0V6a1 1 0 0 0-1-1h-3a1 1 0 0 1-1-1zm6 12a1 1 0 0 1 1 1v1a3 3 0 0 1-3 3h-3a1 1 0 1 1 0-2h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1zM9 11a1 1 0 1 0 0 2h.001a1 1 0 1 0 0-2H9z" clip-rule="evenodd"/><path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12h5m0 0-2-2m2 2-2 2"/></svg>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 sm:flex sm:items-center sm:justify-between" >
+        <div class="text-sm text-gray-500 mb-24" > Página
+          <span class="font-medium text-gray-700">{{ currentPage }}</span>
+        </div>
+
+        <div class="flex items-center mt-4 gap-x-4 sm:mt-0 mb-24">
+          <button (click)="previousPage()" [disabled]="currentPage <= 1"
+            class="flex items-center justify-center select-none disabled:cursor-not-allowed w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5 rtl:-scale-x-100"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+              />
+            </svg>
+            <span>Anterior</span>
+          </button>
+
+          <button
+            (click)="nextPage()"
+            [disabled]="(this.typeListSelected == 'alumnos' && this.filterStudentResidence.length < this.itemsPerPage) || (this.typeListSelected == 'cuartos' &&this.rooms.length < this.itemsPerPage)"
+            class="flex items-center justify-center select-none w-1/2 px-5 py-2 disabled:cursor-not-allowed text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+          >
+            <span>Siguiente</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5 rtl:-scale-x-100"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Alumnos -->
+  <app-modal [(show)]="showModal"  [showClose]="true">
+    <div class="text-gray-700 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-center text-lg font-semibold text-emerald-600 mb-4">Información del alumno</h2>
+        <p class="text-center mb-4" [hidden]="!isUpdateStudent">Ingresa los datos que requiere actualizar del alumno {{studentResidenceSelected?.student?.full_name}}</p>
+        <div class="mt-4 gap-4 w-full" [hidden]="!isUpdateStudent">
+          <div>
+            <label class="block text-gray-700">Bienes asignados (camas):</label>
+            <input type="text" placeholder="Ingrese el codigo del bien" class="w-full border border-gray-300 rounded-md p-2" />
+          </div>
+        </div>
+        <div class="space-y-4 text-sm text-gray-700" [hidden]="isUpdateStudent">
+          <div class="flex justify-between">
+            <span class="">Alumno:</span>
+            <span class="text-gray-700">{{studentResidenceSelected?.student?.full_name}}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="">Código:</span>
+            <span>{{studentResidenceSelected?.student?.code}}</span>
+          </div>
+          <div class="flex justify-between space-x-4">
+            <span class="">Escuela Profesional:</span>
+            <span>{{studentResidenceSelected?.student?.professional_school}}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="">Habitación:</span>
+            <span>{{studentResidenceSelected?.student?.room?.number}}</span>
+          </div>
+          <div class="flex justify-between space-x-4">
+            <span class="">Convocatoria:</span>
+            <span>{{announcementSelected.nombre}}</span>
+          </div>
+        </div>
+        <div *ngIf="studentResidenceSelected?.room_mates && studentResidenceSelected?.room_mates.length > 0" class="mt-4">
+          <span class="">Compañeros de cuarto:</span>
+            <div *ngFor="let room_mate of studentResidenceSelected?.room_mates; let i = index" class="flex flex-col bg-gray-300 rounded p-2">
+                <span class="text-sm">{{ (i + 1) + ' ' + room_mate.code + ' ' + room_mate.full_name}}</span>
+            </div>
+
+        </div>
+        <div *ngIf="studentResidenceSelected?.assigned_goods?.length > 0" class="mt-4">
+          <span class="">Bienes asignados (camas):</span>
+          <div *ngFor="let things of studentResidenceSelected?.assigned_goods; let i = index" class="flex flex-col bg-gray-100 p-2">
+            {{(i + 1) + ' - ' + things.code}}
+          </div>
+        </div>
+        <div *ngIf="studentResidenceSelected?.sanctions?.length > 0" class="mt-4">
+          <span class="">Sanciones: </span>
+          <div class="space-y-2 mt-2">
+            <div *ngFor="let sanction of studentResidenceSelected?.sanctions" class="bg-yellow-300 rounded-md">
+              <div class="border-yellow-500 p-2 text-gray-700 flex justify-between items-center">
+                <span class="text-sm">{{sanction.description}}</span>
+                <span class="text-sm">{{ sanction.date }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="studentdDebts && studentdDebts.historial_pagos && studentdDebts.historial_pagos.length > 0" class="mt-4">
+        <span class="">Deudas</span>
+        <div class="space-y-2 mt-2">
+          <div *ngFor="let debts of studentdDebts.historial_pagos" class="bg-yellow-300 rounded-md">
+            <span class="text-sm truncate p-2">{{debts.desc_deuda}}</span>
+            <div class="border-yellow-500 p-2 text-gray-700 flex justify-between items-center">
+              <span class="text-sm">{{'Monto: ' + debts.monto_restante_deuda}}</span>
+              <span class="text-sm">{{'Fecha: ' + (debts.created_at | date)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="flex justify-between mt-6 gap-4">
+          <button type="button" (click)="closeModal()" class="w-full flex items-center justify-center bg-white border border-emerald-500 text-emerald-500 rounded py-2 hover:bg-emerald-100 transition duration-200">
+            <!-- Icono de cerrar -->
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+   <!-- Cuartos -->
+  <app-modal [(show)]="showRoomModal">
+    <div class="text-gray-700 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-center text-lg font-semibold text-green-600 mb-1">
+          Cuarto N.º {{roomResidenceSelected.number}}
+        </h2>
+        <p class="text-center text-gray-500 text-sm mb-4">
+          Ingrese los detalles del cuarto {{roomResidenceSelected.number}} aquí.
+        </p>
+        <form [formGroup]="formRoom" action="">
+          <!-- Capacidad -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Capacidad</label>
+            <input type="number" formControlName="capacity" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" value="2" />
+          </div>
+
+          <!-- Estado -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
+            <select formControlName="status" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+              <option *ngFor="let item of [{value:'habilitado',label:'Disponible'},{value:'ocupado',label:'Ocupado'},{value:'mantenimiento',label:'Mantenimiento'}]" [value]="item.value">
+                {{ item.label }}
+              </option>
+              <!-- <option>Disponible</option>
+              <option>Ocupado</option>
+              <option>Mantenimiento</option> -->
+            </select>
+          </div>
+        </form>
+        <!-- Alumnos del cuarto -->
+        <div class="mb-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2" *ngIf="!isUpdateRoom">Alumnos del cuarto</h3>
+          @if((studentsRoomSelected && studentsRoomSelected.length === 0) && !isUpdateRoom) {
+            <p class="text-sm text-gray-500">No se han asignado alumnos a este cuarto</p>
+          }
+          <div class="rounded p-2 space-y-2" *ngIf="!isUpdateRoom">
+            <!-- Alumno 1 -->
+            <div *ngFor="let studentIfo of studentsRoomSelected; let i = index" [hidden]="studentsRoomSelected.length > 0"  class="flex justify-between items-center bg-white p-2 rounded border border-gray-300">
+              <span class="text-sm">{{i+1}}</span>
+              <span class="text-sm">{{studentIfo.full_name}}</span>
+              <span class="text-sm">{{studentIfo.code}}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Bienes asignados -->
+        <div *ngIf="!isUpdateRoom && (studentsRoomSelected && studentsRoomSelected.length > 0)"  class="mb-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">Bienes asignados (camas)</h3>
+          <div *ngFor="let student of studentsRoomSelected" class="bg-gray-100 rounded p-2 space-y-2">
+            <!-- Bien 1 -->
+            <div class="flex justify-between items-center bg-white p-2 rounded border border-gray-300">
+              <span class="text-sm">FDAMAS22-A</span>
+              <span class="text-sm">{{student.full_name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between mt-6 gap-4" *ngIf="!showRoomAssignation">
+          <button type="button" (click)="closeRoomModal()" class="w-full flex items-center justify-center bg-white border border-emerald-500 text-emerald-500 rounded py-2 hover:bg-emerald-100 transition duration-200">
+            <!-- Icono de cerrar -->
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Cerrar
+          </button>
+
+          <button [hidden]="!isUpdateRoom" (click)="updateRoom()" type="submit" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600 transition duration-200" >
+            <p>Actualizar</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <!-- Modal para asignacion -->
+  <app-modal [(show)]="showUpdateRoomAssignationModal">
+    <div class="text-gray-700 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-center text-lg font-semibold text-green-600 mb-1">
+          Cuarto N.º {{roomResidenceSelected.number}}
+        </h2>
+        <p class="text-center text-gray-500 text-sm mb-4">
+          Ingrese los detalles de asignación del cuarto {{roomResidenceSelected.number}} aquí.
+        </p>
+        <!-- Alumnos del cuarto -->
+        <div class="mb-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">Alumnos del cuarto</h3>
+          <div class="rounded p-2 space-y-2">
+            <!-- Alumno 1 -->
+            <div *ngFor="let studentInfo of studentsRoomSelected; let i = index" [hidden]="studentsRoomSelected.length > 0"  class="flex justify-between items-center bg-white p-2 rounded border border-gray-300">
+              <span class="text-sm">{{i+1}}</span>
+              <span class="text-sm">{{studentInfo.full_name}}</span>
+              <span class="text-sm">{{studentInfo.code}}</span>
+              <button (click)="onDeleteAssignationRoom(studentInfo.id, roomResidenceSelected.id);" class="text-red-500 hover:text-red-700 cursor-pointer" title="Retirar asignación">
+                ✖
+              </button>
+            </div>
+            <!-- Botón para agregar alumno -->
+            <button *ngIf="!showRoomAssignation && (roomResidenceSelected.capacity > studentsRoomSelected.length)" (click)="showRoomAssignationCreator()"
+              class="flex items-center text-center justify-center text-green-500 hover:text-green-700 text-sm mt-2">
+              <span class="text-lg mr-1">+</span> Agregar alumno
+            </button>
+          </div>
+          <!-- Formulario Secundario -->
+          <form *ngIf="showRoomAssignation" [formGroup]="formRoomAssignation">
+            @if(!studentEnabledForResidence || (studentEnabledForResidence && studentEnabledForResidence.length === 0)) {
+              <p class="text-sm text-gray-500">No hay alumnos por asignar</p>
+            } @else {
+              <div class=" grid grid-cols-1 gap-4 w-full justify-between">
+                <label for="">Estudiante</label>
+                <input type="text" name="" id="" formControlName="student" class="hidden">
+                <div class="relative mt-1">
+                  <button
+                      id="dropdownButton"
+                      class="w-full px-4 py-2 text-left border rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center"
+                      (click)="toggleDropdown()">
+                      <span id="selectedOption">{{selectedStudentForm||'Seleccione un estudiante'}}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                  </button>
+
+                  <div id="dropdownMenu" *ngIf="dropdownOpen" class="absolute w-full bg-white border rounded-md mt-1 shadow-lg">
+                      <!-- Search input -->
+                      <div class="p-2">
+                          <input
+                              type="text"
+                              id="searchInput"
+                              placeholder="Filtrar"
+                              class="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                              (input)="filterStudents($event)">
+                      </div>
+
+                      <!-- Options list -->
+                      <ul id="optionsList" class="max-h-40 overflow-y-auto">
+                          <li *ngFor="let item of studentsEnabled()" class="px-4 py-2 cursor-pointer hover:bg-gray-100" (click)="onSetStudent(item.student.id)">{{item.student.full_name}}</li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+            }
+            <!-- Botones del formulario secundario -->
+            <div class="flex justify-between mt-6 gap-4" *ngIf="showRoomAssignation">
+              <button (click)="cancelRoomAssignationCreator()" class="w-full bg-white border border-red-500 text-red-500 rounded py-2 hover:bg-red-100">
+                Cancelar
+              </button>
+              <button (click)="addStudentRoom()" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600">
+                Asignar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="flex justify-between mt-6 gap-4" *ngIf="!showRoomAssignation">
+          <button type="button" (click)="closeUpdateRoomAssignatioModal()" class="w-full flex items-center justify-center bg-white border border-emerald-500 text-emerald-500 rounded py-2 hover:bg-emerald-100 transition duration-200">
+            <!-- Icono de cerrar -->
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Cerrar
+          </button>
+          <!-- <button type="submit" class="w-full bg-emerald-500 text-white rounded py-2 hover:bg-emerald-600 transition duration-200" >
+            <p>Actualizar</p>
+          </button> -->
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(show)]="balanceModal" [showHeader]="false" (onNext)="sortResidenceAssignation()" buttonSuccess="Balancear" buttonCancel="Cancelar balanceo" [showButtonCancel]="true">
+    <div class="flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-amber-300" viewBox="0 0 512 512">
+        <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+              stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        <path d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z" fill="none"
+              stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+        <path d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z" stroke="currentColor" class="fill-amber-300"/>
+      </svg>
+    </div>
+    <div class="flex justify-center items-center text-slate-500 font-bold text-xl">
+      <span>¿Esta seguro de ejecutar el balanceo de la residencia?</span>
+    </div>
+    <div class="text-slate-500 text-sm">
+      <span>¡Si realiza esta acción, se ejcutará el balanceo asignando cuartos a los alumnos de acuerdo a las reglas configuradas para la residencia</span>
+    </div>
+  </app-modal>
+
+  <app-modal [(show)]="deleteModal" [showHeader]="false" buttonSuccess="Aceptar" (onNext)="removeStudentRoom()" (showChange)="onCancelAssignationRoom()" [showButtonCancel]="true">
+    <div class="flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-amber-300" viewBox="0 0 512 512">
+        <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+              stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        <path d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z" fill="none"
+              stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+        <path d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z" stroke="currentColor" class="fill-amber-300"/>
+      </svg>
+    </div>
+    <div class="flex justify-center items-center text-slate-500 font-bold text-xl">
+      <span>¿Esta seguro de eliminar esta asignación?</span>
+    </div>
+    <div class="text-slate-500 text-sm">
+      <span>¡Si realiza esta acción, la asignación será eliminada!</span>
+    </div>
+    <div class="mb-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Estado de estudiante en residencia</label>
+        <select [(ngModel)]="statusUnassing" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+          <option *ngFor="let item of [{value:'activo',label:'Activo'},{value:'desocupado',label:'desocupado'},{value:'suspendido',label:'Suspendido'},{value:'cancelado',label:'Cancelado'}]" [value]="item.value">
+            {{ item.label }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Observación</label>
+        <input [(ngModel)]="reasonUnassing" type="text" placeholder="" class="w-full border border-gray-300 rounded-md p-2" />
+      </div>
+    </div>
+</app-modal>
+
+  <app-block-ui [show]="isLoading"></app-block-ui>
+
+  <app-toast></app-toast>

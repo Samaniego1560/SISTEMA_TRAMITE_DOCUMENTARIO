@@ -1,0 +1,308 @@
+<div class="atencion-integral card-form w-full">
+  <div class="flex items-center gap-2">
+    <button type="button" class="head-card w-full flex items-center gap-2 t-h2 text-gray-600 font-bold"
+            (click)="active.set(!active())">
+      <div class="cursor-pointer {{active() ? 'rotate-0' : '-rotate-90'}}">
+        <svg class="stroke-current" width="16" height="17" viewBox="0 0 16 17" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Consulta</span>
+
+    </button>
+
+    @if (canSaveForm) {
+      <button type="button" class="p-1 rounded-lg hover:bg-gray-200"
+              (click)="deleteForm.emit()">
+        <div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M14.74 9.00003L14.394 18M9.606 18L9.26 9.00003M19.228 5.79003C19.57 5.84203 19.91 5.89703 20.25 5.95603M19.228 5.79003L18.16 19.673C18.1164 20.2383 17.8611 20.7662 17.445 21.1513C17.029 21.5364 16.4829 21.7502 15.916 21.75H8.084C7.5171 21.7502 6.97102 21.5364 6.55498 21.1513C6.13894 20.7662 5.88359 20.2383 5.84 19.673L4.772 5.79003M19.228 5.79003C18.0739 5.61555 16.9138 5.48313 15.75 5.39303M4.772 5.79003C4.43 5.84103 4.09 5.89603 3.75 5.95503M4.772 5.79003C5.92613 5.61555 7.08623 5.48313 8.25 5.39303M15.75 5.39303V4.47703C15.75 3.29703 14.84 2.31303 13.66 2.27603C12.5536 2.24067 11.4464 2.24067 10.34 2.27603C9.16 2.31303 8.25 3.29803 8.25 4.47703V5.39303M15.75 5.39303C13.2537 5.20011 10.7463 5.20011 8.25 5.39303"
+              stroke="#CA1515" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </button>
+    }
+  </div>
+
+
+
+  @if (active()) {
+    <form [formGroup]="form" class="card-body w-full flex flex-col gap-4">
+
+      @if (showNursing()) {
+        <div class="w-full flex items-center justify-between gap-2 t-h2 text-brand-2 font-bold">
+          <span>Información general</span>
+          @if (infoMedicine || infoDentistry) {
+            <div class="flex justify-center">
+              <ul class="text-sm font-medium text-center rounded-lg shadow-sm sm:flex">
+                <li class="w-full focus-within:z-10">
+                  <a
+                    class="cursor-pointer inline-block w-full py-1 px-2 bg-[#0f75bc] text-white border-r border-gray-200 rounded-s-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none"
+                    aria-current="page">Enfermería</a>
+                </li>
+                @if (infoMedicine) {
+                  <li class="w-full focus-within:z-10" (click)="openMedicine()">
+                    <a
+                      class="cursor-pointer inline-block w-full py-1 px-2 {{showMedicine() ? 'bg-[#0f75bc] text-white' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'}} border-r {{!infoDentistry ? 'rounded-e-lg' : ''}} border-gray-200 focus:ring-4 focus:ring-blue-300 focus:outline-none">Medicina</a>
+                  </li>
+                }
+                @if (infoDentistry) {
+                  <li class="w-full focus-within:z-10" (click)="openDentistry()">
+                    <a
+                      class="cursor-pointer inline-block w-full py-1 px-2 {{showDentistry() ? 'bg-[#0f75bc] text-white' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'}} border-s-0 border-gray-200 rounded-e-lg focus:ring-4 focus:ring-blue-300 focus:outline-none">Odontología</a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+
+        <div class="grid md:grid-cols-5 lg:grid-cols-12 gap-4">
+          <!--<div class="i-field md:col-span-2">
+            <label>Fecha</label>
+            <input formControlName="fecha" type="date">
+          </div>
+          <div class="i-field md:col-span-2">
+            <label>Hora</label>
+            <input formControlName="hora" type="time">
+          </div>-->
+          <!--<div class="i-field">
+            <label>Edad</label>
+            <input formControlName="edad" type="text">
+          </div>-->
+          <div class="i-field col-span-2">
+            <label>N° recibo</label>
+            <input #recibo onlyNumbers formControlName="numero_recibo" type="text"
+                   (keyup.enter)="onValidateRecibo(recibo.value)">
+          </div>
+          <div class="i-field col-span-2">
+            <label>Costo</label>
+            <input formControlName="costo" type="text">
+          </div>
+          <div class="i-field col-span-2">
+            <label>Fecha de pago</label>
+            <input formControlName="fecha_pago" type="datetime-local">
+          </div>
+          <div class="md:col-span-3 lg:hidden"></div>
+          <div class="i-field">
+            <label [for]="'apetito'">Apetito</label>
+            <app-toggle-switch [id]="'apetito'"
+                               formControlName="apetito"
+                               trueValue="si" falseValue="no"
+            ></app-toggle-switch>
+          </div>
+          <div class="i-field">
+            <label [for]="'sed'">Sed</label>
+            <app-toggle-switch [id]="'sed'"
+                               formControlName="sed"
+                               trueValue="si" falseValue="no"
+            ></app-toggle-switch>
+          </div>
+          <div class="i-field md:col-span-2">
+            <label [for]="'suenio'">Sueño</label>
+            <app-toggle-switch [id]="'suenio'"
+                               formControlName="suenio"
+                               trueValue="si" falseValue="no"
+            ></app-toggle-switch>
+          </div>
+          <div class="i-field md:col-span-5 lg:col-span-4">
+            <label>Motivo de consulta</label>
+            <textarea formControlName="motivo_consulta"></textarea>
+          </div>
+          <div class="i-field md:col-span-5 lg:col-span-4">
+            <label>Tiempo de enfermedad</label>
+            <textarea formControlName="tiempo_enfermedad"></textarea>
+          </div>
+          <div class="i-field md:col-span-5 lg:col-span-4">
+            <label>Estado de ánimo</label>
+            <textarea formControlName="estado_animo"></textarea>
+          </div>
+        </div>
+
+        <div class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold">
+          <span>Examen físico</span>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="i-field">
+            <label>Temperatura</label>
+            <input type="text" formControlName="temperatura">
+          </div>
+          <div class="i-field">
+            <label>PA</label>
+            <input type="text" formControlName="presion_arterial">
+          </div>
+          <div class="i-field">
+            <label>FC</label>
+            <input type="text" formControlName="frecuencia_cardiaca">
+          </div>
+          <div class="i-field">
+            <label>FR</label>
+            <input type="text" formControlName="frecuencia_respiratoria">
+          </div>
+          <div class="i-field">
+            <label>Peso</label>
+            <input type="text" formControlName="peso">
+          </div>
+          <div class="i-field">
+            <label>Talla</label>
+            <input type="text" formControlName="talla">
+          </div>
+          <div class="i-field">
+            <label>IMC</label>
+            <input type="text" formControlName="indice_masa_corporal">
+          </div>
+        </div>
+
+        <div class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold">
+          <span>Diagnóstico</span>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="i-field md:col-span-2 col-span-1">
+            <label>Diagnóstico</label>
+            <textarea formControlName="diagnostico"></textarea>
+          </div>
+        </div>
+
+        <div class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold">
+          <span>Tratamiento</span>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="i-field md:col-span-2 col-span-1">
+            <label>Tratamiento</label>
+            <textarea formControlName="tratamiento"></textarea>
+          </div>
+          <div class="i-field md:col-span-2 col-span-1">
+            <label>Examenes Auxiliares</label>
+            <textarea formControlName="examenes_axuliares"></textarea>
+          </div>
+          <div class="i-field md:col-span-2 col-span-1">
+            <label>Referencia</label>
+            <textarea formControlName="referencia"></textarea>
+          </div>
+        </div>
+
+        <button type="button" class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold">
+          <span>Observación</span>
+        </button>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="i-field md:col-span-2 col-span-1">
+            <label>Observación</label>
+            <textarea formControlName="observacion"></textarea>
+          </div>
+        </div>
+      } @else if (showMedicine()) {
+        <ng-container *ngTemplateOutlet="viewMedicine"></ng-container>
+      } @else {
+        <ng-container *ngTemplateOutlet="viewDentistry"></ng-container>
+      }
+    </form>
+  }
+</div>
+<app-block-ui [show]="isBlockPage()"></app-block-ui>
+
+<ng-template #viewMedicine>
+  <div class="flex flex-col gap-4">
+    <div class="w-full flex items-center justify-between gap-2 t-h2 text-brand-2 font-bold">
+      <span>Consulta Medicina</span>
+      @if (infoMedicine || infoDentistry) {
+        <div class="flex justify-center">
+          <ul class="text-sm font-medium text-center rounded-lg shadow-sm sm:flex">
+            <li class="w-full focus-within:z-10" (click)="openNursing()">
+              <a
+                class="cursor-pointer inline-block w-full py-1 px-2 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 border-r border-gray-200 rounded-s-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none"
+                aria-current="page">Enfermería</a>
+            </li>
+            <li class="w-full focus-within:z-10">
+              <a
+                class="cursor-pointer inline-block w-full py-1 px-2 bg-[#0f75bc] text-white border-r {{!infoDentistry ? 'rounded-e-lg' : ''}} border-gray-200 focus:ring-4 focus:ring-blue-300 focus:outline-none">Medicina</a>
+            </li>
+            @if (infoDentistry) {
+              <li class="w-full focus-within:z-10" (click)="openDentistry()">
+                <a
+                  class="cursor-pointer inline-block w-full py-1 px-2 {{showDentistry() ? 'bg-[#0f75bc] text-white' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'}} border-s-0 border-gray-200 rounded-e-lg focus:ring-4 focus:ring-blue-300 focus:outline-none">Odontología</a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+    <div class="i-field">
+      <label>Anamnesis</label>
+      <textarea [value]="infoMedicine?.anamnesis ?? ''" class="i-textarea h-fit" rows="3" disabled></textarea>
+    </div>
+    <div class="i-field">
+      <label>Examen clínico</label>
+      <textarea [value]="infoMedicine?.examen_clinico ?? ''" class="i-textarea h-fit" rows="3" disabled></textarea>
+    </div>
+    <div class="i-field">
+      <label>Indicaciones</label>
+      <textarea [value]="infoMedicine?.indicaciones ?? ''" class="i-textarea h-fit" rows="3" disabled></textarea>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewDentistry>
+  <div class="w-full flex items-center justify-between gap-2 t-h2 text-brand-2 font-bold">
+    <span>Consulta Odontología</span>
+    @if (infoMedicine || infoDentistry) {
+      <div class="flex justify-center">
+        <ul class="text-sm font-medium text-center rounded-lg shadow-sm sm:flex">
+          @if (infoData) {
+            <li class="w-full focus-within:z-10" (click)="openNursing()">
+              <a
+                class="cursor-pointer inline-block w-full py-1 px-2 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 border-r border-gray-200 rounded-s-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none"
+                aria-current="page">Enfermería</a>
+            </li>
+          }
+          @if (infoMedicine) {
+            <li class="w-full focus-within:z-10" (click)="openMedicine()">
+              <a
+                class="cursor-pointer inline-block w-full py-1 px-2 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 border-r {{!infoDentistry ? 'rounded-e-lg' : ''}} border-gray-200 focus:ring-4 focus:ring-blue-300 focus:outline-none">Medicina</a>
+            </li>
+          }
+          <li class="w-full focus-within:z-10">
+            <a
+              class="cursor-pointer inline-block w-full py-1 px-2 bg-[#0f75bc] text-white border-s-0 border-gray-200 rounded-e-lg focus:ring-4 focus:ring-blue-300 focus:outline-none">Odontología</a>
+          </li>
+        </ul>
+      </div>
+    }
+  </div>
+
+  <div class="card-body w-full grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Relato</label>
+      <textarea [value]="infoDentistry?.relato ?? ''" disabled></textarea>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Diagnóstico</label>
+      <input [value]="infoDentistry?.diagnostico ?? ''" type="text" disabled>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Examen auxiliar</label>
+      <textarea [value]="infoDentistry?.examen_auxiliar ?? ''" disabled></textarea>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Examen clinico</label>
+      <textarea [value]="infoDentistry?.examen_clinico ?? ''" disabled></textarea>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Tratamiento</label>
+      <textarea [value]="infoDentistry?.tratamiento ?? ''" disabled></textarea>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Indicaciones</label>
+      <textarea [value]="infoDentistry?.indicaciones ?? ''" disabled></textarea>
+    </div>
+    <div class="i-field md:col-span-2 col-span-1">
+      <label>Comentarios</label>
+      <textarea [value]="infoDentistry?.comentarios ?? ''" disabled></textarea>
+    </div>
+  </div>
+</ng-template>

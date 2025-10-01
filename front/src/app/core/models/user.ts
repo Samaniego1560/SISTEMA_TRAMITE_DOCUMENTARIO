@@ -1,0 +1,36 @@
+export interface IUser {
+  id: number;
+  created_at: any;
+  full_name: string;
+  email: string;
+  id_level_user: number;
+  status_id: number;
+  updated_at: string;
+  username: string;
+}
+
+export interface IUserCreation {
+  full_name: string;
+  email: string;
+  id_level_user: number;
+  username: string;
+  password_confirmation: string;
+  password: string;
+}
+
+export interface IValidationUser {
+  type_student?: string;
+  correo: string;
+  DNI: number;
+  announcement_id: number;
+}
+
+export interface IDebtsStudent {
+  nombre_completo: string;
+  nombres: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  monto_deuda: string;
+  concepto_deuda: string;
+  fecha_deuda: string;
+}

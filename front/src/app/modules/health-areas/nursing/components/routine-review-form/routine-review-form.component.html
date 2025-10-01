@@ -1,0 +1,33 @@
+<form [formGroup]="routineReviewForm" class="grid md:grid-cols-3 w-full gap-4">
+  <div class="i-field">
+    <label>¿Fiebre los últimos 15 días?</label>
+    <app-toggle-switch
+      formControlName="fiebre_ultimo_quince_dias"
+      trueValue="si" falseValue="no"
+    ></app-toggle-switch>
+  </div>
+  <div class="i-field">
+    <label>¿Tos más de 15 días?</label>
+    <app-toggle-switch
+      formControlName="tos_mas_quince_dias"
+      trueValue="si" falseValue="no"
+    ></app-toggle-switch>
+  </div>
+  <div class="i-field">
+    <label>¿Secreción o lesión en genitales?</label>
+    <app-toggle-switch
+      formControlName="secrecion_lesion_genitales"
+      trueValue="si" falseValue="no"
+    ></app-toggle-switch>
+  </div>
+  @if (this.genero === 'F') {
+    <div class="i-field">
+      <label>FUR</label>
+      <input formControlName="fecha_ultima_regla" type="date">
+    </div>
+  }
+  <div class="i-field md:col-span-2">
+    <label>Comentarios</label>
+    <input formControlName="comentarios" type="text">
+  </div>
+</form>

@@ -1,0 +1,140 @@
+<form class="space-y-4" [formGroup]="formScholarshipStudents()">
+  <div class="grid grid-cols-3 gap-4">
+    <div class="col-span-1">
+      <label for="dni" class="block mb-2 text-sm font-medium text-slate-500">DNI</label>
+      <input type="text" name="dni" id="dni" formControlName="dni"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             required/>
+      <small
+        class="text-red-500"
+        *ngIf="
+                  formScholarshipStudents().get('dni' || '')?.invalid &&
+                  formScholarshipStudents().get('dni' || '')?.touched
+                  "
+      >
+        El Campo es requerido
+      </small>
+    </div>
+    <div class="col-span-2">
+      <label for="names" class="block mb-2 text-sm font-medium text-slate-500">Nombre completo</label>
+      <input type="text" name="names" id="names" formControlName="names"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             required/>
+      <small
+        class="text-red-500"
+        *ngIf="
+                  formScholarshipStudents().get('names' || '')?.invalid &&
+                  formScholarshipStudents().get('names' || '')?.touched
+                  "
+      >
+        El Campo es requerido
+      </small>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <div class="text-sm text-slate-500 flex gap-2 flex-col w-full">
+      <label>Carrera</label>
+      <select
+        [formControlName]="'career'"
+        class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+      >
+        <option selected hidden>Seleccione una Opción</option>
+        <option
+          *ngFor="let professionalSchool of DatasetProfessionalSchool"
+          [value]="professionalSchool.value"
+        >
+          {{ professionalSchool.name }}
+        </option>
+      </select>
+      <small
+        class="text-red-500"
+        *ngIf="
+            formScholarshipStudents().get('career')?.invalid &&
+            formScholarshipStudents().get('career')?.touched
+            "
+      >
+        El campo es requerido
+      </small>
+    </div>
+    <div class="col-span-1">
+      <label for="program" class="block mb-2 text-sm font-medium text-slate-500">Programa</label>
+      <input type="text" name="program" id="program" formControlName="program"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             required/>
+      <small
+        class="text-red-500"
+        *ngIf="
+                  formScholarshipStudents().get('program' || '')?.invalid &&
+                  formScholarshipStudents().get('program' || '')?.touched
+                  "
+      >
+        El Campo es requerido
+      </small>
+    </div>
+  </div>
+  <div class="grid grid-cols-3 gap-4 ">
+    <div>
+      <label for="year_announcement" class="block mb-2 text-sm font-medium text-slate-500">Convocatoria</label>
+      <input type="text" name="year_announcement" id="year_announcement" formControlName="year_announcement"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             required/>
+      <small
+        class="text-red-500"
+        *ngIf="
+                    formScholarshipStudents().get('year_announcement' || '')?.invalid &&
+                    formScholarshipStudents().get('year_announcement' || '')?.touched
+                    "
+      >
+        El Campo es requerido
+      </small>
+    </div>
+    <div class="text-sm text-slate-500 flex gap-2 flex-col w-full">
+      <label>Estado</label>
+      <select
+        [formControlName]="'status'"
+        class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+      >
+        <option selected hidden>Seleccione una Opción</option>
+        <option
+          *ngFor="let status of DatasetStatus"
+          [value]="status.value"
+        >
+          {{ status.name }}
+        </option>
+      </select>
+      <small
+        class="text-red-500"
+        *ngIf="
+            formScholarshipStudents().get('status')?.invalid &&
+            formScholarshipStudents().get('status')?.touched
+            "
+      >
+        El campo es requerido
+      </small>
+    </div>
+    <div class="text-sm text-slate-500 flex gap-2 flex-col w-full">
+      <label>Condición</label>
+      <select
+        [formControlName]="'condition'"
+        class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+      >
+        <option selected hidden>Seleccione una Opción</option>
+        <option
+          *ngFor="let condition of DatasetCondition"
+          [value]="condition.value"
+        >
+          {{ condition.name }}
+        </option>
+      </select>
+      <small
+        class="text-red-500"
+        *ngIf="
+            formScholarshipStudents().get('condition')?.invalid &&
+            formScholarshipStudents().get('condition')?.touched
+            "
+      >
+        El campo es requerido
+      </small>
+    </div>
+  </div>
+</form>

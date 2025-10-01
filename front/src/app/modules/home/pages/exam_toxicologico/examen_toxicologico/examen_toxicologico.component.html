@@ -1,0 +1,268 @@
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+<div class="w-full px-8 py-2 overflow-auto pb-24"
+  style="height: calc(100vh - 64px)">
+  <div class="flex items-center justify-between"> 
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">
+        Gestión de exámenes Toxicológicos
+      </h1>
+    </div>
+
+  </div>
+  <div class="flex items-center mb-4 gap-4 justify-between">
+      <div class="flex items-center">
+        <label class="block text-sm font-medium text-gray-700 mr-2">Convocatoria:</label>
+        <select 
+          [value]="convocatoriaId"
+          (change)="onConvocatoriaChange($event)"
+          class="border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 min-w-48"
+          [disabled]="isLoadingConvocatorias"
+        >
+          <option value="" disabled>
+            {{ isLoadingConvocatorias ? 'Cargando convocatorias...' : 'Seleccione una convocatoria' }}
+          </option>
+          <option *ngFor="let convocatoria of convocatorias" [value]="convocatoria.id">
+            {{ convocatoria.nombre }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="convocatoriaId && examenData.length > 0">
+        <button
+          type="button"
+          (click)="exportToExcel()"
+          [disabled]="isLoading"
+          class="focus:outline-none h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style="background: #1abb9c"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-white fill-white"
+            viewBox="0 0 24 24"
+          >
+            <g id="file-excel">
+              <path
+                d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z"
+              />
+              <path
+                d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z"
+              />
+            </g>
+          </svg>
+          {{ isLoading ? 'Exportando...' : 'Exportar Excel' }}
+        </button>
+      </div>
+      
+    </div>
+  <div *ngIf="convocatoriaId" class="mb-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 justify-center items-center gap-8 w-full">
+      <div class="chip-status-total flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Total Alumnos</h6>
+          <h1 class="text-2xl font-bold">{{ estadisticas.total }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6 text-blue-500">
+            <path d="M344 144c-3.92 39.12-32 71.45-72 72s-68.08-32.88-72-72c-4-42.32 26.72-81 72-80s76 37.68 72 80z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+            <path d="M256 512c-69.86 0-132.8-26.92-176.9-70.1C35.2 398.8 16 340.86 16 272c0-42.32 26.72-80 72-80 12.67 0 24.32 3.14 35.2 8.68C156.8 217.6 203.2 232 256 232s99.2-14.4 132.8-31.32C399.68 195.14 411.33 192 424 192c45.28 0 72 37.68 72 80 0 68.86-19.2 126.8-63.1 169.9C388.8 485.08 325.86 512 256 512z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+          </svg>
+        </div>
+      </div>
+      <div class="chip-status-aprobado flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Registrados</h6>
+          <h1 class="text-2xl font-bold">{{ estadisticas.registrados }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6 text-emerald-500">
+            <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M352 176L217.6 336 160 272"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-pendiente flex justify-between rounded-lg p-5 shadow-xl">
+        <div class="text-slate-500">
+          <h6 class="text-sm">Pendientes</h6>
+          <h1 class="text-2xl font-bold">{{ estadisticas.sinRegistrar }}</h1>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-6 h-6 text-amber-500">
+            <path d="M416.07 272a160 160 0 10-160 160 160 160 0 00160-160zM142.12 91.21A46.67 46.67 0 00112 80l-2.79.08C83.66 81.62 64 104 64.07 131c0 13.21 4.66 19.37 10.88 27.23a4.55 4.55 0 003.24 1.77h.88a3.23 3.23 0 002.54-1.31L142.38 99a5.38 5.38 0 001.55-4 5.26 5.26 0 00-1.81-3.79zM369.88 91.21A46.67 46.67 0 01400 80l2.79.08C428.34 81.62 448 104 447.93 131c0 13.21-4.66 19.37-10.88 27.23a4.55 4.55 0 01-3.24 1.76h-.88a3.23 3.23 0 01-2.54-1.31L369.62 99a5.38 5.38 0 01-1.55-4 5.26 5.26 0 011.81-3.79z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256.07 160v112h-80M416.07 432l-40-40M96.07 432l40-40"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-status-aceptado flex flex-col rounded-lg p-5 shadow-xl">
+        <div class="flex justify-between items-start mb-3">
+          <div class="text-slate-500">
+            <h1 class="text-2xl font-bold">{{ estadisticas.porcentajeCompletado }}%</h1>
+          </div>
+          <div>
+            <h6 class="text-sm">Progreso</h6>
+          </div>
+        </div>
+        <div class="w-full">
+          <div class="bg-sky-200 rounded-full h-2">
+            <div 
+              class="bg-sky-500 h-2 rounded-full transition-all duration-500 ease-in-out"
+              [style.width.%]="estadisticas.porcentajeCompletado"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="error && !isLoading"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+    role="alert"
+  >
+    <span class="block sm:inline">{{ error }}</span>
+  </div>
+  <div
+    *ngIf="!convocatoriaId && !isLoadingConvocatorias && convocatorias.length > 0"
+    class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4"
+    role="alert"
+  >
+    <span class="block sm:inline">Por favor seleccione una convocatoria para ver los exámenes toxicológicos.</span>
+  </div>
+  <div
+    *ngIf="!isLoading && convocatoriaId && examenData.length === 0 && !error"
+    class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4"
+    role="alert"
+  >
+    <span class="block sm:inline">No hay estudiantes registrados para esta convocatoria.</span>
+  </div>
+
+  <app-table
+    *ngIf="convocatoriaId && examenData.length > 0"
+    [columns]="tableColumns"
+    [data]="examenData"
+    [filters]="tableFilters"
+    (viewItem)="onViewItem($event)"
+    (editItem)="onEditItem($event)"
+    (registerItem)="onRegisterItem($event)"
+    (deleteItem)="onDeleteItem($event)"
+  ></app-table>
+  
+  <!-- Modal para crear/editar/ver examen -->
+  <app-modal
+    [(show)]="showModal"
+    [title]="modalTitle"
+    [buttonSuccess]="modalButtonText"
+    [showButtonCancel]="modoFormulario !== 'ver'"
+    [showFooter]="true"
+    (onNext)="modoFormulario === 'ver' ? (showModal = false) : guardarExamen()"
+  >
+    <form [formGroup]="formExamen" class="space-y-4">
+      <div *ngIf="examenSeleccionado" class="bg-blue-50 p-4 rounded-md mb-4">
+        <h4 class="font-medium text-blue-900 mb-2">Información del Estudiante</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+          <div>
+            <span class="font-medium">Nombre:</span> 
+            {{ examenSeleccionado.nombres }} {{ examenSeleccionado.apellido_paterno }} {{ examenSeleccionado.apellido_materno }}
+          </div>
+          <div>
+            <span class="font-medium">Escuela profesional:</span> {{ examenSeleccionado.escuela_profesional }}
+          </div>
+          <div *ngIf="examenSeleccionado.fecha_examen">
+            <span class="font-medium">Fecha de Examen:</span> 
+            {{ examenSeleccionado.fecha_examen | date:'medium' }}
+          </div>
+          <div *ngIf="!examenSeleccionado.fecha_examen">
+            <span class="font-medium">Fecha de Examen:</span> 
+            <span class="text-gray-500">Sin fecha asignada</span>
+          </div>
+          <div>
+            <span class="font-medium">Estado Actual:</span>
+            <span [class]="'px-2 py-1 rounded text-xs ' + getEstadoClass(examenSeleccionado.estado)">
+              {{ getEstadoText(examenSeleccionado.estado) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Estado del Examen *</label>
+        <select 
+          formControlName="estado" 
+          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value="" disabled>Seleccione un estado</option>
+          <option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</option>
+        </select>
+        <div *ngIf="esCampoInvalido('estado')" class="text-red-500 text-xs mt-1">
+          El estado del examen es requerido
+        </div>
+      </div>
+
+      <div class="w-full">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Comentario
+          <span *ngIf="formExamen.get('estado')?.value === 'Observado' || formExamen.get('estado')?.value === 'Verificado'" 
+                class="text-red-500">*</span>
+        </label>
+        <textarea 
+          formControlName="comentario" 
+          rows="4"
+          class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Ingrese observaciones o comentarios sobre el examen"
+        ></textarea>
+        <div *ngIf="(formExamen.get('estado')?.value === 'Observado' || formExamen.get('estado')?.value === 'Verificado') && !formExamen.get('comentario')?.value?.trim()" 
+             class="text-red-500 text-xs mt-1">
+          El comentario es requerido para estados Observado y Verificado
+        </div>
+      </div>
+      
+    </form>
+  </app-modal>
+
+  <!-- Modal de confirmación de eliminación -->
+  <app-modal
+    [(show)]="deleteModal"
+    [showHeader]="false"
+    buttonSuccess="Aceptar"
+    [showButtonCancel]="true"
+    (onNext)="confirmarEliminacion()"
+    (onCancel)="cancelarEliminacion()"
+  >
+    <div class="flex items-center justify-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-28 h-28 text-amber-300"
+        viewBox="0 0 512 512"
+      >
+        <path
+          d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+          fill="none"
+          stroke="currentColor"
+          stroke-miterlimit="10"
+          stroke-width="32"
+        />
+        <path
+          d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="32"
+        />
+        <path
+          d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z"
+          stroke="currentColor"
+          class="fill-amber-300"
+        />
+      </svg>
+    </div>
+    <div
+      class="flex justify-center items-center text-slate-500 font-bold text-xl"
+    >
+      <span>¿Esta seguro de eliminar este registro?</span>
+    </div>
+  </app-modal>
+  
+  <app-toast key="examen-toxicologico"></app-toast>
+</div>

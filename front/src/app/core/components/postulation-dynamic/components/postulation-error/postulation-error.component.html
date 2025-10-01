@@ -1,0 +1,56 @@
+<app-modal [(show)]="showModal"
+           [showFooter]="false">
+  <div class="flex flex-col space-y-4">
+    <div class="w-full text-slate-500 flex gap-4 flex-col">
+      <span class="font-bold text-xl text-center">Requisitos no cumplidos</span>
+      <span class="text-sm"
+      >Subsane todas las requsitos para poder postular</span
+      >
+    </div>
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500"
+              >
+                <button class="flex items-center gap-x-3 focus:outline-none">
+                  <span>Tipo</span>
+                </button>
+              </th>
+
+              <th
+                scope="col"
+                class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"
+              >
+                Descripción
+              </th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @for (err of errorsPostulation(); track err) {
+                <tr>
+                  <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                    <div>
+                      <h2 class="font-medium text-slate-500">{{ err.tipo }}</h2>
+                    </div>
+                  </td>
+                  <td
+                    class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap"
+                  >
+                    <div>
+                      <h2 class="font-medium text-slate-500">{{ err.msg }}</h2>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>

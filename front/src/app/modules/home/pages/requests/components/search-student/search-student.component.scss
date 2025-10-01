@@ -1,0 +1,46 @@
+
+  /* Estilo para el contenedor principal */
+.container {
+  background-color: #f8f9fa; /* Color de fondo claro */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Estilo para los encabezados */
+h2.text-primary {
+  font-size: 2rem; /* Tamaño de fuente mayor */
+  font-weight: bold; /* Negrita */
+}
+
+h4.text-secondary {
+  font-size: 1.5rem; /* Tamaño de fuente para secciones */
+  color: #6c757d; /* Color secundario */
+  margin-top: 1.5rem; /* Margen superior */
+}
+
+/* Estilo para las tablas */
+.table {
+  margin-top: 20px; /* Espaciado superior en la tabla */
+  border-collapse: collapse; /* Sin espacio entre celdas */
+}
+
+.table th {
+  background-color: #e9ecef; /* Color de fondo para encabezados */
+  font-weight: bold; /* Negrita en encabezados */
+}
+
+.table td {
+  vertical-align: middle; /* Alineación vertical centrada */
+}
+
+/* Estilo para enlaces */
+.btn-outline-primary {
+  color: #007bff; /* Color del texto */
+  border-color: #007bff; /* Color del borde */
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff; /* Color de fondo en hover */
+  color: white; /* Color del texto en hover */
+}

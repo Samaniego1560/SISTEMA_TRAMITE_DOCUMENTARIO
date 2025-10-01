@@ -1,0 +1,30 @@
+<div class="i-field relative group">
+  <input class="" [(ngModel)]="yearValue" (focus)="onFocusInput()">
+  <div
+    class="hidden w-full rounded-lg absolute z-10 bg-white top-10 left-0 shadow-lg px-3 py-2 group-focus-within:block">
+    <div class="flex justify-center gap-4 items-center" (mousedown)="$event.preventDefault()">
+      <div class="cursor-pointer p-2" (click)="showBackBlock()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+        </svg>
+      </div>
+      <div class="font-semibold text-gray-700">{{ startYearRange }} - {{ endYearRange }}</div>
+      <div class="cursor-pointer p-2" (click)="showNextBlock()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 w-full pt-4 pb-2">
+      @for (year of years; track year) {
+        <div class="w-full text-center {{yearValue() === year.toString() ? 'text-brand bg-[#eff6ff]' : 'text-gray-600'}} cursor-pointer {{yearValue() === year.toString() ? 'hover:bg-[#eff6ff]' : 'hover:bg-gray-100'}} rounded-lg py-2 px-1"
+             (mousedown)="onSelectYear(year)">
+          {{ year }}
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,182 @@
+<form [formGroup]="form" class="w-full h-full flex flex-col" (ngSubmit)="onSaveForm()">
+  <div class="overflow-y-auto w-full h-full flex flex-col p-8 gap-8">
+    <!--Información del paciente-->
+    <app-basic-information-patient
+      [infoPatientDni]="infoPatientDni"
+      (patientFound)="patient.set($event)"
+    />
+
+    <div class="flex">
+      <div class="i-field">
+        <label>Fecha atención</label>
+        <input type="datetime-local" [value]="attentionDate()" [disabled]="!canSaveForm"
+               (change)="changeAttentionDate($event)">
+      </div>
+    </div>
+
+    <button type="button" class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold" (click)="showInformacionGeneral.set(!showInformacionGeneral())">
+      <div class="cursor-pointer {{showInformacionGeneral() ? 'rotate-0' : '-rotate-90'}}">
+        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Información general (Enfermería)</span>
+    </button>
+    @if (showInformacionGeneral()){
+      <div class="grid md:grid-cols-5 lg:grid-cols-12 gap-4">
+        <div class="i-field md:col-span-2">
+          <label>Fecha</label>
+          <input type="datetime-local" value="{{ infoConsultation?.consulta_enfermeria?.fecha_consulta }}" disabled>
+        </div>
+        <div class="lg:col-span-4"></div>
+        <!--<div class="i-field">
+          <label>Edad</label>
+          <input formControlName="edad" type="text">
+        </div>-->
+        <div class="i-field col-span-2">
+          <label>N° recibo</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.numero_recibo }}" disabled>
+        </div>
+        <div class="i-field col-span-2">
+          <label>Costo</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.costo }}" disabled>
+        </div>
+        <div class="i-field col-span-2">
+          <label>Fecha de pago</label>
+          <input type="datetime-local" value="{{ infoConsultation?.examenes?.consulta_general?.fecha_pago }}" disabled>
+        </div>
+        <div class="md:col-span-3 lg:hidden"></div>
+        <!--<div class="i-field">
+          <label [for]="'apetito'">Apetito</label>
+          <app-toggle-switch [id]="'apetito'"
+                             formControlName="apetito"
+                             trueValue="si" falseValue="no"
+          ></app-toggle-switch>
+        </div>
+        <div class="i-field">
+          <label [for]="'sed'">Sed</label>
+          <app-toggle-switch [id]="'sed'"
+                             formControlName="sed"
+                             trueValue="si" falseValue="no"
+          ></app-toggle-switch>
+        </div>
+        <div class="i-field md:col-span-2">
+          <label [for]="'suenio'">Sueño</label>
+          <app-toggle-switch [id]="'suenio'"
+                             formControlName="suenio"
+                             trueValue="si" falseValue="no"
+          ></app-toggle-switch>
+        </div>-->
+        <div class="i-field md:col-span-5 lg:col-span-4">
+          <label>Motivo de consulta</label>
+          <textarea value="{{ infoConsultation?.examenes?.consulta_general?.motivo_consulta }}" disabled></textarea>
+        </div>
+        <div class="i-field md:col-span-5 lg:col-span-4">
+          <label>Tiempo de enfermedad</label>
+          <textarea value="{{ infoConsultation?.examenes?.consulta_general?.tiempo_enfermedad }}" disabled></textarea>
+        </div>
+        <div class="i-field md:col-span-5 lg:col-span-4">
+          <label>Estado de ánimo</label>
+          <textarea value="{{ infoConsultation?.examenes?.consulta_general?.estado_animo }}" disabled></textarea>
+        </div>
+      </div>
+    }
+
+    <button type="button" class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold" (click)="showExamenFisico.set(!showExamenFisico())">
+      <div class="cursor-pointer {{showExamenFisico() ? 'rotate-0' : '-rotate-90'}}">
+        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Examen físico (Enfermería)</span>
+    </button>
+
+    @if (showExamenFisico()) {
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="i-field">
+          <label>Temperatura</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.temperatura }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>PA</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.presion_arterial }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>FC</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.frecuencia_cardiaca }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>FR</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.frecuencia_respiratoria }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>Peso</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.peso }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>Talla</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.talla }}" disabled>
+        </div>
+        <div class="i-field">
+          <label>IMC</label>
+          <input type="text" value="{{ infoConsultation?.examenes?.consulta_general?.indice_masa_corporal }}" disabled>
+        </div>
+        @if (infoConsultation?.examenes?.examen_laboratorio?.glucosa) {
+          <div class="i-field">
+            <label>Glucosa</label>
+            <input type="text" value="{{ infoConsultation?.examenes?.examen_laboratorio?.glucosa }}" disabled>
+          </div>
+        }
+      </div>
+    }
+
+    <!--Anamnesis-->
+    <div class="flex flex-col gap-4">
+      <button type="button" class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold" (click)="showConsulting.set(!showConsulting())">
+        <div class="cursor-pointer {{showConsulting() ? 'rotate-0' : '-rotate-90'}}">
+          <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>Consulta medicina</span>
+      </button>
+      @if (showConsulting()){
+        <div class="i-field">
+          <label>Anamnesis</label>
+          <textarea formControlName="anamnesis" class="i-textarea h-fit" rows="3"></textarea>
+        </div>
+        <div class="i-field">
+          <label>Examen clínico</label>
+          <textarea formControlName="examen_clinico" class="i-textarea h-fit" rows="3"></textarea>
+        </div>
+        <div class="i-field">
+          <label>Indicaciones</label>
+          <textarea formControlName="indicaciones" class="i-textarea h-fit" rows="3"></textarea>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  @if (form.enabled) {
+    <div
+      class="sticky z-10 bottom-0 justify-end items-center gap-4 flex px-8 py-4 border-t border-gray-200 w-full bg-white rounded-b-lg">
+      <button type="button" class="b-normal" (click)="cancel.emit()">
+        Cancelar
+      </button>
+      <button type="submit" class="b-primary">
+        Guardar
+      </button>
+    </div>
+  } @else {
+    <div
+      class="sticky z-10 bottom-0 justify-end items-center gap-4 flex px-8 py-4 border-t border-gray-200 w-full bg-white rounded-b-lg">
+      <button type="button" class="b-normal" (click)="cancel.emit()">
+        Salir
+      </button>
+    </div>
+  }
+</form>

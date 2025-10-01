@@ -1,0 +1,189 @@
+/* Status Chip Styles */
+.chip-status-pendiente {
+  color: #f59e0b;
+  column-gap: 0.5rem;
+  background-color: rgba(252, 211, 77, 0.6);
+}
+
+.chip-status-verificada {
+  color: #10b981;
+  column-gap: 0.5rem;
+  background-color: rgba(167, 243, 208, 0.6);
+}
+
+.chip-status-observada {
+  color: #ef4444;
+  column-gap: 0.5rem;
+  background-color: rgba(254, 202, 202, 0.6);
+}
+
+.chip-status-total {
+  color: #2563eb;
+  column-gap: 0.5rem;
+  background-color: rgba(191, 219, 254, 0.6);
+}
+
+.chip-status-mes {
+  color: #7c3aed;
+  column-gap: 0.5rem;
+  background-color: rgba(221, 214, 254, 0.6);
+}
+
+.chip-status-sin-visita {
+  color: #6b7280;
+  column-gap: 0.5rem;
+  background-color: rgba(243, 244, 246, 0.6);
+}
+
+/* Chart Container Styles */
+.chart-container {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+/* Card Hover Effects */
+.chip-status-pendiente:hover,
+.chip-status-verificada:hover,
+.chip-status-observada:hover,
+.chip-status-total:hover,
+.chip-status-mes:hover,
+.chip-status-sin-visita:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Progress Bar Animations */
+.progress-bar {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Responsive Text Scaling */
+@media (max-width: 768px) {
+  .text-xl {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .grid.lg\\:grid-cols-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Custom Scrollbar for Overflow Areas */
+.overflow-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Select Dropdown Styling */
+select:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Button Hover Effects */
+button:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Error State Styling */
+.error-container {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Empty State Styling */
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.empty-state svg {
+  margin: 0 auto 1rem;
+  height: 4rem;
+  width: 4rem;
+  color: #9ca3af;
+}
+
+/* Card Shadow Enhancements */
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Convocatoria Info Styling */
+.convocatoria-info {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.convocatoria-info h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.convocatoria-info .grid {
+  display: grid;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+@media (min-width: 768px) {
+  .convocatoria-info .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.convocatoria-info .font-medium {
+  font-weight: 500;
+}
+
+/* ApexCharts Custom Styling */
+.apexcharts-canvas {
+  margin: 0 auto;
+}
+
+.apexcharts-title-text {
+  font-family: inherit !important;
+  font-weight: 600 !important;
+}

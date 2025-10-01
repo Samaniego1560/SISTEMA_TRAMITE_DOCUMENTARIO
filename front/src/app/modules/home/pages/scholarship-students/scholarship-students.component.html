@@ -1,0 +1,94 @@
+
+<div
+  class="px-8 py-12 overflow-auto w-full pb-24"
+  style="height: calc(100vh - 64px)"
+>
+  <div class="w-full flex justify-between items-center">
+    <div
+      class="text-slate-500 font-bold text-2xl text-center w-full flex justify-center items-center gap-4"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-8 h-8 rtl:-scale-x-100 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+        />
+      </svg>
+      <span>{{ 'Lista de Solicitudes Recibidas'}}</span>
+    </div>
+    <div>
+      <button
+        type="button"
+        (click)="addScholarshipStudent()"
+        class="flex items-center focus:outline-none h-full text-gray-900 placeholder-gray-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 d-inline-flex align-items-center gap-2 border border-gray-900"
+        style="background: #ffff; white-space: nowrap;"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="add-account" width="18" height="18">
+          <path d="M21,10.5H20v-1a1,1,0,0,0-2,0v1H17a1,1,0,0,0,0,2h1v1a1,1,0,0,0,2,0v-1h1a1,1,0,0,0,0-2Zm-7.7,1.72A4.92,4.92,0,0,0,15,8.5a5,5,0,0,0-10,0,4.92,4.92,0,0,0,1.7,3.72A8,8,0,0,0,2,19.5a1,1,0,0,0,2,0,6,6,0,0,1,12,0,1,1,0,0,0,2,0A8,8,0,0,0,13.3,12.22ZM10,11.5a3,3,0,1,1,3-3A3,3,0,0,1,10,11.5Z"></path>
+        </svg>
+        Agregar un becado
+      </button>
+    </div>
+
+    <div class="flex space-x-4">
+      <label class="focus:outline-none h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 flex items-center gap-2" style="background: #1abb9c; white-space: nowrap;">
+        <input type="file" class="hidden" (change)="uploadData($event)" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white fill-white" viewBox="0 0 24 24">
+          <g id="file-excel">
+            <path d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z" />
+            <path d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z" />
+          </g>
+        </svg>
+        Subir datos
+      </label>
+    </div>
+
+  </div>
+
+  @if (scholarshipStudents.length) {
+    <section class="overflow-auto space-y-4">
+      <app-scholarship-students-table [scholarshipStudents]="scholarshipStudents"></app-scholarship-students-table>
+    </section>
+  } @else {
+    <div class="flex w-full h-full flex-col gap-6 items-center">
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-32 h-32 text-slate-500"
+          viewBox="0 0 512 512"
+        >
+          <path
+            d="M64 192v-72a40 40 0 0140-40h75.89a40 40 0 0122.19 6.72l27.84 18.56a40 40 0 0022.19 6.72H408a40 40 0 0140 40v40"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="32"
+          />
+          <path
+            d="M479.9 226.55L463.68 392a40 40 0 01-39.93 40H88.25a40 40 0 01-39.93-40L32.1 226.55A32 32 0 0164 192h384.1a32 32 0 0131.8 34.55z"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="32"
+          />
+        </svg>
+      </div>
+      <div class="font-bold text-slate-500 text-2xl">
+        <span>¡Aún no se cuenta con postulantes a la convocatoria actual!</span>
+      </div>
+    </div>
+  }
+</div>
+
+<app-modal [(show)]="showModal" [showButtonCancel]="true" [title]="modalTitle" (onNext)="onSave()">
+  <app-scholarship-students-form  [formScholarshipStudents]="formScholarshipStudents"></app-scholarship-students-form>
+</app-modal>

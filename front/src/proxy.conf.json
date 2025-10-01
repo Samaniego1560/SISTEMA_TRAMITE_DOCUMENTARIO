@@ -1,0 +1,10 @@
+{
+  "/cse": {
+    "target": "http://159.112.140.62:8140",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/cse": "/cse"
+    }
+  }
+}

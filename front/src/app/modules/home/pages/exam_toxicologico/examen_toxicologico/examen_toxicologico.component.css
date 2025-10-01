@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+/* Estilos para los chips de estadísticas */
+.chip-status-total {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  transition: all 0.3s ease;
+}
+
+.chip-status-total:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.chip-status-aprobado {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  transition: all 0.3s ease;
+}
+
+.chip-status-aprobado:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+}
+
+.chip-status-pendiente {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);  
+  transition: all 0.3s ease;
+}
+
+.chip-status-pendiente:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
+}
+
+.chip-status-aceptado {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  transition: all 0.3s ease;
+}
+
+.chip-status-aceptado:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
+}

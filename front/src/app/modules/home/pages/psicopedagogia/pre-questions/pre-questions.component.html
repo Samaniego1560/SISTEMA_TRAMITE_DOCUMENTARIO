@@ -1,0 +1,102 @@
+<!-- Mostrar loading mientras se carga la información -->
+<div *ngIf="isLoading" class="flex justify-center items-center mt-20">
+    <div class="flex flex-col items-center">
+        <svg class="w-12 h-12 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <p class="text-gray-500 mt-2 text-lg">Cargando...</p>
+    </div>
+</div>
+
+<app-toast></app-toast>
+
+<!-- Mostrar si NO está cargando y hay encuestas activas -->
+<div *ngIf="!isLoading && hasActiveSurvey === true" class="flex justify-center items-center mt-20">
+    <div class="bg-white w-11/12 md:w-4/12 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-semibold text-center mb-2">CUESTIONARIO S.R.Q</h2>
+        <p class="text-center text-gray-500">
+            Por favor, seleccione una opción.
+        </p>
+
+        <!-- Radio buttons: Alumno / Tesista -->
+        <div class="flex justify-center gap-6 mb-6">
+            <label class="flex items-center space-x-2">
+                <input 
+                    type="radio" 
+                    name="typeUser" 
+                    [(ngModel)]="typeUser" 
+                    value="Alumno"
+                    checked
+                    class="text-green-500"
+                    (change)="onUserTypeChange()"
+                />
+                <span class="text-gray-700">Alumno</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input 
+                    type="radio" 
+                    name="tipoUsuario" 
+                    [(ngModel)]="typeUser" 
+                    value="Tesista"
+                    class="text-green-500"
+                    (change)="onUserTypeChange()"
+                />
+                <span class="text-gray-700">Tesista</span>
+            </label>
+        </div>
+
+        <div class="mb-6">
+            <input 
+                type="text" 
+                [(ngModel)]="numDocumento" 
+                placeholder="Ingrese tu DNI"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                (input)="validateInput()"
+            />
+            <div *ngIf="typeUser === 'Tesista'">
+                <input 
+                    type="text" 
+                    [(ngModel)]="fistName" 
+                    placeholder="Ingrese tu nombre completo"
+                    class="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    (input)="validateInput()"
+                />
+                <input 
+                    type="text" 
+                    [(ngModel)]="lastName" 
+                    placeholder="Ingrese tus apellidos"
+                    class="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    (input)="validateInput()"
+                />
+            </div>
+
+        </div>
+
+        <div class="text-center">
+            <button 
+                (click)="getDataQuestion()" 
+                [disabled]="!isButtonEnabled"
+                class="bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Siguiente
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ELSE: Mostrar si NO hay encuestas activas y NO está cargando -->
+<div *ngIf="!isLoading && hasActiveSurvey === false" class="flex justify-center items-center mt-20">
+    <div class="bg-white w-11/12 md:w-4/12 rounded-lg shadow-lg p-6 text-center">
+        <!-- Ícono de alerta -->
+        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v2m0 4h.01M12 3a9 9 0 110 18 9 9 0 010-18z"></path>
+        </svg>
+
+        <!-- Mensaje de alerta -->
+        <h2 class="text-xl font-semibold text-gray-700">No hay encuestas activas en este momento.</h2>
+    </div>
+</div>

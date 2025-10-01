@@ -1,0 +1,130 @@
+
+<div
+  class="px-8 py-12 overflow-auto w-full pb-24"
+  style="height: calc(100vh - 64px)"
+>
+  <div
+    class="w-full flex justify-center items-center flex-col overflow-auto space-y-4"
+  >
+    <div class="w-4/5 flex justify-between items-center">
+      <div class="w-3/4 mt-8">
+        <div
+          class="uppercase mb-4 text-gray-500 text-2xl font-bold flex items-center gap-6"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-8 h-8 rtl:-scale-x-100 cursor-pointer"
+            (click)="backEvent.emit()"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+            />
+          </svg>
+          <span>Bienvenido a la postulación</span>
+        </div>
+      </div>
+      @if (requirementPhotoProfile) {
+        <app-photo-profile [requirement]="requirementPhotoProfile"
+                            [src]="formPostulation.get(requirementPhotoProfile.id?.toString()!)?.value"
+                           [name]="student().dni_student"
+                           [description]="student().email_student"
+                           (onProcessFile)="onProcessFile($event)"
+        ></app-photo-profile>
+      }
+    </div>
+
+    <div class="w-3/4">
+      <div class="flex flex-col mt-6">
+        <cdk-accordion-item class="accordion">
+          @for (section of postulation().secciones; track section; let index =
+            $index) {
+            <cdk-accordion-item
+              #accordionItem="cdkAccordionItem"
+              class="example-accordion-item"
+              role="button"
+              tabindex="0"
+              [attr.id]="'accordion-header-' + index"
+              [attr.aria-expanded]="accordionItem.expanded"
+              [attr.aria-controls]="'accordion-body-' + index"
+            >
+              <div
+                class="example-accordion-item-header"
+                (click)="accordionItem.toggle()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 transform {{
+                  accordionItem.expanded && 'rotate-90'
+                }}"
+                  fill="#00725c"
+                  viewBox="0 0 512 512"
+                >
+                  <path
+                    d="M190.06 414l163.12-139.78a24 24 0 000-36.44L190.06 98c-15.57-13.34-39.62-2.28-39.62 18.22v279.6c0 20.5 24.05 31.56 39.62 18.18z"
+                  />
+                </svg>
+                {{ section.descripcion }}
+              </div>
+              <div
+                role="region"
+                class="my-6"
+                [style.display]="accordionItem.expanded ? '' : 'none'"
+                [attr.id]="'accordion-body-' + index"
+                [attr.aria-labelledby]="'accordion-header-' + index"
+              >
+                @if (section.type !== 'table') {
+                  <app-section-form [formDynamic]="formPostulation"
+                                    [dataDepartment]="departments"
+                                    [dataProvince]="provinces"
+                                    [dataDistrict]="districts"
+                                    (onProcessFile)="onProcessFile($event)"
+                                    [section]="section"
+                  [recordRequirements]="recordRequirements"></app-section-form>
+                }
+                @if (section.type === 'table') {
+                  <div class="w-full">
+                    <app-table-section [section]="section" [arrayValue]="formPostulation.get(section.id?.toString()!)?.value"
+                                       [recordRequirements]="recordRequirements"
+                    ></app-table-section>
+                  </div>
+                }
+              </div>
+            </cdk-accordion-item>
+          }
+        </cdk-accordion-item>
+      </div>
+      <div class="w-full flex justify-end items-center mt-8">
+        <button
+          type="button"
+          (click)="handlePostulation()"
+          class="flex items-center justify-center capitalize px-5 py-2 text-sm text-white transition-colors duration-200 bg-blue-500 border rounded-md gap-x-2 hover:bg-blue-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="32"
+            />
+          </svg>
+          Postular
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-block-ui [show]="isLoading"></app-block-ui>
+<app-toast></app-toast>

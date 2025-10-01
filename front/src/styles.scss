@@ -1,0 +1,180 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  :root {
+    --brand-brand-50: #f1f8fe;
+    --brand-brand-100: #f1f8fe;
+    --brand-brand-200: #bee1f9;
+    --brand-brand-300: #85c8f4;
+    --brand-brand-400: #85c8f4;
+    --brand-brand-500: #85c8f4;
+    --brand-brand-600: #0f75bc;
+    --brand-brand-700: #0d5c97;
+    --brand-brand-800: #0f4f7d;
+    --brand-brand-900: #124268;
+    --brand-brand-950: #0c2a45;
+
+    --font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+
+@font-face {
+  font-family: "Inter var";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url("assets/fonts/Inter-roman.var.woff2") format("woff2");
+}
+
+.obu-card {
+  @apply bg-white p-8 border rounded-xl;
+}
+
+.b-base {
+  @apply h-10 px-4 py-3 rounded-lg flex t-body items-center gap-2 hover:opacity-80 active:opacity-60 outline-none focus:ring-2 focus:ring-brand;
+}
+.b-primary {
+  @apply b-base bg-brand text-white;
+}
+.b-secondary {
+  @apply b-base bg-brand-2 text-white;
+}
+.b-disabled {
+  @apply b-base text-white bg-[#1abb9c54];
+}
+.b-normal {
+  @apply b-base bg-white border border-gray-200;
+}
+.b-link {
+  @apply flex items-center gap-2 underline text-gray-600 t-body hover:opacity-80 active:opacity-60 focus:ring-2 focus:ring-brand;
+}
+
+.i-default {
+  @apply text-sm bg-white text-black border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand;
+}
+
+.i-textarea {
+  @apply text-sm bg-white text-black border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand;
+}
+
+.label-default {
+  @apply t-small text-gray-600;
+}
+
+.i-field {
+  @apply flex flex-col gap-1;
+  label {
+    @apply label-default;
+  }
+  input, select, textarea {
+    @apply i-default;
+  }
+
+  input:disabled, textarea:disabled {
+    @apply cursor-not-allowed;
+  }
+}
+
+.obu-input-field {
+  @apply flex flex-col gap-1;
+
+  label {
+    @apply text-[#a0a0a0] text-xs font-bold font-['Inter'] tracking-wide;
+  }
+
+  input {
+    @apply h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#0f75bc] focus:border-blue-500 block w-full p-2.5;
+  }
+}
+
+.card-form {
+  @apply bg-gray-100 flex flex-col gap-4 p-4 rounded-lg;
+}
+
+.tag-base {
+  @apply px-2 py-1 rounded-lg t-body font-bold w-fit;
+}
+
+.tag-success {
+  @apply tag-base bg-emerald-100 text-emerald-600;
+}
+.tag-warning {
+  @apply tag-base bg-amber-100 text-amber-600;
+}
+
+.ec-table {
+  @apply bg-white;
+  thead {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    tr {
+      @apply text-gray-400 border-b border-gray-200;
+      th {
+        @apply p-2 text-left;
+      }
+    }
+  }
+  tbody {
+    font-style: normal;
+    font-weight: 400;
+    @apply text-sm;
+
+    line-height: 19px;
+    tr {
+      @apply h-8 hover:bg-[#F0F0F0] border-b border-gray-200;
+      td {
+        @apply p-2 text-left font-normal text-[#334155];
+        min-height: 48px;
+      }
+    }
+    tr:nth-child(even) {
+      //@apply bg-[#F9F9F9];
+    }
+  }
+}
+
+
+/*Typography system*/
+.t-h1 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+t-h2 {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+t-h3 {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.t-body {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.t-small {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15px;
+}

@@ -1,0 +1,80 @@
+<div class="max-w-2xl mt-16 mx-auto p-6 bg-gray-50 shadow-md border rounded-xl">
+    <h1 class="text-2xl font-bold text-center">REGISTRO DE CITAS - PSICOPEDAGOGIA</h1>
+    <p class="text-gray-600 mb-6 text-center">Seleccione una fecha y hora de cita de lunes a viernes entre las 8:00 am y la 1:00 pm. Las citas no están disponibles los sábados y domingos.</p>
+    <app-toast></app-toast>
+    <form [formGroup]="citaForm" (ngSubmit)="submitForm()">
+        <div *ngIf="isLoading" class="flex justify-center items-center">
+            <div class="flex flex-col items-center">
+                <svg class="w-12 h-12 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <p class="text-gray-500 mt-2 text-lg">Cargando...</p>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">DNI: <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="dni" class="w-full p-2 border rounded" placeholder="Ingrese su DNI">
+            <div *ngIf="citaForm.get('dni')?.invalid && citaForm.get('dni')?.touched" class="text-red-500 mt-2">
+                El DNI es obligatorio.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Nombre: <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="nombre" class="w-full p-2 border rounded" placeholder="Ingrese su nombre">
+            <div *ngIf="citaForm.get('nombre')?.invalid && citaForm.get('nombre')?.touched" class="text-red-500 mt-2">
+                El nombre es obligatorio.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Apellido: <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="apellido" class="w-full p-2 border rounded" placeholder="Ingrese su apellido">
+            <div *ngIf="citaForm.get('apellido')?.invalid && citaForm.get('apellido')?.touched" class="text-red-500 mt-2">
+                El apellido es obligatorio.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Carrera profesional: <span class="text-red-500">*</span></label>
+            <select formControlName="facultad" class="w-full p-2 border rounded">
+                <option value="Administración">Administración</option>
+                <option value="Contabilidad">Contabilidad</option>
+                <option value="EconomíaS">Economía</option>
+                <option value="Turismo y Hotelería">Turismo y Hotelería</option>
+                <option value="Agronomía">Agronomía</option>
+                <option value="Zootecnia">Zootecnia</option>
+                <option value="Ing. Industrias A.">Ing. Industrias A.</option>
+                <option value="Recursos Naturales">Recursos Naturales</option>
+                <option value="Conservación de suelos">Conservación de suelos</option>
+                <option value="Ing. Ambiental">Ing. Ambiental</option>
+                <option value="Ing. Forestal">Ing. Forestal</option>
+                <option value="Ing. Civil">Ing. Civil</option>
+                <option value="Ing. Mecánica">Ing. Mecánica</option>
+                <option value="Ing. de Sistemas">Ing. de Sistemas</option>
+                <option value="Ing. Ciber Seguridad">Ing. Ciber Seguridad</option>
+                <option value="Ninguno">Ninguno</option>
+            </select>
+            <div *ngIf="citaForm.get('facultad')?.invalid && citaForm.get('facultad')?.touched" class="text-red-500 mt-2">
+                La facultad es obligatoria.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Fecha y hora de cita: <span class="text-red-500">*</span></label>
+            <input type="datetime-local" formControlName="hora_inicio" class="w-full p-2 border rounded">
+            <div *ngIf="citaForm.get('hora_inicio')?.invalid && citaForm.get('hora_inicio')?.touched" class="text-red-500 mt-2">
+                La fecha y hora de cita es obligatoria.
+            </div>
+            <div *ngIf="errorHorario" class="text-red-500 mt-2">{{ errorHorario }}</div>
+        </div>
+
+        <button type="submit"
+            class="text-white py-2 px-4 rounded cursor-pointer" style="background: #0F75BC;">
+            Registrar Cita
+        </button>
+    </form>
+</div>

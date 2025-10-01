@@ -1,0 +1,80 @@
+<div class="flex justify-center items-center w-full gap-4 flex-col pb-24"
+     xmlns="http://www.w3.org/1999/html">
+  <div class="w-3/4">
+    <section class="container px-4 mx-auto">
+
+      <div class="w-full text-center font-bold text-slate-500 uppercase text-2xl">
+        <span>Configuración aviso</span>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div class="p-4 flex space-x-4 w-full ">
+              <div>
+                <button (click)="addItem()"
+                        class="flex items-center justify-center capitalize px-5 py-2 text-sm text-gray-500 transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 512 512">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="32" d="M256 112v288M400 256H112"/>
+                  </svg>
+                  Agregar
+                </button>
+              </div>
+            </div>
+            <div [formGroup]="formApplicationNotice" class="overflow-hidden border border-gray-200 md:rounded-lg">
+              @for (control of controls; track control[0]) {
+                @if(getStatusByKey(control[0]) === 2) {
+                  <div class="w-full text-slate-500 font-bold uppercase text-xl">
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 border border-gray-400 rounded focus:outline-none focus:border-gray-500"
+                      formControlName="{{control[0]}}"
+                    />
+                  </div>
+                }
+                @if(getStatusByKey(control[0]) === 1) {
+                  <article class="w-full mt-4 text-slate-500 text-xl">
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 border border-gray-400 rounded focus:outline-none focus:border-gray-500"
+                      formControlName="{{control[0]}}"
+                    />
+                  </article>
+                }
+                @if(getStatusByKey(control[0]) === 0) {
+                  <div type="circle" class="flex space-x-4 text-slate-500 space-y-2 mt-4 w-full">
+                  <textarea
+                    class="form-control w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:border-gray-500"
+                    id="description"
+                    formControlName="{{control[0]}}"
+                  ></textarea>
+                    <div class="cursor-pointer"
+                         (click)="deleteItem(control[0])">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="32"
+                              d="M448 80H352V40C352 28.7 343.3 20 332 20H180C168.7 20 160 28.7 160 40V80H64C53.7 80 45 88.7 45 100C45 111.3 53.7 120 64 120H448C458.3 120 467 111.3 467 100C467 88.7 458.3 80 448 80zM384 480C384 493.3 373.3 504 360 504H152C138.7 504 128 493.3 128 480V120H384V480z"/>
+                      </svg>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button (click)="save()"
+        type="button"
+        class="focus:outline-none mt-2 h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 flex items-center gap-2"
+        style="background: #1abb9c; white-space: nowrap;"
+      >
+        Guardar
+      </button>
+    </section>
+  </div>
+</div>
+
+<app-block-ui [show]="isLoad"></app-block-ui>
+<app-toast></app-toast>

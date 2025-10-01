@@ -1,0 +1,203 @@
+<div class="p-6 bg-gray-100 w-full h-full">
+    <div class="flex justify-start items-center px-4 py-6 border-b w-full">
+        <h2 class="text-2xl font-bold text-gray-900">🆕 CREA UNA NUEVA ATENCIÓN</h2>
+    </div>
+
+    <!-- Contenedor del wizard -->
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full mt-6">
+        <!-- 📌 Barra de Progreso -->
+        <div class="relative flex items-center justify-between mb-4">
+            <!-- Línea de progreso centrada -->
+            <div class="absolute left-0 w-full h-1 bg-gray-300 top-1/2 -translate-y-1/2 z-0">
+                <div class="h-full bg-[#1cbb9c] transition-all duration-300"
+                    [style.width]="currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%'">
+                </div>
+            </div>
+
+            <!-- Pasos -->
+            <ng-container *ngFor="let step of [1, 2, 3]; let i = index">
+                <div class="relative flex flex-col items-center z-10">
+                    <div class="w-12 h-12 flex items-center justify-center rounded-full font-bold border-4 transition-all duration-300"
+                        [ngClass]="{
+                            'bg-[#1cbb9c] text-white border-[#1cbb9c]': currentStep >= step,
+                            'bg-gray-300 text-gray-600 border-gray-400': currentStep < step
+                        }">
+                        {{ step }}
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-700">
+                        <!-- {{ step === 1 ? 'Registro' : step === 2 ? 'Datos' : 'Confirmación' }} -->
+                    </span>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- 📌 Paso 1: Selección de Usuario -->
+        <div *ngIf="currentStep === 1">
+            <h2 class="text-2xl font-semibold mb-1">Tipo de Paciente</h2>
+            <p class="text-sm text-gray-600 mb-6">Seleccione el tipo de paciente</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <ng-container *ngFor="let type of ['Alumno', 'Administrativo', 'Docente', 'Externo']">
+                    <div class="border border-gray-300 rounded-lg p-4 shadow-md hover:bg-green-50 cursor-pointer text-center transition-all duration-300"
+                        (click)="selectUserType(type)"
+                        [ngClass]="{ 'border-green-500 bg-green-100': selectedType === type }">
+                        <div
+                            class="flex items-center justify-center bg-green-100 text-green-500 rounded-full h-16 w-16 mx-auto mb-4">
+                            {{ type === 'Alumno' ? '📚' : type === 'Administrativo' ? '🏢' : type === 'Docente' ? '🎓' :
+                            '🌐' }}
+                        </div>
+                        <h3 class="text-lg font-medium">{{ type }}</h3>
+                        <p class="text-sm text-gray-500">
+                            Atención orientada a {{ type === 'Alumno' ? 'estudiantes' : type === 'Administrativo' ?
+                            'administrativos' : type === 'Docente' ? 'docentes' : 'externos' }}
+                        </p>
+                    </div>
+                </ng-container>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button
+                    class="bg-[#1cbb9c] text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-all duration-300"
+                    [disabled]="!selectedType" [ngClass]="{ 'opacity-50 cursor-not-allowed': !selectedType }"
+                    (click)="nextStep()">
+                    👉 Continuar
+                </button>
+            </div>
+        </div>
+
+        <!-- 📌 Paso 2: Datos Adicionales -->
+        <div *ngIf="currentStep === 2">
+            <h2 class="text-2xl font-semibold mb-1">Información Adicional</h2>
+            <p class="text-sm text-gray-600 ">Complete los campos requeridos <span class="text-red-500">(*)</span></p>
+
+            <div class="">
+                <app-registro-atenciones (stepChanged)="updateStep($event)" (srtData)="recibirStrData($event)"
+                    [typePatient]="selectedType"></app-registro-atenciones>
+            </div>
+        </div>
+
+        <!-- 📌 Paso 3: Confirmación -->
+        <div *ngIf="currentStep === 3">
+            <h2 class="text-2xl font-semibold mb-4">Paso 3: Confirmación</h2>
+            <div class="h-96 overflow-y-auto">
+                <div class="mt-2 p-4 bg-gray-50 rounded-lg shadow-md flex flex-col space-y-2">
+                    <!-- Checkbox 1 -->
+                    <div class="flex items-center space-x-2">
+                        <label for="postRegToggle" class="flex items-center cursor-pointer">
+                            <input type="checkbox" [disabled]="disableRegisterAtencion" id="postRegToggle"
+                                [(ngModel)]="isPostRegEnabled" class="hidden peer">
+                            <div
+                                class="mr-1 w-6 h-6 flex items-center justify-center bg-gray-300 rounded-md transition duration-300 peer-checked:bg-teal-500 peer-checked:border-teal-500">
+                                <svg *ngIf="isPostRegEnabled" class="w-4 h-4 text-white" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <span class="text-gray-700 font-medium">Registrar solo Atención</span>
+                        </label>
+                    </div>
+
+                    <!-- Checkbox 2: Generar Enlace -->
+                    <div class="flex items-center space-x-2">
+                        <label for="generateLinkToggle" class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="generateLinkToggle" (click)="handleGenerateLink()"
+                                [(ngModel)]="isGenerateLinkEnabled" class="hidden peer">
+                            <div
+                                class="mr-1 w-6 h-6 flex items-center justify-center bg-gray-300 rounded-md transition duration-300 peer-checked:bg-teal-500 peer-checked:border-teal-500">
+                                <svg *ngIf="isGenerateLinkEnabled" class="w-4 h-4 text-white" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <span class="text-gray-700 font-medium">Generar Enlace</span>
+                        </label>
+                    </div>
+                </div>
+                <div *ngIf="isPostRegEnabled || isGenerateLinkEnabled" class="mt-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+                    <div class="w-full h-auto">
+                        <div *ngIf="isLoading" class="flex justify-center items-center mt-20">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                                <p class="text-gray-500 mt-2 text-lg">Cargando...</p>
+                            </div>
+                        </div>
+                        <!-- Mensaje de éxito -->
+                        <div *ngIf="isSuccess" class="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow-md">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg class="w-10 h-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <span class="mt-2 text-green-800 font-semibold text-lg">Atención registrada</span>
+                        </div>
+                        <app-registro-post-atencion *ngIf="isPostRegEnabled && isLoading == false && isSuccess == false"
+                            (sendSuccessChange)="handleSendSuccessChange($event)"
+                            (sendData)="handleProcessAdditionalData($event)"></app-registro-post-atencion>
+                    </div>
+
+                    <div *ngIf="isGenerateLinkEnabled" class="mt-5">
+                        <p class="text-gray-600 text-sm">📎 Enlace de la encuesta S.R.Q:</p>
+                        <div
+                            class="flex w-96 items-center justify-between bg-white border border-gray-300 rounded-md p-3 mt-2 shadow-sm">
+                            <span class="text-gray-800 text-sm block truncate">{{ linkRecibido }}</span>
+                            <button (click)="copyToClipboard()"
+                                class="ml-2 bg-[#1cbb9c] text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition duration-300">
+                                📋 Copiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+                *ngIf="showModal === true">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                    <div class="flex flex-col items-center text-center">
+                        <!-- Warning Icon -->
+                        <div class="text-orange-500 text-5xl">
+                            ⚠️
+                        </div>
+                        <h2 class="text-xl font-semibold mt-4">¿Estás seguro?</h2>
+                        <p class="text-gray-600 mt-2">¡No podrás revertir esta acción! Por favor, verifica que hayas
+                            guardado los datos ingresados.</p>
+
+                        <!-- Buttons -->
+                        <div class="mt-6 flex gap-4">
+                            <button (click)="confirmExit()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                Si, Salir!
+                            </button>
+                            <button (click)="close()"
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="flex justify-between mt-6">
+                <button class="bg-gray-500 text-white py-2 px-6 rounded-lg hover:bg-gray-600 transition duration-300"
+                    (click)="previousStep()">
+                    ⬅ Anterior
+                </button>
+                <button  style="background-color: #1cbb9c;" class="text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300"
+                    (click)="confirmProcess()">
+                    🚀 Finalizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <app-toast></app-toast>
+</div>

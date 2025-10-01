@@ -1,0 +1,516 @@
+@if (view === 'list') {
+  <div class="flex justify-center items-center w-full gap-4 flex-col" style="height: calc(100vh - 64px)"
+       xmlns="http://www.w3.org/1999/html">
+    <div class="w-3/4">
+      <section class="container px-4 mx-auto">
+        <div class="mt-6 md:flex md:items-center md:justify-between">
+          <div class="inline-flex overflow-hidden bg-white divide-x rounded-lg rtl:flex-row-reverse">
+            <button class="rounded-md px-4 py-2 text-white bg-amber-500" (click)="createAnnouncement()">
+              Crear Nueva Convocatoria
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col mt-6">
+          <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+              @if (announcements.length) {
+                <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500">
+                        <button class="flex items-center gap-x-3 focus:outline-none">
+                          <span>Convocatorias</span>
+
+                          <svg class="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
+                              fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                            <path
+                              d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
+                              fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                            <path
+                              d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
+                              fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+                          </svg>
+                        </button>
+                      </th>
+
+                      <th scope="col"
+                          class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                        Fecha de Inicio
+                      </th>
+
+                      <th scope="col"
+                          class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                        Fecha de Culminación
+                      </th>
+
+                      <th scope="col"
+                          class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">
+                        Estado
+                      </th>
+                      <th scope="col"
+                          class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">
+                        Opciones
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      @for (announcement of announcements; track announcement; let index = $index) {
+                        <tr>
+                          <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                            <div>
+                              <h2 class="font-medium text-gray-800 uppercase">{{ announcement.nombre }}</h2>
+                            </div>
+                          </td>
+                          <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                            <div>
+                              <h2 class="font-medium text-gray-800 uppercase">{{ announcement.fecha_inicio }}</h2>
+                            </div>
+                          </td>
+                          <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                            <div>
+                              <h2 class="font-medium text-gray-800 uppercase">{{ announcement.fecha_fin }}</h2>
+                            </div>
+                          </td>
+                          <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                            @if (announcement.activo) {
+                              <div
+                                class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60">
+                                Activo
+                              </div>
+                            } @else {
+                              <div
+                                class="inline px-3 py-1 text-sm font-normal select-none rounded-full text-red-500 gap-x-2 bg-red-100/60">
+                                Terminado
+                              </div>
+                            }
+                          </td>
+                          <td class="flex items-center space-x-4 px-12 py-4 text-sm font-medium whitespace-nowrap">
+                            <div class="cursor-pointer flex justify-center" (click)="viewAnnouncement(announcement)">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                                <path
+                                  d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 0 00-.27 17.77C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z"
+                                  fill="none" stroke="currentColor" stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="32"/>
+                                <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor"
+                                        stroke-miterlimit="10"
+                                        stroke-width="32"/>
+                              </svg>
+                            </div>
+
+                            <div class="cursor-pointer flex justify-center" (click)="editAnnouncement(announcement)">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-500" viewBox="0 0 512 512">
+                                <path d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48"
+                                      fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="32"/>
+                                <path
+                                  d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"/>
+                              </svg>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              } @else {
+                <div class="w-full flex justify-center items-center text-center flex-col gap-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-slate-500" viewBox="0 0 512 512">
+                    <circle cx="184" cy="232" r="24"/>
+                    <path
+                      d="M256 288c45.42 0 83.62 29.53 95.71 69.83a8 8 0 01-7.87 10.17H168.15a8 8 0 01-7.82-10.17C172.32 317.53 210.53 288 256 288z"/>
+                    <circle cx="328" cy="232" r="24"/>
+                    <circle cx="256" cy="256" r="208" fill="none" stroke="currentColor" stroke-miterlimit="10"
+                            stroke-width="32"/>
+                  </svg>
+                  <span class="text-xl text-slate-500 font-bold w-full">No tiene convocatorias registradas</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (false) {
+          <div class="mt-6 sm:flex sm:items-center sm:justify-between ">
+            <div class="text-sm text-gray-500">
+              Página <span class="font-medium text-gray-700">1 de 10</span>
+            </div>
+
+            <div class="flex items-center mt-4 gap-x-4 sm:mt-0">
+              <button
+                class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/>
+                </svg>
+                <span>Anterior</span>
+              </button>
+
+              <button
+                class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100">
+                <span>Siguiente</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+  </div>
+} @else {
+  <div class="px-8 py-12 overflow-auto w-full pb-24" style="height: calc(100vh - 64px)">
+    <div class="w-full flex justify-center items-center flex-col overflow-auto space-y-4">
+      <div class="w-3/4 mt-8">
+        <div class="uppercase mb-4 text-gray-500 text-2xl font-bold flex items-center gap-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-8 h-8 rtl:-scale-x-100 cursor-pointer" (click)="view = 'list'">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/>
+          </svg>
+          <span>Está por iniciar una nueva convocatoria</span>
+        </div>
+        <form class="space-y-4" [formGroup]="formAnnouncement">
+          <div>
+            <label for="name" class="block mb-2 text-sm text-slate-500 font-bold">Nombre</label>
+            <input type="text" name="name" id="name" formControlName="name"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                   required/>
+            <small class="text-red-500"
+              *ngIf="formAnnouncement.get('name')?.invalid && formAnnouncement.get('name')?.touched && formAnnouncement.get('name')?.hasError('required')">
+              El nombre de la convocatoria es requerido.
+            </small>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="date-init" class="block mb-2 text-sm font-medium text-slate-500">Fecha de Incio</label>
+              <input type="datetime-local" name="date-init" id="date-init" formControlName="startDate"
+                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                     required/>
+              <small class="text-red-500"
+                *ngIf="formAnnouncement.get('startDate')?.invalid && formAnnouncement.get('startDate')?.touched && formAnnouncement.get('startDate')?.hasError('required')">
+                La fecha de inicio de la convocatoria es requerida.
+              </small>
+            </div>
+            <div>
+              <label for="date-end" class="block mb-2 text-sm font-medium text-slate-500">Fecha de Culminación</label>
+              <input type="datetime-local" name="date-end" id="date-end" formControlName="endDate"
+                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                     required/>
+              <small class="text-red-500"
+                *ngIf="formAnnouncement.get('endDate')?.invalid && formAnnouncement.get('endDate')?.touched && formAnnouncement.get('endDate')?.hasError('required')">
+                La fecha de finalización de la convocatoria es requerida.
+              </small>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="text-slate-500 flex flex-col gap-4">
+              <label class="text-sm">Nota minima:</label>
+              <input type="number" placeholder="" min="0" formControlName="minimum_grade"
+                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                     required/>
+              <small class="text-red-500"
+                     *ngIf="formAnnouncement.get('minimum_grade')?.invalid && formAnnouncement.get('minimum_grade')?.touched && formAnnouncement.get('minimum_grade')?.hasError('required')">
+                Nota minima es requerido.
+              </small>
+              <small class="text-red-500"
+                     *ngIf="formAnnouncement.get('minimum_grade')?.invalid && formAnnouncement.get('minimum_grade')?.touched && formAnnouncement.get('minimum_grade')?.hasError('min')">
+                Nota minima debe ser mayor a 0.
+              </small>
+            </div>
+            <div class="text-slate-500 flex gap-4 flex-col">
+              <label class="text-sm">Creditos minimo:</label>
+              <input type="number" placeholder="" min="0" formControlName="minimum_credits"
+                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                     required/>
+              <small class="text-red-500"
+                     *ngIf="formAnnouncement.get('minimum_credits')?.invalid && formAnnouncement.get('minimum_credits')?.touched && formAnnouncement.get('minimum_credits')?.hasError('required')">
+                Minimo de creditos es requerido.
+              </small>
+              <small class="text-red-500"
+                     *ngIf="formAnnouncement.get('minimum_credits')?.invalid && formAnnouncement.get('minimum_credits')?.touched && formAnnouncement.get('minimum_credits')?.hasError('min')">
+                Minimo de creditos debe ser mayor a 0.
+              </small>
+            </div>
+          </div>
+
+          <div class="flex gap-6 flex-col">
+            <div class="text-slate-500 font-bold text-xl">
+              <span>Servicios</span>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="text-slate-500 flex flex-col gap-4">
+                <label class="text-sm">Comedor Estudiantil:</label>
+                <input type="number" placeholder="Número de vacantes" min="0" formControlName="eat_service"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       required/>
+                <small class="text-red-500"
+                  *ngIf="formAnnouncement.get('eat_service')?.invalid && formAnnouncement.get('eat_service')?.touched && formAnnouncement.get('eat_service')?.hasError('required')">
+                  El número de vancates al servicio de comedor es requerido.
+                </small>
+                <small class="text-red-500"
+                  *ngIf="formAnnouncement.get('eat_service')?.invalid && formAnnouncement.get('eat_service')?.touched && formAnnouncement.get('eat_service')?.hasError('min')">
+                  El número de vancates al servicio de comedor debe ser mayor a 0.
+                </small>
+              </div>
+              <div class="text-slate-500 flex gap-4 flex-col">
+                <label class="text-sm">Residencia Estudiantil:</label>
+                <input type="number" placeholder="Número de vacantes" min="0" formControlName="inter_service"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       required/>
+                <small class="text-red-500"
+                  *ngIf="formAnnouncement.get('inter_service')?.invalid && formAnnouncement.get('inter_service')?.touched && formAnnouncement.get('inter_service')?.hasError('required')">
+                  El número de vancates al servicio de internado es requerido.
+                </small>
+                <small class="text-red-500"
+                  *ngIf="formAnnouncement.get('inter_service')?.invalid && formAnnouncement.get('inter_service')?.touched && formAnnouncement.get('inter_service')?.hasError('min')">
+                  El número de vancates al servicio de internado debe ser mayor a 0.
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-6 flex-col">
+            <div class="text-slate-500 font-bold text-xl">
+              <span>Validaciones con los servicios:</span>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="text-slate-500 flex flex-col gap-4">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" formControlName="dentistry"
+                         class="accent-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"/>
+                  <span>Odontología</span>
+                </label>
+
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" formControlName="psychology"
+                         class="accent-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"/>
+                  <span>Psicología</span>
+                </label>
+
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" formControlName="medicine"
+                         class="accent-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"/>
+                  <span>Medicina</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="w-3/4">
+        <div class="flex flex-col mt-6">
+          <div class="flex justify-between">
+            <div class="uppercase mb-4 text-gray-500 text-xl font-bold">
+              <span>LISTA DE SECCIONES</span>
+            </div>
+            <button *ngIf="view === 'create' || view === 'edit-readonly'"
+              class="flex items-center justify-center uppercase px-5 py-2 text-sm text-gray-500 transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100"
+              (click)="addSection()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="32" d="M256 112v288M400 256H112"/>
+              </svg>
+              Agregar nueva sección
+            </button>
+          </div>
+
+          <cdk-accordion-item class="accordion">
+            @for (section of announcement.secciones; track section; let i = $index) {
+              <cdk-accordion-item
+                #accordionItem="cdkAccordionItem"
+                class="example-accordion-item"
+                role="button"
+                tabindex="0"
+                [attr.id]="'accordion-header-' + i"
+                [attr.aria-expanded]="accordionItem.expanded"
+                [attr.aria-controls]="'accordion-body-' + i">
+                <div class="example-accordion-item-header flex justify-between items-center" (click)="accordionItem.toggle()">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="#00725c" viewBox="0 0 512 512">
+                      <path d="M190.06 414l163.12-139.78a24 24 0 000-36.44L190.06 98c-15.57-13.34-39.62-2.28-39.62 18.22v279.6c0 20.5 24.05 31.56 39.62 18.18z"/>
+                    </svg>
+                    {{ section.descripcion }}
+                  </div>
+
+                  <div class="flex gap-2">
+                    <div *ngIf="view === 'create' || view === 'edit-readonly'" class="cursor-pointer"
+                         (click)="editSection(section, i)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="32"
+                              d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"/>
+                      </svg>
+                    </div>
+
+                    <div *ngIf="view === 'create' || view === 'edit-readonly'" class="cursor-pointer"
+                         (click)="deleteSection(i)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="32"
+                              d="M448 80H352V40C352 28.7 343.3 20 332 20H180C168.7 20 160 28.7 160 40V80H64C53.7 80 45 88.7 45 100C45 111.3 53.7 120 64 120H448C458.3 120 467 111.3 467 100C467 88.7 458.3 80 448 80zM384 480C384 493.3 373.3 504 360 504H152C138.7 504 128 493.3 128 480V120H384V480z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div role="region" class="my-6"
+                     [style.display]="accordionItem.expanded ? '' : 'none'"
+                     [attr.id]="'accordion-body-' + i"
+                     [attr.aria-labelledby]="'accordion-header-' + i"
+                >
+                  <section class="container px-4 mx-auto">
+                    <div class="mt-6 md:flex md:items-center md:justify-between" *ngIf="this.view === 'create'">
+                      <div
+                        class="inline-flex justify-between overflow-hidden bg-white w-full divide-x rounded-lg rtl:flex-row-reverse">
+                        <div>
+                          <select
+                                  class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                  [(ngModel)]="section.type">
+                            <option selected hidden>Seleccione un formato</option>
+                            <option value="form">Formulario</option>
+                            <option value="table">Tabla</option>
+                          </select>
+                        </div>
+                        <button
+                          class="flex items-center justify-center uppercase px-5 py-2 text-sm text-gray-500 transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100"
+                          (click)="createRequirement(i)">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="32" d="M256 112v288M400 256H112"/>
+                          </svg>
+                          Agregar nuevo requisito
+                        </button>
+                      </div>
+                    </div>
+                    <div class="-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                        <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+                          <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                            <tr>
+                              <th scope="col"
+                                  class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500">
+                                <button class="flex items-center gap-x-3 focus:outline-none uppercase">
+                                  <span>Requisitos</span>
+
+                                  <svg class="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                      d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
+                                      fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                                    <path
+                                      d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
+                                      fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                                    <path
+                                      d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
+                                      fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+                                  </svg>
+                                </button>
+                              </th>
+
+                              <th scope="col"
+                                  class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 flex justify-center">
+                                Opciones
+                              </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+
+                              @for (requirement of section.requisitos; track requirement; let index = $index) {
+                                <tr>
+                                  <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                                    <div>
+                                      <h2 class="font-medium text-gray-800 uppercase">{{ requirement.nombre }}</h2>
+                                    </div>
+                                  </td>
+                                  <td
+                                    class="px-12 py-4 text-sm font-medium whitespace-nowrap flex gap-4 items-center justify-center">
+                                    <div *ngIf="view === 'create'" class="cursor-pointer"
+                                         (click)="deleteRequirement(index, i)">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                              stroke-linejoin="round" stroke-width="32"
+                                              d="M448 80H352V40C352 28.7 343.3 20 332 20H180C168.7 20 160 28.7 160 40V80H64C53.7 80 45 88.7 45 100C45 111.3 53.7 120 64 120H448C458.3 120 467 111.3 467 100C467 88.7 458.3 80 448 80zM384 480C384 493.3 373.3 504 360 504H152C138.7 504 128 493.3 128 480V120H384V480z"/>
+                                      </svg>
+                                    </div>
+                                    <div class="cursor-pointer" *ngIf="this.view === 'view-readonly' || this.view === 'edit-readonly'"
+                                         (click)="viewRequirement(requirement)">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                                        <path
+                                          d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 0 00-.27 17.77C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z"
+                                          fill="none" stroke="currentColor" stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="32"/>
+                                        <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor"
+                                                stroke-miterlimit="10"
+                                                stroke-width="32"/>
+                                      </svg>
+                                    </div>
+                                    <div *ngIf="view === 'create' || view === 'edit-readonly'" class="cursor-pointer"
+                                         (click)="editRequirement(requirement, index, i)">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                              stroke-linejoin="round" stroke-width="32"
+                                              d="M364.13 125.25L87 403l-23 45 44.99-23 277.76-277.13-22.62-22.62zM420.69 68.69l-22.62 22.62 22.62 22.63 22.62-22.63a16 16 0 000-22.62h0a16 16 0 00-22.62 0z"/>
+                                      </svg>
+                                    </div>
+
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </cdk-accordion-item>
+            }
+          </cdk-accordion-item>
+
+          <div class="w-full flex justify-end items-center mt-8" *ngIf="this.view === 'create'">
+            <button (click)="submitAnnouncement()" type="button"
+                    class="flex items-center justify-center uppercase px-5 py-2 text-sm text-white transition-colors duration-200 bg-blue-500 border rounded-md gap-x-2 hover:bg-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                <path
+                  d="M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z"
+                  fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+              </svg>
+              Crear convoctoria
+            </button>
+          </div>
+          <div class="w-full flex justify-end items-center mt-8" *ngIf="this.view === 'edit-readonly'">
+            <button (click)="submitAnnouncement()" type="button"
+                    class="flex items-center justify-center uppercase px-5 py-2 text-sm text-white transition-colors duration-200 bg-blue-500 border rounded-md gap-x-2 hover:bg-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 512 512">
+                <path
+                  d="M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z"
+                  fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+              </svg>
+              Guardar convoctoria
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+}
+
+
+<app-form-requirement [(showModal)]="openModal" [typeProcess]="typeProcess" [requirement]="requirementSelect"
+(onSaveRequirement)="onSaveRequirement($event)" [requirementNames]="requirementNames"></app-form-requirement>
+
+<app-form-section [(showModal)]="openModalSection" [typeProcess]="typeProcess" [section]="sectionSelect"
+                      (onSaveSection)="onSaveSection($event)"></app-form-section>
+
+<app-block-ui [show]="isLoad"></app-block-ui>
+<app-toast></app-toast>

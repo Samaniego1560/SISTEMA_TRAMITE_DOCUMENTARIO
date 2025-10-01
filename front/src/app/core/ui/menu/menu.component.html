@@ -1,0 +1,562 @@
+<div class="w-[240px] flex flex-col overflow-y-auto"
+     style="height: calc(100vh - 64px); background: #2F405077; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent;">
+
+  @if (isAuth) {
+    @if (role === rolePsicopedagogia) {
+      <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/statistics-data-srq" routerLinkActive="text-black underline bg-gray-500">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M13.3334 4.00001C13.3334 2.55468 10.8914 1.33334 8.00008 1.33334C5.10875 1.33334 2.66675 2.55468 2.66675 4.00001V5.33334C2.66675 6.77868 5.10875 8.00001 8.00008 8.00001C10.8914 8.00001 13.3334 6.77868 13.3334 5.33334V4.00001ZM8.00008 12.6667C5.10875 12.6667 2.66675 11.4453 2.66675 10V12C2.66675 13.4453 5.10875 14.6667 8.00008 14.6667C10.8914 14.6667 13.3334 13.4453 13.3334 12V10C13.3334 11.4453 10.8914 12.6667 8.00008 12.6667Z"
+            fill="white"/>
+          <path
+            d="M13.3334 6.66666C13.3334 8.11199 10.8914 9.33332 8.00008 9.33332C5.10875 9.33332 2.66675 8.11199 2.66675 6.66666V8.66666C2.66675 10.112 5.10875 11.3333 8.00008 11.3333C10.8914 11.3333 13.3334 10.112 13.3334 8.66666V6.66666Z"
+            fill="white"/>
+        </svg>
+        <small>DATOS ESTADISTICOS</small>
+      </div>
+      <div *ngFor="let item of menu"
+           class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="{{item.route}}" routerLinkActive="underline bg-gray-500">
+        <div [innerHTML]="getSafeHtml( item.icon )"
+             class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+        </div>
+        <small>{{ item.label }}</small>
+      </div>
+    } @else {
+      <div *ngIf="role !== 9" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/requests" routerLinkActive="underline bg-gray-500">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>SOLICITUDES</small>
+      </div>
+      <div *ngIf="role === 1" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/announcement" routerLinkActive="underline bg-gray-500">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>CONVOCATORIAS</small>
+      </div>
+
+      <div *ngIf="role === 1" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/users" routerLinkActive="underline bg-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+          <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none"
+                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+          <path
+            d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z"
+            fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        </svg>
+        <small>USUARIOS</small>
+      </div>
+      <div *ngIf="role === 1" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/thesis-practicing" routerLinkActive="underline bg-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+          <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none"
+                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+          <path
+            d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z"
+            fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        </svg>
+        <small>AGREGAR TESISTAS O PRACTICANTES</small>
+      </div>
+
+
+      <div *ngIf="role !== 9" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/statistics-data" routerLinkActive="text-black underline bg-gray-500">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M13.3334 4.00001C13.3334 2.55468 10.8914 1.33334 8.00008 1.33334C5.10875 1.33334 2.66675 2.55468 2.66675 4.00001V5.33334C2.66675 6.77868 5.10875 8.00001 8.00008 8.00001C10.8914 8.00001 13.3334 6.77868 13.3334 5.33334V4.00001ZM8.00008 12.6667C5.10875 12.6667 2.66675 11.4453 2.66675 10V12C2.66675 13.4453 5.10875 14.6667 8.00008 14.6667C10.8914 14.6667 13.3334 13.4453 13.3334 12V10C13.3334 11.4453 10.8914 12.6667 8.00008 12.6667Z"
+            fill="white"/>
+          <path
+            d="M13.3334 6.66666C13.3334 8.11199 10.8914 9.33332 8.00008 9.33332C5.10875 9.33332 2.66675 8.11199 2.66675 6.66666V8.66666C2.66675 10.112 5.10875 11.3333 8.00008 11.3333C10.8914 11.3333 13.3334 10.112 13.3334 8.66666V6.66666Z"
+            fill="white"/>
+        </svg>
+        <small>DATOS ESTADISTICOS</small>
+      </div>
+      <div *ngIf="role === 1 || role === 9"
+           class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer residence-menu"
+           routerLink="/home/residences" routerLinkActive="underline bg-gray-500"
+           [routerLinkActiveOptions]="{ exact: true }"
+           (click)="onToogleResidence()">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>RESIDENCIAS</small>
+        <!-- Icono que indica que es desplegable -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+             [ngClass]="{'rotate-180': showSubMenuResidence}" viewBox="0 0 512 512">
+          <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <!-- Submenú de Residencias -->
+      <div *ngIf="showSubMenuResidence" class="ml-4 flex flex-col">
+        <div
+          class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+          routerLink="/home/residences/students" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+            <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none"
+                  stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+            <path
+              d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z"
+              fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+          </svg>
+          <small>LISTA DE ESTUDIANTES</small>
+        </div>
+      </div>
+
+      <div *ngIf="showSubMenuResidence" class="ml-4 flex flex-col">
+        <div
+          class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+          routerLink="/home/residences/reports" routerLinkActive="underline bg-gray-500">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M13.3334 4.00001C13.3334 2.55468 10.8914 1.33334 8.00008 1.33334C5.10875 1.33334 2.66675 2.55468 2.66675 4.00001V5.33334C2.66675 6.77868 5.10875 8.00001 8.00008 8.00001C10.8914 8.00001 13.3334 6.77868 13.3334 5.33334V4.00001ZM8.00008 12.6667C5.10875 12.6667 2.66675 11.4453 2.66675 10V12C2.66675 13.4453 5.10875 14.6667 8.00008 14.6667C10.8914 14.6667 13.3334 13.4453 13.3334 12V10C13.3334 11.4453 10.8914 12.6667 8.00008 12.6667Z"
+              fill="white"/>
+            <path
+              d="M13.3334 6.66666C13.3334 8.11199 10.8914 9.33332 8.00008 9.33332C5.10875 9.33332 2.66675 8.11199 2.66675 6.66666V8.66666C2.66675 10.112 5.10875 11.3333 8.00008 11.3333C10.8914 11.3333 13.3334 10.112 13.3334 8.66666V6.66666Z"
+              fill="white"/>
+          </svg>
+          <small>REPORTES Y TABLEROS</small>
+        </div>
+      </div>
+
+
+      <div *ngIf="role === 1" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           (click)="toggleSubOptions()">
+        <!-- Icono de cadena para CONFIGURACIÓN DE BIENVENIDA -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+          <path
+            d="M12 2c-2.21 0-4 1.79-4 4 0 1.62 0.94 3 2.29 3.69C10.1 11.55 9 13.18 9 15c0 3.31 2.69 6 6 6s6-2.69 6-6-2.69-6-6-6c-1.82 0-3.44.88-4.5 2.22C9.5 9.34 10 10.59 10 12c0 1.38-.56 2.63-1.46 3.54C8.01 15.94 8 14.96 8 14c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6c-2.48 0-4.56-1.44-5.48-3.51C10.01 15.19 11 16.09 12 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4c0 .45.06.88.17 1.29C9.4 9.48 10 8.78 10 8c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4c-1.1 0-2.1-.45-2.83-1.17C12.45 10.92 12 9.6 12 8c0-2.21-1.79-4-4-4s-4 1.79-4 4c0 2.21 1.79 4 4 4s4-1.79 4-4c0-1.3-.53-2.5-1.46-3.54C13.3 2.01 12.66 2 12 2z"
+            fill="currentColor"/>
+        </svg>
+
+        <small>CONFIGURACIÓN DE BIENVENIDA</small>
+
+        <!-- Icono que indica que es desplegable -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+             [ngClass]="{'rotate-180': showSubOptions}" viewBox="0 0 512 512">
+          <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <!-- Subopciones -->
+      <div *ngIf="showSubOptions" class="ml-4 flex flex-col">
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/calendar-setting" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+            <path d="M3 3h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z" fill="currentColor"/>
+          </svg>
+          <small>CALENDARIO</small>
+        </div>
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/application-notice" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+            <path d="M12 2L2 7h20L12 2zM2 11l10 5 10-5v2l-10 5-10-5v-2zm0 5l10 5 10-5v2l-10 5-10-5v-2z"
+                  fill="currentColor"/>
+          </svg>
+          <small>COMUNICADO</small>
+        </div>
+
+      </div>
+      <div *ngIf="role === 1"
+           class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/areas-attention" routerLinkActive="underline bg-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" style="fill: white">
+          <path d="M15 2.013H9V9H2v6h7v6.987h6V15h7V9h-7z"></path>
+        </svg>
+        <small>APROBACIÓN CONVOCATORIA</small>
+      </div>
+
+      <!--enfermería>-->
+      @if (role === 5) {
+        <div (click)="showSubMenuNursing = !showSubMenuNursing"
+             class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/nursing-consultation" routerLinkActive="underline bg-gray-500">
+
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+            <path
+              d="m21,9h-3v-4h1v-2H5v2h1v4h-3c-.55,0-1,.45-1,1v10c0,.55.45,1,1,1h18c.55,0,1-.45,1-1v-10c0-.55-.45-1-1-1Zm-17,2h2v8h-2v-8Zm6,4v4h-2V5h8v14h-2v-4h-4Zm10,4h-2v-8h2v8Z"></path>
+            <path d="M15 8 13 8 13 6 11 6 11 8 9 8 9 10 11 10 11 12 13 12 13 10 15 10 15 8z">
+            </path>
+          </svg>
+          <small>ENFERMERÍA</small>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+               [ngClass]="{'rotate-180': showSubMenuNursing}" viewBox="0 0 512 512">
+            <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <div *ngIf="showSubMenuNursing" class="ml-4 flex flex-col">
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/reports-nursing" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94,7.68s-.02-.06-.03-.09c-.05-.11-.11-.21-.2-.29l-5-5c-.09-.09-.19-.15-.3-.2-.03-.01-.06-.02-.09-.03-.09-.03-.18-.05-.27-.05-.02,0-.04-.01-.05-.01H6c-1.1,0-2,.9-2,2v16c0,1.1.9,2,2,2h12c1.1,0,2-.9,2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26Zm-13.94,12.32V4h7v4c0,.55.45,1,1,1h4v11H6Z"></path>
+              <path d="M8 12H10V18H8z"></path>
+              <path d="M11 10H13V18H11z"></path>
+              <path d="M14 14H16V18H14z">
+              </path>
+            </svg>
+            <small>REPORTES</small>
+          </div>
+
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/patients" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="M4 8c0 2.28 1.72 4 4 4s4-1.72 4-4-1.72-4-4-4-4 1.72-4 4m6 0c0 1.18-.82 2-2 2s-2-.82-2-2 .82-2 2-2 2 .82 2 2M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1m4-5h2c1.65 0 3 1.35 3 3H4c0-1.65 1.35-3 3-3M21 11.5c0-2-1.5-3.5-3.5-3.5S14 9.5 14 11.5s1.5 3.5 3.5 3.5c.62 0 1.18-.16 1.67-.42l2.12 2.12 1.41-1.41-2.12-2.12c.26-.49.42-1.05.42-1.67M17.5 13c-.88 0-1.5-.62-1.5-1.5s.62-1.5 1.5-1.5 1.5.62 1.5 1.5-.62 1.5-1.5 1.5">
+              </path>
+            </svg>
+            <small>PACIENTES</small>
+          </div>
+
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/nursing-consultation" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94 7.68-.03-.09a.8.8 0 0 0-.2-.29l-5-5c-.09-.09-.19-.15-.29-.2l-.09-.03a.8.8 0 0 0-.26-.05c-.02 0-.04-.01-.06-.01H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26ZM6 20V4h7v4c0 .55.45 1 1 1h4v11z"></path>
+              <path d="M8 11h8v2H8zM8 15h8v2H8zM8 7h3v2H8z">
+              </path>
+            </svg>
+            <small>ATENCIONES</small>
+          </div>
+        </div>
+      }
+
+      <!--medicine>-->
+      @if (role === 6) {
+        <div (click)="showSubMenuMedicine = !showSubMenuMedicine"
+             class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/medicine-consultation" routerLinkActive="underline bg-gray-500">
+
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+            <path
+              d="m21,9h-3v-4h1v-2H5v2h1v4h-3c-.55,0-1,.45-1,1v10c0,.55.45,1,1,1h18c.55,0,1-.45,1-1v-10c0-.55-.45-1-1-1Zm-17,2h2v8h-2v-8Zm6,4v4h-2V5h8v14h-2v-4h-4Zm10,4h-2v-8h2v8Z"></path>
+            <path d="M15 8 13 8 13 6 11 6 11 8 9 8 9 10 11 10 11 12 13 12 13 10 15 10 15 8z">
+            </path>
+          </svg>
+          <small>MEDICINA</small>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+               [ngClass]="{'rotate-180': showSubMenuMedicine}" viewBox="0 0 512 512">
+            <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <div *ngIf="showSubMenuMedicine" class="ml-4 flex flex-col">
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/reports-medicine" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94,7.68s-.02-.06-.03-.09c-.05-.11-.11-.21-.2-.29l-5-5c-.09-.09-.19-.15-.3-.2-.03-.01-.06-.02-.09-.03-.09-.03-.18-.05-.27-.05-.02,0-.04-.01-.05-.01H6c-1.1,0-2,.9-2,2v16c0,1.1.9,2,2,2h12c1.1,0,2-.9,2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26Zm-13.94,12.32V4h7v4c0,.55.45,1,1,1h4v11H6Z"></path>
+              <path d="M8 12H10V18H8z"></path>
+              <path d="M11 10H13V18H11z"></path>
+              <path d="M14 14H16V18H14z">
+              </path>
+            </svg>
+            <small>REPORTES</small>
+          </div>
+
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/medicine-consultation" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94 7.68-.03-.09a.8.8 0 0 0-.2-.29l-5-5c-.09-.09-.19-.15-.29-.2l-.09-.03a.8.8 0 0 0-.26-.05c-.02 0-.04-.01-.06-.01H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26ZM6 20V4h7v4c0 .55.45 1 1 1h4v11z"></path>
+              <path d="M8 11h8v2H8zM8 15h8v2H8zM8 7h3v2H8z">
+              </path>
+            </svg>
+            <small>ATENCIONES</small>
+          </div>
+        </div>
+      }
+
+      <!--odontología>-->
+      @if (role === 7) {
+        <div (click)="showSubMenuDentistry = !showSubMenuDentistry"
+             class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/dental-consultation" routerLinkActive="underline bg-gray-500">
+
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+            <path
+              d="m21,9h-3v-4h1v-2H5v2h1v4h-3c-.55,0-1,.45-1,1v10c0,.55.45,1,1,1h18c.55,0,1-.45,1-1v-10c0-.55-.45-1-1-1Zm-17,2h2v8h-2v-8Zm6,4v4h-2V5h8v14h-2v-4h-4Zm10,4h-2v-8h2v8Z"></path>
+            <path d="M15 8 13 8 13 6 11 6 11 8 9 8 9 10 11 10 11 12 13 12 13 10 15 10 15 8z">
+            </path>
+          </svg>
+          <small>ODONTOLOGÍA</small>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+               [ngClass]="{'rotate-180': showSubMenuDentistry}" viewBox="0 0 512 512">
+            <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <div *ngIf="showSubMenuDentistry" class="ml-4 flex flex-col">
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/reports-dentistry" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94,7.68s-.02-.06-.03-.09c-.05-.11-.11-.21-.2-.29l-5-5c-.09-.09-.19-.15-.3-.2-.03-.01-.06-.02-.09-.03-.09-.03-.18-.05-.27-.05-.02,0-.04-.01-.05-.01H6c-1.1,0-2,.9-2,2v16c0,1.1.9,2,2,2h12c1.1,0,2-.9,2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26Zm-13.94,12.32V4h7v4c0,.55.45,1,1,1h4v11H6Z"></path>
+              <path d="M8 12H10V18H8z"></path>
+              <path d="M11 10H13V18H11z"></path>
+              <path d="M14 14H16V18H14z">
+              </path>
+            </svg>
+            <small>REPORTES</small>
+          </div>
+
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/patients" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="M4 8c0 2.28 1.72 4 4 4s4-1.72 4-4-1.72-4-4-4-4 1.72-4 4m6 0c0 1.18-.82 2-2 2s-2-.82-2-2 .82-2 2-2 2 .82 2 2M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1m4-5h2c1.65 0 3 1.35 3 3H4c0-1.65 1.35-3 3-3M21 11.5c0-2-1.5-3.5-3.5-3.5S14 9.5 14 11.5s1.5 3.5 3.5 3.5c.62 0 1.18-.16 1.67-.42l2.12 2.12 1.41-1.41-2.12-2.12c.26-.49.42-1.05.42-1.67M17.5 13c-.88 0-1.5-.62-1.5-1.5s.62-1.5 1.5-1.5 1.5.62 1.5 1.5-.62 1.5-1.5 1.5">
+              </path>
+            </svg>
+            <small>PACIENTES</small>
+          </div>
+
+          <div
+            class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-medium cursor-pointer hover:bg-gray-600"
+            routerLink="/home/dental-consultation" routerLinkActive="underline bg-gray-500">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg">
+              <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+              <path
+                d="m19.94 7.68-.03-.09a.8.8 0 0 0-.2-.29l-5-5c-.09-.09-.19-.15-.29-.2l-.09-.03a.8.8 0 0 0-.26-.05c-.02 0-.04-.01-.06-.01H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12s-.01-.04-.01-.06c0-.09-.02-.17-.05-.26ZM6 20V4h7v4c0 .55.45 1 1 1h4v11z"></path>
+              <path d="M8 11h8v2H8zM8 15h8v2H8zM8 7h3v2H8z">
+              </path>
+            </svg>
+            <small>ATENCIONES</small>
+          </div>
+        </div>
+      }
+
+      <div *ngIf="role === 1"
+           class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/household-targeting" routerLinkActive="underline bg-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+          <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none"
+                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+          <path
+            d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z"
+            fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+        </svg>
+        <small>FOCALIZACIÓN DE HOGARES</small>
+      </div>
+      <div *ngIf="false" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/scholarships" routerLinkActive="text-black underline bg-gray-500">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>BECAS</small>
+      </div>
+      <div *ngIf="false" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/workshops" routerLinkActive="text-black underline bg-gray-500">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>TALLERES</small>
+      </div>
+      <div *ngIf="false" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           routerLink="/home/task" routerLinkActive="text-black underline bg-gray-500">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+            fill="white"/>
+        </svg>
+        <small>FAENAS</small>
+      </div>
+
+      <!-- After the existing submenu section and before the next menu item -->
+
+      <div *ngIf="role === 1" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+           (click)="toggleVisitOptions()">
+        <!-- Icono para GESTIÓN DE VISITA -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+          <path
+            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+            fill="currentColor"/>
+        </svg>
+
+        <small>GESTIÓN DE VISITA</small>
+
+        <!-- Icono que indica que es desplegable -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+             [ngClass]="{'rotate-180': showVisitOptions}" viewBox="0 0 512 512">
+          <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <!-- Subopciones de Visita -->
+      <div *ngIf="showVisitOptions" class="ml-4 flex flex-col">
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/visita-general" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+            <path
+              d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+              fill="currentColor"/>
+          </svg>
+          <small>VISITA GENERAL</small>
+        </div>
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/visita-residente" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              fill="currentColor"/>
+          </svg>
+          <small>VISITA A RESIDENTES</small>
+        </div>
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             routerLink="/home/reporte-visitas" routerLinkActive="underline bg-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              fill="currentColor"/>
+          </svg>
+          <small>REPORTE</small>
+        </div>
+      </div>
+      @if (role === 1) {
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+             (click)="togglePsicopedagogiaOptions()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2a10 10 0 0 1 7.94 16.06C19.94 19.06 19 20 17.94 20.06a10 10 0 0 1-11.88 0C5.06 20 4.06 19.06 4.06 18.06A10 10 0 0 1 12 2z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.5 8.5c.5-1 1.5-2 3.5-2s3 1 3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M7 13.5c1-1.5 2.5-2.5 5-2.5s4 1 5 2.5" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="16" r="1" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+            <circle cx="9" cy="14" r="0.5" stroke="currentColor" stroke-width="1" fill="currentColor"/>
+            <circle cx="15" cy="14" r="0.5" stroke="currentColor" stroke-width="1" fill="currentColor"/>
+          </svg>
+          <small>GESTIÓN DE PSICOPEDAGOGIA</small>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform"
+               [ngClass]="{'rotate-180': showVisitOptions}" viewBox="0 0 512 512">
+            <path d="M192 352l128 128 128-128H192z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div *ngIf="showPsicopedagogiaOptions" class="ml-4 flex flex-col">
+          <div *ngFor="let item of menu"
+               class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+               routerLink="{{item.route}}" routerLinkActive="underline bg-gray-500">
+            <div [innerHTML]="getSafeHtml(item.icon)"
+                 class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+            </div>
+
+            <small>{{ item.label }}</small>
+          </div>
+          <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+               routerLink="/home/statistics-data-srq" routerLinkActive="underline bg-gray-500">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M18 9l-5 5-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <circle cx="18" cy="9" r="2" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+              <circle cx="13" cy="14" r="2" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+              <circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+              <circle cx="3" cy="16" r="2" stroke="currentColor" stroke-width="2"
+                      fill="currentColor"/>
+            </svg>
+            <small>REPORTE</small>
+          </div>
+        </div>
+      }
+
+      @if (role === 1) {
+        <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer residence-menu"
+             routerLink="/home/admin-reports-medical-areas" routerLinkActive="underline bg-gray-500">
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+              fill="white"/>
+          </svg>
+          <small>REPORTES AREAS MEDICAS</small>
+        </div>
+      }
+    }
+  } @else {
+    <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+         routerLink="/home/services" routerLinkActive="text-black underline bg-gray-500">
+      <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12.3333 3.00001H10.3333V1.66668C10.3333 0.931343 9.73525 0.333344 8.99992 0.333344H4.99992C4.26459 0.333344 3.66658 0.931343 3.66658 1.66668V3.00001H1.66659C0.931252 3.00001 0.333252 3.59801 0.333252 4.33334V11.6667C0.333252 12.402 0.931252 13 1.66659 13H12.3333C13.0686 13 13.6666 12.402 13.6666 11.6667V4.33334C13.6666 3.59801 13.0686 3.00001 12.3333 3.00001ZM8.99992 1.66668V3.00001H4.99992V1.66668H8.99992ZM1.66659 4.33334H12.3333V7.00001H10.3333V5.66668H8.99992V7.00001H4.99992V5.66668H3.66658V7.00001H1.66659V4.33334ZM1.66659 11.6667V8.33334H3.66658V9.66668H4.99992V8.33334H8.99992V9.66668H10.3333V8.33334H12.3339V11.6667H1.66659Z"
+          fill="white"/>
+      </svg>
+      <small>SERVICIOS BRINDADOS</small>
+    </div>
+
+    <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+         routerLink="/home/calendar" routerLinkActive="text-black underline bg-gray-500">
+      <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 12.3333V3.00001C12 2.26468 11.402 1.66668 10.6667 1.66668H9.33333V0.333344H8V1.66668H4V0.333344H2.66667V1.66668H1.33333C0.598 1.66668 0 2.26468 0 3.00001V12.3333C0 13.0687 0.598 13.6667 1.33333 13.6667H10.6667C11.402 13.6667 12 13.0687 12 12.3333ZM4 11H2.66667V9.66668H4V11ZM4 8.33334H2.66667V7.00001H4V8.33334ZM6.66667 11H5.33333V9.66668H6.66667V11ZM6.66667 8.33334H5.33333V7.00001H6.66667V8.33334ZM9.33333 11H8V9.66668H9.33333V11ZM9.33333 8.33334H8V7.00001H9.33333V8.33334ZM10.6667 5.00001H1.33333V3.66668H10.6667V5.00001Z"
+          fill="white"/>
+      </svg>
+      <small>CALENDARIO DE TRAMITE</small>
+    </div>
+    <div *ngIf="false" class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+         routerLink="/home/statues-regulations" routerLinkActive="text-black underline bg-gray-500">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M7.99992 1.33334C4.32392 1.33334 1.33325 4.32401 1.33325 8.00001C1.33325 11.676 4.32392 14.6667 7.99992 14.6667C11.6759 14.6667 14.6666 11.676 14.6666 8.00001C14.6666 4.32401 11.6759 1.33334 7.99992 1.33334ZM7.99992 13.3333C5.05925 13.3333 2.66659 10.9407 2.66659 8.00001C2.66659 5.05934 5.05925 2.66668 7.99992 2.66668C10.9406 2.66668 13.3333 5.05934 13.3333 8.00001C13.3333 10.9407 10.9406 13.3333 7.99992 13.3333Z"
+          fill="white"/>
+        <path d="M7.33325 7.33332H8.66659V11.3333H7.33325V7.33332ZM7.33325 4.66666H8.66659V5.99999H7.33325V4.66666Z"
+              fill="white"/>
+      </svg>
+      <small>ESTATUTO Y REGLAMENTO</small>
+    </div>
+    <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+         routerLink="/home/postulation" routerLinkActive="text-black underline bg-gray-500">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M13.3334 2.66667H4.00008C3.26475 2.66667 2.66675 3.26467 2.66675 4.00001V7.33334H4.00008V5.33334L8.26675 8.53334C8.38219 8.61978 8.52253 8.66651 8.66675 8.66651C8.81097 8.66651 8.95131 8.61978 9.06675 8.53334L13.3334 5.33334V11.3333H8.00008V12.6667H13.3334C14.0687 12.6667 14.6667 12.0687 14.6667 11.3333V4.00001C14.6667 3.26467 14.0687 2.66667 13.3334 2.66667ZM8.66675 7.16667L4.44408 4.00001H12.8894L8.66675 7.16667Z"
+          fill="white"/>
+        <path
+          d="M1.33325 8H5.99992V9.33333H1.33325V8ZM2.66659 10H6.66659V11.3333H2.66659V10ZM4.66659 12H7.33325V13.3333H4.66659V12Z"
+          fill="white"/>
+      </svg>
+      <small>POSTULA AQUI</small>
+    </div>
+    <div class="w-full px-4 py-2 flex gap-4 h-10 items-center text-white font-bold cursor-pointer"
+         routerLink="/home/citas-psicopedagogicas" routerLinkActive="text-black underline bg-gray-500">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+           width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path fill-rule="evenodd"
+              d="M4 4a2 2 0 1 0 0 4h16a2 2 0 1 0 0-4H4Zm0 6h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm10.707 5.707a1 1 0 0 0-1.414-1.414l-.293.293V12a1 1 0 1 0-2 0v2.586l-.293-.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l2-2Z"
+              clip-rule="evenodd"/>
+      </svg>
+      <small>REGISTRO CITAS</small>
+    </div>
+  }
+
+</div>

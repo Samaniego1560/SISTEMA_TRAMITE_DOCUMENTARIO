@@ -1,0 +1,43 @@
+<div class="w-full flex flex-col gap-6">
+
+  @if (captionTemplate) {
+    <div class="">
+      <ng-container *ngTemplateOutlet="captionTemplate"></ng-container>
+    </div>
+  }
+
+  <div class="relative overflow-y-auto" [style.height]="this.scrollHeight || '100%'">
+    <table class="ec-table w-full">
+      <thead class="sticky top-0 bg-white">
+
+        @if (headerTemplate) {
+          <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+        }
+
+      </thead>
+
+      <tbody>
+        @if (bodyTemplate) {
+          @for (data of dataSource; track $index) {
+            <ng-container
+              *ngTemplateOutlet="bodyTemplate; context: { $implicit: data, index: $index }"
+            ></ng-container>
+          } @empty {
+            @if (emptyMessageTemplate){
+              <ng-container *ngTemplateOutlet="emptyMessageTemplate"></ng-container>
+            }
+          }
+        }
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<ng-template #rowTemplate let-item let-index="index">
+  <ng-container *ngFor="let t of templatesColumn">
+    <ng-container *ngTemplateOutlet="getTemplateRow(t); context: { $implicit: item, index: index }"></ng-container>
+  </ng-container>
+</ng-template>
+
+

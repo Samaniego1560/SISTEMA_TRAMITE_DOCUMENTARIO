@@ -1,0 +1,23 @@
+@keyframes backgroundChange {
+    0% {
+      background-image: url('/assets/bg/bg1.png');
+    }
+    25% {
+      background-image: url('/assets/bg/bg2.png');
+    }
+    50% {
+      background-image: url('/assets/bg/bg3.png');
+    }
+    75% {
+      background-image: url('/assets/bg/bg4.png');
+    }
+    100% {
+      background-image: url('/assets/bg/bg1.png');
+    }
+  }
+  
+  .animated-background {
+    animation: backgroundChange 40s infinite ease-in-out;
+    animation-delay: 6s;
+  }
+  

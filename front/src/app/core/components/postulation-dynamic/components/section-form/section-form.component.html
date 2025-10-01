@@ -1,0 +1,113 @@
+<div class="grid grid-cols-2 gap-4" [formGroup]="formDynamic()">
+  @for (req of section().requisitos; track req) {
+
+    @if (req.nombre !== 'photo-profile') {
+      <div *ngIf="isDependent(req)" class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+          <label
+            [ngStyle]="{
+                           color: req.text_color,
+                         'font-size': req.text_size === 'lg' ? '1.6rem' : req.text_size === 'md' ? '1rem' : '0.7rem'
+                                     }"
+          >
+            {{ req.nombre }}:
+          </label>
+          <div class="flex h-full">
+
+            @if(req.tipo_requisito_id === 1 || req.tipo_requisito_id === 2){
+              <input
+                type="file"
+                [accept]="
+                        req.tipo_requisito_id === 1
+                          ? '.pdf'
+                          : 'image/jpeg,image/png'
+                      "
+                class="w-full border border-gray-200 rounded-md px-4 h-12"
+                (change)="
+                        processFile(
+                          $event,
+                          req.id?.toString() || '',
+                          req.tipo_requisito_id
+                        )
+                      "
+              />
+            }
+
+            @if (req.tipo_requisito_id === 3) {
+              <input
+                type="{{req.type_input}}"
+                [formControlName]="req.id || ''"
+                [placeholder]="req.descripcion"
+                class="w-full border border-gray-200 rounded-md px-4 h-12"
+              />
+            }
+
+            @if(req.tipo_requisito_id === 4) {
+              <div class="flex w-full items-end h-full">
+                <select
+                  [formControlName]="req.id || ''"
+                  (change)="loadDataSource()"
+                  class="bg-gray-50 border border-gray-300 text-gray-500 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  <option selected hidden>Seleccione una Opción</option>
+                  @for (data of dataSource[req.id || 0] || []; track data) {
+                    <option [value]="data.id">{{ data.name }}</option>
+                  }
+                </select>
+              </div>
+            }
+
+
+            @if (req.tipo_requisito_id === 5) {
+              <div class="flex w-full h-full space-x-4">
+                @for (data of loadOptionDefault(req.opciones!); track $index) {
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      [id]="'radio' + req.id + data.id"
+                      [formControlName]="req.id?.toString() || ''"
+                      [value]="data.id"
+                    />
+                    <label class="form-check-label" [for]="'radio' + req.id + data.id">
+                      {{data.name}}
+                    </label>
+                  </div>
+                }
+              </div>
+            }
+            @if (req.tipo_requisito_id === 6) {
+              <div class="block w-full">
+                @for (data of loadOptionDefault(req.opciones!); track $index) {
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'checkbox' + req.id + data.id"
+                      [value]="data.id"
+                      (change)="onCheckboxChange($event, req.id?.toString() || '')"
+                      [checked]="isChecked(data.id, req.id?.toString() || '')"
+                    />
+                    <label class="form-check-label" [for]="'checkbox' + req.id + data.id">
+                      {{data.name}}
+                    </label>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+        <small
+          class="text-red-500"
+          *ngIf="
+                      formDynamic().get(req.id?.toString() || '')?.invalid &&
+                      formDynamic().get(req.id?.toString() || '')?.touched
+                    "
+        >
+          El Campo es requerido
+        </small>
+      </div>
+    }
+  }
+</div>
+
+<app-toast></app-toast>

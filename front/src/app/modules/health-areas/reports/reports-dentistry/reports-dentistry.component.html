@@ -1,0 +1,100 @@
+<div class="p-6 w-full h-full">
+  <div class="mb-2">
+    <div class="flex justify-start items-center px-4 pt-2 pb-2">
+      <h2 class="text-2xl font-bold text-gray-900">Generar reporte</h2>
+    </div>
+  </div>
+
+  <div class="flex cursor-pointer text-sm">
+    <div class="block" (click)="activeTab = 1">
+      <div class="{{activeTab === 1 ? 'text-brand': 'text-gray-400 hover:text-gray-500'}} font-semibold py-4 px-2">
+        <span>Reporte por cuadro</span>
+      </div>
+      <div class="{{activeTab === 1 ? 'border-b border-brand': ''}}"></div>
+    </div>
+    <div class="block" (click)="activeTab = 2">
+      <div class="{{activeTab === 2 ? 'text-brand': 'text-gray-400 hover:text-gray-500'}} font-semibold py-4 px-2">
+        <span>Reporte general</span>
+      </div>
+      <div class="{{activeTab === 2 ? 'border-b border-brand': ''}}"></div>
+    </div>
+  </div>
+
+  <div class="border-b border-[#e2e8f0]"></div>
+
+  <div class="p-6 mb-6">
+    @if (activeTab ===1) {
+      <form [formGroup]="reportForm" (ngSubmit)="onSearchReport()" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+          <div class="i-field">
+            <label>Reporte</label>
+            <select formControlName="numero_cuadro">
+              <option [value]="null" selected>Seleccione un reporte</option>
+              @for (cuadro of cuadros; track cuadro){
+                <option [value]="cuadro.value">{{cuadro.name}}</option>
+              }
+            </select>
+          </div>
+
+          <div class="i-field">
+            <label>Año</label>
+            <app-calendar-year formControlName="anio"/>
+          </div>
+
+          <div class="i-field">
+            <label>Desde</label>
+            <select formControlName="mes_inicio" name="mes_inicio" id="mes_inicio">
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+
+          <div class="i-field">
+            <label>Hasta</label>
+            <select formControlName="mes_fin" name="mes_fin" id="mes_fin">
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-end gap-2">
+          <button type="submit"
+                  class="bg-[#1cbb9c] b-primary">
+            Generar
+          </button>
+          <button type="button" (click)="clearFilters()"
+                  class="b-normal">
+            Limpiar
+          </button>
+        </div>
+      </form>
+    } @else {
+      <app-report-general-form [area]="'odontología'"/>
+    }
+  </div>
+</div>
+
+<app-toast></app-toast>
+<app-block-ui [show]="isBlockPage"></app-block-ui>

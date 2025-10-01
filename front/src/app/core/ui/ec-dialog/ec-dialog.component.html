@@ -1,0 +1,49 @@
+@if (visible()) {
+  <div
+    class="z-50 fixed top-0 left-0 flex px-10 justify-center items-center w-full h-full"
+    style="background: rgba(26, 35, 55, 0.6)"
+  >
+    <div
+      class="max-h-[90%] flex flex-col bg-white rounded-lg"
+      [style]="style()"
+    >
+
+      @if (headlessTemplate) {
+        <div class="overflow-y-auto">
+          <ng-container *ngTemplateOutlet="headlessTemplate"></ng-container>
+        </div>
+      } @else {
+        <!-- Modal header -->
+        @if (headerTemplate) {
+          <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+        } @else {
+          <div class="flex items-center justify-between p-5">
+            <span class="font-semibold text-gray-700">{{ header() }}</span>
+            <button type="button" (click)="visibleChange.emit(false)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+                style="color: #6c757d"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        }
+
+        <!-- Modal body -->
+        <div class="overflow-y-auto w-full grow">
+          <ng-content></ng-content>
+        </div>
+        <!-- Modal footer -->
+        @if (footerTemplate) {
+          <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+        }
+      }
+    </div>
+  </div>
+}

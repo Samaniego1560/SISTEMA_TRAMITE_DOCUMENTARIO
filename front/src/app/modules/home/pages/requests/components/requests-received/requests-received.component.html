@@ -1,0 +1,522 @@
+
+@if(view === 'list') {
+  <div
+    class="px-8 py-12 overflow-auto w-full pb-24"
+    style="height: calc(100vh - 64px)"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex space-x-4">
+        <table class="divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-2 py-2 text-sm font-normal text-center rtl:text-right text-gray-500"
+            >
+              Servicio
+            </th>
+
+            <th
+              scope="col"
+              class="px-2 py-2 text-sm font-normal text-center rtl:text-right text-gray-500"
+            >
+              Vacantes
+            </th>
+
+
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500 text-center">
+                  Comedor
+                </h2>
+              </div>
+            </td>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500">
+                  {{dataServices.comedor}}
+                </h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500 text-center">
+                  Residencia
+                </h2>
+              </div>
+            </td>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500">
+                  {{dataServices.internado}}
+                </h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <button
+                  type="button"
+                  (click)="getNumberOfVacancies()"
+                  class="flex items-center focus:outline-none h-full text-gray-900 placeholder-gray-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 d-inline-flex align-items-center gap-2 border border-gray-900"
+                  style="background: #ffff; white-space: nowrap;"
+                >
+                  Actualizar
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-2 py-2 text-sm font-normal text-center rtl:text-right text-gray-500"
+            >
+              Internado
+            </th>
+
+            <th
+              scope="col"
+              class="px-2 py-2 text-sm font-normal text-center rtl:text-right text-gray-500"
+            >
+              Total
+            </th>
+
+
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500 text-center">
+                  Hombres
+                </h2>
+              </div>
+            </td>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500">
+                  {{countServiceMen}}
+                </h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500 text-center">
+                  Mujeres
+                </h2>
+              </div>
+            </td>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <h2 class="font-medium text-slate-500">
+                  {{countServiceWomen}}
+                </h2>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-2 py-2 text-sm font-medium whitespace-nowrap">
+              <div>
+                <button
+                  type="button"
+                  (click)="getNumberOfVacancies()"
+                  class="flex items-center focus:outline-none h-full text-gray-900 placeholder-gray-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 d-inline-flex align-items-center gap-2 border border-gray-900"
+                  style="background: #ffff; white-space: nowrap;"
+                >
+                  Actualizar
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        class="text-slate-500 font-bold text-2xl text-center w-full flex justify-center items-center gap-4"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-8 h-8 rtl:-scale-x-100 cursor-pointer"
+          (click)="backRequest()"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+          />
+        </svg>
+        <span>{{ 'Lista de Solicitudes Recibidas'}}</span>
+      </div>
+      <div *ngIf="role() === 1">
+        <button
+          type="button"
+          (click)="showModelAddPostulation = true"
+          class="flex items-center focus:outline-none h-full text-gray-900 placeholder-gray-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 d-inline-flex align-items-center gap-2 border border-gray-900"
+          style="background: #ffff; white-space: nowrap;"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="add-account" width="18" height="18">
+            <path d="M21,10.5H20v-1a1,1,0,0,0-2,0v1H17a1,1,0,0,0,0,2h1v1a1,1,0,0,0,2,0v-1h1a1,1,0,0,0,0-2Zm-7.7,1.72A4.92,4.92,0,0,0,15,8.5a5,5,0,0,0-10,0,4.92,4.92,0,0,0,1.7,3.72A8,8,0,0,0,2,19.5a1,1,0,0,0,2,0,6,6,0,0,1,12,0,1,1,0,0,0,2,0A8,8,0,0,0,13.3,12.22ZM10,11.5a3,3,0,1,1,3-3A3,3,0,0,1,10,11.5Z"></path>
+          </svg>
+          Agregar un postulante
+        </button>
+      </div>
+
+    </div>
+
+    @if (requests.length) {
+      <section class="container mx-auto space-y-4">
+        <div class="mt-4 flex justify-end">
+          <div *ngIf="role() === 1">
+            <button
+              type="button"
+              (click)="exportToExcel()"
+              class="focus:outline-none h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 flex items-center gap-2"
+              style="background: #1abb9c"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 text-white fill-white"
+                viewBox="0 0 24 24"
+              >
+                <g id="file-excel">
+                  <path
+                    d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z"
+                  />
+                  <path
+                    d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z"
+                  />
+                </g>
+              </svg>
+              Exportar datos
+            </button>
+          </div>
+          <div
+            class="inline-flex overflow-hidden bg-white divide-x rounded-lg rtl:flex-row-reverse"
+          >
+            <input
+              type="text"
+              class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none"
+              placeholder="Buscar Postulante"
+              (input)="findRequest($event)"
+            />
+            <button
+              class="flex items-center justify-center px-4 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none"
+            >
+              <svg
+                class="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+              <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"
+                    >
+                      N°
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500"
+                    >
+                      <button
+                        class="flex items-center gap-x-3 focus:outline-none"
+                      >
+                        <span>Nombres</span>
+
+                        <svg
+                          class="h-3"
+                          viewBox="0 0 10 11"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="0.1"
+                          />
+                          <path
+                            d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="0.1"
+                          />
+                          <path
+                            d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="0.3"
+                          />
+                        </svg>
+                      </button>
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"
+                    >
+                      Código
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"
+                    >
+                      Estado
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500"
+                    >
+                      Fecha Inicio
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="px-12 py-3.5 text-sm font-normal rtl:text-right text-gray-500 text-center"
+                    >
+                      Opciones
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    @for (request of requestsDisplay; track request; let i = $index)
+                    {
+                      <tr>
+                        <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500 text-center">
+                              {{ i + 1 + leftLimit }}
+                            </h2>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                          <div>
+                            <h2 class="font-medium text-slate-500">
+                              {{
+                                request.alumno.nombres +
+                                " " +
+                                request.alumno.apellido_paterno +
+                                " " +
+                                request.alumno.apellido_materno
+                              }}
+                            </h2>
+                          </div>
+                        </td>
+                        <td
+                          class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap"
+                        >
+                          <div>
+                            <h2 class="font-medium text-slate-500">
+                              {{ "00" + request.alumno.codigo_estudiante }}
+                            </h2>
+                          </div>
+                        </td>
+
+                        <td
+                          class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap"
+                        >
+                          @for (servicio_solicitado of request.servicios_solicitados; track servicio_solicitado; let i = $index)
+                          {
+                            <div class="grid justify-center item-center">
+                              <h2 class="font-medium text-slate-500 text-start">
+                                {{ servicio_solicitado.servicio.nombre }}:
+                                <span
+                                  [ngClass]="servicio_solicitado.estado === 'pendiente' ? 'chip-status-pendiente' : (servicio_solicitado.estado === 'aprobado' ? 'chip-status-aprobado' : (servicio_solicitado.estado === 'aceptado' ? 'chip-status-aceptado' : 'chip-status-rechazado'))" >
+                                  {{ servicio_solicitado.estado }}
+                              </span>
+                              </h2>
+
+                            </div>
+                          }
+                        </td>
+
+                        <td
+                          class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap"
+                        >
+                          <div>
+                            <h2 class="font-medium text-slate-500">
+                              {{ request.fecha_solicitud }}
+                            </h2>
+                          </div>
+                        </td>
+
+                        <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          <div
+                            class="cursor-pointer flex justify-center"
+                            (click)="getStudentRequest(request)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="w-6 h-6"
+                              viewBox="0 0 512 512"
+                            >
+                              <path
+                                d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 0 00-.27 17.77C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="32"
+                              />
+                              <circle
+                                cx="256"
+                                cy="256"
+                                r="80"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-miterlimit="10"
+                                stroke-width="32"
+                              />
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 sm:flex sm:items-center sm:justify-between">
+          <div class="text-sm text-gray-500">
+            Página
+            <span class="font-medium text-gray-700"
+            >{{ currentPage }} de {{ totalPage }}</span
+            >
+          </div>
+
+          <div class="flex items-center mt-4 gap-x-4 sm:mt-0">
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage <= 1"
+              class="flex items-center justify-center select-none disabled:cursor-not-allowed w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 rtl:-scale-x-100"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                />
+              </svg>
+              <span>Anterior</span>
+            </button>
+
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage >= this.totalPage"
+              class="flex items-center justify-center select-none w-1/2 px-5 py-2 disabled:cursor-not-allowed text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+            >
+              <span>Siguiente</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 rtl:-scale-x-100"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    } @else {
+      <div class="flex w-full h-full flex-col gap-6 items-center">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-32 h-32 text-slate-500"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M64 192v-72a40 40 0 0140-40h75.89a40 40 0 0122.19 6.72l27.84 18.56a40 40 0 0022.19 6.72H408a40 40 0 0140 40v40"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="32"
+            />
+            <path
+              d="M479.9 226.55L463.68 392a40 40 0 01-39.93 40H88.25a40 40 0 01-39.93-40L32.1 226.55A32 32 0 0164 192h384.1a32 32 0 0131.8 34.55z"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="32"
+            />
+          </svg>
+        </div>
+        <div class="font-bold text-slate-500 text-2xl">
+          <span>¡Aún no se cuenta con postulantes a la convocatoria actual!</span>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+@if(view === 'student') {
+  <app-request-evaluation [student]="student" [(view)]="view" [departments]="departmentsMap" [provinces]="provincesMap" [districts]="districtsMap"></app-request-evaluation>
+}
+
+@if (view === 'postulation') {
+  <app-postulation-dynamic [postulation]="postulation" [student]="studentForm"
+  [roleId]="role()" (back-event)="view = 'list'"></app-postulation-dynamic>
+}
+
+<app-postulation-form [postulationId]="announcement().id!" [roleId]="this.role()"
+  [(showModal)]="showModelAddPostulation" (onPostulation)="onPostulation($event)"></app-postulation-form>
+<app-block-ui [show]="isLoading"></app-block-ui>
+

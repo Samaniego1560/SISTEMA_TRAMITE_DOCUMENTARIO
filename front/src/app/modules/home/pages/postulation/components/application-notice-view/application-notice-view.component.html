@@ -1,0 +1,20 @@
+
+    <div class="w-full text-slate-500 font-bold uppercase text-xl">
+      <span>{{ tittle }}</span>
+    </div>
+    <article class="w-full mt-4 text-slate-500 text-xl">
+      <p>
+        {{ subTittle }}
+      </p>
+    </article>
+
+    <div type="circle" class="text-slate-500 space-y-2 mt-4 w-full">
+      @for (notice of applicationNotices; track notice.id) {
+      <li>
+        {{notice.description}}
+      </li>
+      }
+    </div>
+
+<app-block-ui [show]="isLoad"></app-block-ui>
+<app-toast></app-toast>

@@ -1,0 +1,236 @@
+<div class="container mx-auto relative h-80 overflow-y-auto">
+    <!-- Overlay cuando loading es true -->
+    <div *ngIf="isLoading" class="absolute inset-0 bg-gray-100 bg-opacity-50 flex justify-center items-center z-10">
+        <div class="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Formulario deshabilitado si isLoading es true -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 rounded-lg bg-white" [class.pointer-events-none]="isLoading"
+        [class.opacity-50]="isLoading">
+
+        <!-- DNI -->
+        <div>
+            <label for="dni" class="block text-sm font-medium text-gray-700">DNI<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="dni" (change)="updateField('dni', $event)" [(ngModel)]="formData['dni']"
+                (keydown.enter)="buscarDni()" name="dni" required
+                placeholder="Escriba el DNI y presione Enter para buscar"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['dni'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <!-- Nombres -->
+        <div>
+            <label for="firstName" class="block text-sm font-medium text-gray-700">Nombres<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="firstName" (change)="updateField('firstName', $event)"
+                [(ngModel)]="formData['firstName']" name="firstName" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['firstName'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio
+            </p>
+        </div>
+
+        <!-- Apellidos -->
+        <div>
+            <label for="lastName" class="block text-sm font-medium text-gray-700">Apellidos<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="lastName" (change)="updateField('lastName', $event)"
+                [(ngModel)]="formData['lastName']" name="lastName" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['lastName'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Dirección<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="address" (change)="updateField('address', $event)" [(ngModel)]="formData['address']"
+                name="address" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['address'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <div>
+            <label for="gender" class="block text-sm font-medium text-gray-700">Sexo<span
+                    class="text-red-500">*</span></label>
+            <select id="gender" (change)="updateField('gender', $event)" [(ngModel)]="formData['gender']" name="gender"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="Otro">Otro</option>
+            </select>
+            <p *ngIf="!formData['gender'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <!-- Phone -->
+        <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700">Telefono<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="phone" (change)="updateField('phone', $event)" [(ngModel)]="formData['phone']"
+                name="phone" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['phone'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <!-- Edad -->
+        <div>
+            <label for="age" class="block text-sm font-medium text-gray-700">Edad<span
+                    class="text-red-500">*</span></label>
+            <input type="number" id="age" (change)="updateField('age', $event)" [(ngModel)]="formData['age']" name="age"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['age'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <!-- Lugar de nacimiento -->
+        <div>
+            <label for="birthPlace" class="block text-sm font-medium text-gray-700">Lugar de nacimiento<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="birthPlace" (change)="updateField('birthPlace', $event)"
+                [(ngModel)]="formData['birthPlace']" name="birthPlace" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['birthPlace'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio
+            </p>
+        </div>
+
+        <!-- Con quién vive actualmente -->
+        <div>
+            <label for="currentLiving" class="block text-sm font-medium text-gray-700">Con quién vive
+                actualmente<span class="text-red-500">*</span></label>
+            <input type="text" id="currentLiving" (change)="updateField('currentLiving', $event)"
+                [(ngModel)]="formData['currentLiving']" name="currentLiving" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['currentLiving'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <!-- Ciclo Acual (solo para Estudiantes) -->
+        <div *ngIf="typePatient === 'Alumno' && ciclos.length > 0">
+            <label for="currentSemester" class="block text-sm font-medium text-gray-700">Ciclo actual<span
+                    class="text-red-500">*</span></label>
+            <select id="currentSemester" (change)="updateField('currentSemester', $event)"
+                [(ngModel)]="formData['currentSemester']" name="currentSemester" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option *ngFor="let ciclo of ciclos" [value]="ciclo">{{ ciclo }}</option>
+            </select>
+            <p *ngIf="!formData['currentSemester'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div>
+            <label for="birthDate" class="block text-sm font-medium text-gray-700">Fecha de Nacimiento<span
+                    class="text-red-500">*</span></label>
+            <input type="date" id="birthDate" (change)="updateField('birthDate', $event)"
+                [(ngModel)]="formData['birthDate']" name="birthDate" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['birthDate'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio
+            </p>
+        </div>
+
+
+        <!-- ¿Quién financia tu carrera? (Solo para Alumno) -->
+        <div *ngIf="typePatient === 'Alumno'">
+            <label for="careerFinancing" class="block text-sm font-medium text-gray-700">¿Quién financia tu
+                carrera?<span class="text-red-500">*</span></label>
+            <input type="text" id="careerFinancing" (change)="updateField('careerFinancing', $event)"
+                [(ngModel)]="formData['careerFinancing']" name="careerFinancing" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['careerFinancing'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <!-- Colegio de procedencia -->
+        <div *ngIf="typePatient === 'Alumno'">
+            <label for="school" class="block text-sm font-medium text-gray-700">Colegio de procedencia<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="school" (change)="updateField('school', $event)" [(ngModel)]="formData['school']"
+                name="school" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['school'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+
+        <!-- Modalidad de ingreso (solo para Estudiantes) -->
+        <div *ngIf="typePatient === 'Alumno'">
+            <label for="admissionMode" class="block text-sm font-medium text-gray-700">Modalidad de ingreso a la
+                UNAS<span class="text-red-500">*</span></label>
+            <input type="text" id="admissionMode" (change)="updateField('admissionMode', $event)"
+                [(ngModel)]="formData['admissionMode']" name="admissionMode" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['admissionMode'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <!-- Año de ingreso (solo para Estudiantes) -->
+        <div *ngIf="typePatient === 'Alumno'">
+            <label for="admissionYear" class="block text-sm font-medium text-gray-700">Año que ingresó a la
+                universidad<span class="text-red-500">*</span></label>
+            <input type="number" id="admissionYear" (change)="updateField('admissionYear', $event)"
+                [(ngModel)]="formData['admissionYear']" name="admissionYear" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['admissionYear'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <div *ngIf="typePatient === 'Docente' || typePatient === 'Administrativo'">
+            <label for="workingAtUNAS" class="block text-sm font-medium text-gray-700">¿Laboras actualmente en la
+                UNAS?<span class="text-red-500">*</span></label>
+            <select id="workingAtUNAS" (change)="updateField('workingAtUNAS', $event)"
+                [(ngModel)]="formData['workingAtUNAS']" name="workingAtUNAS" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="Sí">Sí</option>
+                <option value="No">No</option>
+            </select>
+            <p *ngIf="!formData['workingAtUNAS'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+
+        <!-- Grado de instrucción y profesión (Solo para Docente y Administrativo) -->
+        <div *ngIf="typePatient === 'Docente' || typePatient === 'Administrativo' || typePatient === 'Externo'">
+            <label for="degree" class="block text-sm font-medium text-gray-700">Grado de instrucción<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="degree" (change)="updateField('degree', $event)" [(ngModel)]="formData['degree']"
+                name="degree" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['degree'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio</p>
+        </div>
+        <div *ngIf="typePatient === 'Docente' || typePatient === 'Administrativo' || typePatient === 'Externo'">
+            <label for="profession" class="block text-sm font-medium text-gray-700">Profesión<span
+                    class="text-red-500">*</span></label>
+            <input type="text" id="profession" (change)="updateField('profession', $event)"
+                [(ngModel)]="formData['profession']" name="profession" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <p *ngIf="!formData['profession'] && hasError" class="text-red-500 text-xs mt-1">Este campo es obligatorio
+            </p>
+        </div>
+
+        <div *ngIf="typePatient !== 'Alumno'">
+            <label for="maritalStatus" class="block text-sm font-medium text-gray-700">Estado Civil<span
+                    class="text-red-500">*</span></label>
+            <select id="maritalStatus" (change)="updateField('maritalStatus', $event)"
+                [(ngModel)]="formData['maritalStatus']" name="maritalStatus" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="">Seleccione una opción</option>
+                <option value="Soltero">Soltero/a</option>
+                <option value="Casado">Casado/a</option>
+                <option value="Divorciado">Divorciado/a</option>
+                <option value="Viudo">Viudo/a</option>
+            </select>
+            <p *ngIf="!formData['maritalStatus'] && hasError" class="text-red-500 text-xs mt-1">Este campo es
+                obligatorio</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="flex justify-between mt-6">
+    <button class="bg-gray-500 text-white py-2 px-6 rounded-lg hover:bg-gray-600 transition duration-300"
+        (click)="previousStep()">
+        ⬅ Anterior
+    </button>
+    <button class="bg-[#1cbb9c] text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300"
+        (click)="nextStep()">
+        👉 Continuar
+    </button>
+</div>

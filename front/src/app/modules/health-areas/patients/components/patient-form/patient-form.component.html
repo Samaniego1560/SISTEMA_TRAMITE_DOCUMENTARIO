@@ -1,0 +1,298 @@
+<div class="bg-white rounded-b-lg">
+  <form [formGroup]="patientForm" class="px-6 py-4 flex flex-col" (ngSubmit)="savePatient()">
+    <div class="pb-4 text-[#1abb9c] text-base font-bold font-['Inter'] flex items-center">
+      <div class="pr-2 cursor-pointer">
+        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Anamnesis</span>
+    </div>
+
+    <div class="pb-4 w-full">
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-4">
+        <div class="obu-input-field cursor-pointer">
+          <label>Tipo de persona</label>
+
+          <select formControlName="tipo_persona" (change)="validateTypePerson()"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option selected hidden>Seleccione tipo paciente</option>
+            <option value="Estudiante">Estudiante</option>
+            <option value="Docente">Docente</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+        @if (patientForm.get('codigo_sga')?.enabled) {
+          <div class="obu-input-field">
+            <label for="codigo_sga">Código SGA</label>
+            <input onlyNumbers id="codigo_sga" formControlName="codigo_sga" type="text" name="codigo_sga"
+                   class="obu-input-default"/>
+          </div>
+        }
+        <div class="obu-input-field">
+          <label for="dni">N° DNI</label>
+          <input onlyNumbers #search id="dni" formControlName="dni" type="text" name="dni"
+                 (keyup.enter)="onSearchPatient($event, search.value)"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="apellidos">Apellidos</label>
+          <input id="apellidos" formControlName="apellidos" type="text" name="apellidos"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="nombres">Nombres</label>
+          <input id="nombres" formControlName="nombres" type="text" name="nombres"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="sexo">Sexo</label>
+          <select id="sexo" name="sexo" formControlName="sexo"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option value="" disabled>Seleccione una opción</option>
+            @for (type of TYPE_SEX; track type) {
+              <option value="{{type.value}}">{{ type.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="obu-input-field">
+          <label for="edad">Edad</label>
+          <input id="edad" formControlName="edad" type="text" name="edad"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="estado_civil">Estado civil</label>
+          <select id="estado_civil" name="estado_civil" formControlName="estado_civil"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option value="" disabled>Seleccione una opción</option>
+            @for (status of MARITAL_STATUS; track status) {
+              <option value="{{status.value}}">{{ status.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="obu-input-field">
+          <label for="grupo_sanguineo">Grupo sanguíneo</label>
+          <select id="grupo_sanguineo" name="grupo_sanguineo" formControlName="grupo_sanguineo"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option value="" disabled>Seleccione una opción</option>
+            @for (group of BLOOD_GROUPS; track group) {
+              <option value="{{group.value}}">{{ group.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="obu-input-field">
+          <label for="fecha_nacimiento">Fecha de nacimiento</label>
+          <input id="fecha_nacimiento" formControlName="fecha_nacimiento" type="date" name="fecha_nacimiento"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="lugar_nacimiento">Lugar de nacimiento</label>
+          <input id="lugar_nacimiento" formControlName="lugar_nacimiento" type="text" name="lugar_nacimiento"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="procedencia">Procedencia</label>
+          <input id="procedencia" formControlName="procedencia" type="text" name="procedencia"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="factor_rh">RH</label>
+          <input id="factor_rh" formControlName="factor_rh" type="text" name="factor_rh"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label [for]="'ram'">RAM</label>
+          <app-toggle-switch [id]="'ram'"
+                             formControlName="ram"
+                             [trueValue]="true" [falseValue]="false"
+                             (change)="onChangeRam($event)"
+          ></app-toggle-switch>
+        </div>
+        @if (patientForm.controls['alergias'].enabled) {
+          <div class="i-field">
+            <label [for]="'ram'">RAM a medicamento</label>
+            <textarea id="alergias" formControlName="alergias" type="text" name="alergias"
+                      class="obu-input-default"></textarea>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="pb-4 text-[#1abb9c] text-base font-bold font-['Inter'] flex items-center">
+      <div class="pr-2 cursor-pointer">
+        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Información adicional</span>
+    </div>
+
+    <div class="pb-4 w-full">
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-4">
+        @if (patientForm.get('escuela_profesional')?.enabled) {
+          <div class="obu-input-field">
+            <label for="escuela_profesional">Escuela profesional</label>
+            <input id="escuela_profesional" formControlName="escuela_profesional" type="text" name="escuela_profesional"
+                   class="obu-input-default"/>
+          </div>
+        }
+        <div class="obu-input-field">
+          <label for="ocupacion">Ocupación</label>
+          <input id="ocupacion" formControlName="ocupacion" type="text" name="ocupacion"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="correo_electronico">Correo electrónico</label>
+          <input id="correo_electronico" formControlName="correo_electronico" type="email" name="correo_electronico"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field">
+          <label for="numero_celular">N° telefónico</label>
+          <input id="numero_celular" formControlName="numero_celular" type="text" name="numero_celular"
+                 class="obu-input-default"/>
+        </div>
+        <div class="obu-input-field sm:col-span-2 md:col-span-3 lg:col-span-4">
+          <label for="direccion">Dirección</label>
+          <input id="direccion" formControlName="direccion" type="text" name="direccion"
+                 class="obu-input-default"/>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pb-4 text-[#1abb9c] text-base font-bold font-['Inter'] flex items-center">
+      <div class="pr-2 cursor-pointer">
+        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span>Antecedentes</span>
+    </div>
+
+    <div class="pb-4 w-full">
+
+      <ec-table class="w-full" [dataSource]="antecedents()">
+
+        <ng-template ecTemplate="header">
+          <tr>
+            <th>{{ 'N°' }}</th>
+            <th>{{ 'Antecedente' }}</th>
+            <th>{{ 'Estado' }}</th>
+            <th>{{ 'Opciones' }}</th>
+          </tr>
+        </ng-template>
+
+        <ng-template ecTemplate="body" let-item let-index="index">
+          <tr>
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.nombre_antecedente }}</td>
+            <td>{{ item.estado_antecedente }}</td>
+            <td class="flex gap-4">
+              <button (click)="editAntecedent(item)" type="button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M16.862 4.487L18.549 2.799C18.9007 2.44733 19.3777 2.24976 19.875 2.24976C20.3723 2.24976 20.8493 2.44733 21.201 2.799C21.5527 3.15068 21.7502 3.62766 21.7502 4.125C21.7502 4.62235 21.5527 5.09933 21.201 5.451L10.582 16.07C10.0533 16.5984 9.40137 16.9867 8.685 17.2L6 18L6.8 15.315C7.01328 14.5986 7.40163 13.9467 7.93 13.418L16.862 4.487ZM16.862 4.487L19.5 7.125M18 14V18.75C18 19.3467 17.7629 19.919 17.341 20.341C16.919 20.763 16.3467 21 15.75 21H5.25C4.65326 21 4.08097 20.763 3.65901 20.341C3.23705 19.919 3 19.3467 3 18.75V8.25C3 7.65327 3.23705 7.08097 3.65901 6.65901C4.08097 6.23706 4.65326 6 5.25 6H10"
+                    stroke="#154ECA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button (click)="onDeleteAntecedent(item.id)" type="button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M14.74 8.99997L14.394 18M9.606 18L9.26 8.99997M19.228 5.78997C19.57 5.84197 19.91 5.89697 20.25 5.95597M19.228 5.78997L18.16 19.673C18.1164 20.2382 17.8611 20.7661 17.445 21.1512C17.029 21.5363 16.4829 21.7501 15.916 21.75H8.084C7.5171 21.7501 6.97102 21.5363 6.55498 21.1512C6.13894 20.7661 5.88359 20.2382 5.84 19.673L4.772 5.78997M19.228 5.78997C18.0739 5.61549 16.9138 5.48307 15.75 5.39297M4.772 5.78997C4.43 5.84097 4.09 5.89597 3.75 5.95497M4.772 5.78997C5.92613 5.61549 7.08623 5.48307 8.25 5.39297M15.75 5.39297V4.47697C15.75 3.29697 14.84 2.31297 13.66 2.27597C12.5536 2.24061 11.4464 2.24061 10.34 2.27597C9.16 2.31297 8.25 3.29797 8.25 4.47697V5.39297M15.75 5.39297C13.2537 5.20005 10.7463 5.20005 8.25 5.39297"
+                    stroke="#CA1515" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template ecTemplate="emptymessage">
+          <div class="text-center pt-4">
+            <div class="text-[#a0a0a0] text-xs font-bold font-['Inter'] tracking-wide">Sin antecedentes registrados
+            </div>
+          </div>
+        </ng-template>
+      </ec-table>
+
+      <div class="flex justify-end pt-6 pb-4">
+        <button type="button" class="b-secondary" (click)="showModalAntecedent()">Añadir antecedente</button>
+      </div>
+    </div>
+
+    <div
+      class="sticky bottom-0 z-10 bg-white justify-end items-center gap-4 flex px-8 py-4 border-t rounded-b-lg border-gray-200 w-full">
+      <button type="button" (click)="cancel.emit()" class="b-normal bg-[#0f75bc]">
+        Cancelar
+      </button>
+      <button type="submit" class="b-normal bg-[#0f75bc]">
+        Guardar
+      </button>
+    </div>
+  </form>
+</div>
+
+
+<ec-dialog [visible]="showModalAntecedents()" [style]="{width: '30%'}">
+
+  <ng-template ecTemplate="header">
+    <div class="w-full px-4 py-2 bg-brand text-center text-white sticky top-0 z-10 rounded-t-lg">
+      @if (antecedentsForm.controls['id'].value) {
+        <div class="t-h2 font-bold">Actualización antecedente</div>
+      } @else {
+        <div class="t-h2 font-bold">Crear antecedente</div>
+      }
+    </div>
+  </ng-template>
+
+  <form [formGroup]="antecedentsForm" class="w-full flex flex-col gap-4 px-4 py-6" (ngSubmit)="saveFormRecord()">
+    <div class="grid gap-4">
+      <div class="i-field w-full">
+        <label>Tipo Antecedente</label>
+        <select formControlName="tipo_antecedente" class="cursor-pointer" (change)="selectAntecedente()">
+          <option value="" disabled>Seleccione un antecedente</option>
+          @for (antecedent of typeAntecedents; track antecedent) {
+            <option [value]="antecedent">{{ antecedent }}</option>
+          }
+        </select>
+      </div>
+      @if (antecedentsForm.get('tipo_antecedente')?.value === 'Otro') {
+        <div class="i-field w-full">
+          <label for="nombre_antecedente">Antecedente</label>
+          <input id="nombre_antecedente" formControlName="nombre_antecedente" type="text" name="nombre_antecedente"
+                 class="obu-input-default"/>
+        </div>
+      }
+      @if (antecedentsForm.get('nombre_antecedente')?.value) {
+        <div class="i-field w-full">
+          <label>Estado</label>
+          <select formControlName="estado_antecedente" class="cursor-pointer">
+            <option value="" disabled>Estado</option>
+            <option value="si">Si</option>
+            <option value="talvez">Talvez</option>
+          </select>
+        </div>
+      }
+    </div>
+    <div class="flex gap-4 justify-end">
+      <button type="submit"
+              class="cursor-pointer b-secondary h-10">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="size-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+          </svg>
+        </div>
+        <span>{{ antecedentsForm.controls['id'].value ? 'Actualizar' : 'Guardar' }}</span>
+      </button>
+      <button type="button" class="cursor-pointer b-normal" (click)="cancelModalAntecedent()">
+        <span>Cancelar</span>
+      </button>
+    </div>
+  </form>
+</ec-dialog>
+
+
+<app-block-ui [show]="isBlockPage()"></app-block-ui>

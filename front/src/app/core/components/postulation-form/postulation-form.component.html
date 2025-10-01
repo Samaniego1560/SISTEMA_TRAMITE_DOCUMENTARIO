@@ -1,0 +1,128 @@
+<app-modal
+  [(show)]="showModal"
+  title="Bienvenido Postulante"
+  buttonSuccess="Siguiente"
+  (onNext)="validateDebts()"
+>
+  <div class="space-y-4">
+    <div
+      class="w-full flex justify-center items-center font-bold text-slate-500 text-xl uppercase"
+    >
+      <span>Ingrese sus datos</span>
+    </div>
+
+    <div class="flex gap-4 items-center" [formGroup]="formPostulation">
+      <div class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+        <label>Tipo de estudiante:</label>
+        <select
+          [formControlName]="'type_student'"
+          class="border border-gray-200 text-gray-500 h-10 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        >
+          <option selected hidden>Seleccione una Opción</option>
+          <option
+            *ngFor="let typeStudent of typeStudents"
+            [value]="typeStudent.value"
+          >
+            {{ typeStudent.name }}
+          </option>
+        </select>
+        <small
+          class="text-red-500"
+          *ngIf="
+            formPostulation.get('type_student')?.invalid &&
+            formPostulation.get('type_student')?.touched
+          "
+        >
+          El Tipo de estudiante es requerido
+        </small>
+      </div>
+
+      <div class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+        <label>DNI:</label>
+        <input
+          type="text"
+          formControlName="dni_student"
+          class="w-full border border-gray-200 rounded-md h-10 px-4"
+        />
+        <small
+          class="text-red-500"
+          *ngIf="
+            formPostulation.get('dni_student')?.invalid &&
+            formPostulation.get('dni_student')?.touched
+          "
+        >
+          El DNI es requerido
+        </small>
+      </div>
+
+      <div class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+        <label>Correo Institucional</label>
+        <input
+          type="email"
+          formControlName="email_student"
+          class="w-full border border-gray-200 rounded-md h-10 px-4"
+        />
+        <small
+          class="text-red-500"
+          *ngIf="
+            formPostulation.get('email_student')?.invalid &&
+            formPostulation.get('email_student')?.touched &&
+            formPostulation.get('email_student')?.hasError('required')
+          "
+        >
+          El Correo Institucional es requerido
+        </small>
+        <small
+          class="text-red-500"
+          *ngIf="
+            formPostulation.get('email_student')?.invalid &&
+            formPostulation.get('email_student')?.touched &&
+            formPostulation.get('email_student')?.hasError('email')
+          "
+        >
+          El Correo Institucional no es valido
+        </small>
+      </div>
+    </div>
+
+    <div
+      class="w-full flex justify-center items-center font-bold text-slate-500 uppercase"
+    ></div>
+
+    <div
+      class="w-full flex justify-center items-center font-bold text-slate-500 uppercase"
+    >
+      <span>Elija los servicios a los que desea postular</span>
+    </div>
+  
+    <div class="flex justify-between px-6" [formGroup]="formPostulation">
+      <div class="text-sm text-slate-500 flex gap-4 items-center">
+        <label class="uppercase">Comedor:</label>
+        <input
+          type="checkbox"
+          formControlName="eat_service"
+          class="shrink-0 cursor-pointer mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+        />
+      </div>
+      <div class="text-sm text-slate-500 flex gap-4 items-center">
+        <label class="uppercase">Residencia:</label>
+        <input
+          type="checkbox"
+          formControlName="resident_service"
+          class="shrink-0 cursor-pointer mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+        />
+      </div>
+    </div>
+  
+  </div>
+</app-modal>
+
+<app-alert-debts
+  [(showModal)]="showModalDebt"
+  [debts]="debts"
+></app-alert-debts>
+
+<app-alert-debts [(showModal)]="showModalDebt" [debts]="debts"></app-alert-debts>
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+

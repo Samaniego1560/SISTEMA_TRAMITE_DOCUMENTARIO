@@ -1,0 +1,28 @@
+<form [formGroup]="reportForm" (ngSubmit)="onSearchReport()" class="flex flex-col gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+    <div class="i-field">
+      <label>Desde</label>
+      <input formControlName="fecha_inicio" type="date">
+    </div>
+
+    <div class="i-field">
+      <label>Hasta</label>
+      <input formControlName="fecha_fin" type="date">
+    </div>
+
+  </div>
+
+  <div class="flex items-end gap-2">
+    <button type="submit"
+            class="bg-[#1cbb9c] b-primary">
+      Generar
+    </button>
+    <button type="button" (click)="clearFilterReport()"
+            class="b-normal">
+      Limpiar
+    </button>
+  </div>
+</form>
+
+<app-block-ui [show]="isBlockPage"></app-block-ui>

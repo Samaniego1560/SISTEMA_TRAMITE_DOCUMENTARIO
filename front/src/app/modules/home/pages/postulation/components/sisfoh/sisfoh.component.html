@@ -1,0 +1,80 @@
+<app-modal
+  [(show)]="isShow"
+  title="SISFOH PERÚ"
+  buttonSuccess="Siguiente"
+  (onNext)="nextProcess()"
+  (showChange)="backProcess()"
+
+>
+  <div class="space-y-4">
+    @if(currentIndex === 1) {
+
+      <div class="w-full">
+        <div
+          class="w-full flex justify-center items-center font-bold text-slate-500 text-xl uppercase"
+        >
+          <span>Consulta mi Horgar</span>
+        </div>
+
+        <img *ngIf="captchaUrl" [src]="'data:image/png;base64,' + captchaUrl" alt="Captcha" />
+
+        <div>
+          <input
+            type="text"
+            class="w-full border border-gray-200 rounded-md h-10 px-4"
+            [(ngModel)]="valueCaptcha"
+          />
+        </div>
+      </div>
+    }
+
+    @if (currentIndex === 2) {
+      <div>
+        <div class="flex gap-4 items-center" [formGroup]="formSisfoh">
+          <div class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+            <label>Tipo de estudiante:</label>
+
+
+          </div>
+
+          <div class="text-sm text-slate-500 flex gap-4 flex-col w-full">
+            <label>Correo Institucional</label>
+            <input
+              type="email"
+              formControlName="email_student"
+              class="w-full border border-gray-200 rounded-md h-10 px-4"
+            />
+            <small
+              class="text-red-500"
+              *ngIf="
+            formSisfoh.get('email_student')?.invalid &&
+            formSisfoh.get('email_student')?.touched &&
+            formSisfoh.get('email_student')?.hasError('required')
+          "
+            >
+              El Correo Institucional es requerido
+            </small>
+            <small
+              class="text-red-500"
+              *ngIf="
+            formSisfoh.get('email_student')?.invalid &&
+            formSisfoh.get('email_student')?.touched &&
+            formSisfoh.get('email_student')?.hasError('email')
+          "
+            >
+              El Correo Institucional no es valido
+            </small>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div
+      class="w-full flex justify-center items-center font-bold text-slate-500 uppercase"
+    >
+      <span>Servicios a Solicitar</span>
+    </div>
+
+
+  </div>
+</app-modal>

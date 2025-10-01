@@ -1,0 +1,70 @@
+<ec-table [dataSource]="patientRecord().consultas" class="w-full">
+  <ng-template ecTemplate="header">
+    <tr>
+      <th>{{ 'N°' }}</th>
+      <th>{{ 'DNI' }}</th>
+      <th>{{ 'Apellidos' }}</th>
+      <th>{{ 'Nombres' }}</th>
+      <th>{{ 'Tipo de paciente' }}</th>
+      <th>{{ 'Fecha consulta' }}</th>
+      <th>{{ 'Servicios' }}</th>
+      <th>{{ 'Area asignada' }}</th>
+      <th>{{ 'Opciones' }}</th>
+    </tr>
+  </ng-template>
+
+  <ng-template ecTemplate="body" let-item let-index="index">
+    <tr>
+      <td>{{ index + 1 }}</td>
+      <td>{{ patientRecord().paciente.dni }}</td>
+      <td>{{ patientRecord().paciente.apellidos }}</td>
+      <td>{{ patientRecord().paciente.nombres }}</td>
+      <td>{{ patientRecord().paciente.tipo_persona }}</td>
+      <td>{{ item.fecha_consulta }}</td>
+      <td>{{ item.servicios }}</td>
+      <td>{{ item.area_asignada | titlecase }}</td>
+      <td class="flex gap-4">
+        <button (click)="showListAreas.set(true); selectedConsultation.set(item)"
+                [disabled]="item.area_asignada !== 'medicina'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               [style]="{fill: item.area_asignada === 'medicina' ? '#154ECA' : '#154eca5c'}">
+            <path
+              d="M19.924 10.383a1 1 0 0 0-.217-1.09l-5-5-1.414 1.414L16.586 9H4v2h15a1 1 0 0 0 .924-.617zM4.076 13.617a1 1 0 0 0 .217 1.09l5 5 1.414-1.414L7.414 15H20v-2H5a.999.999 0 0 0-.924.617z"></path>
+          </svg>
+        </button>
+        <button (click)="onEditConsultation(item.id)" [disabled]="item.area_asignada !== 'medicina'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M16.862 4.487L18.549 2.799C18.9007 2.44733 19.3777 2.24976 19.875 2.24976C20.3723 2.24976 20.8493 2.44733 21.201 2.799C21.5527 3.15068 21.7502 3.62766 21.7502 4.125C21.7502 4.62235 21.5527 5.09933 21.201 5.451L10.582 16.07C10.0533 16.5984 9.40137 16.9867 8.685 17.2L6 18L6.8 15.315C7.01328 14.5986 7.40163 13.9467 7.93 13.418L16.862 4.487ZM16.862 4.487L19.5 7.125M18 14V18.75C18 19.3467 17.7629 19.919 17.341 20.341C16.919 20.763 16.3467 21 15.75 21H5.25C4.65326 21 4.08097 20.763 3.65901 20.341C3.23705 19.919 3 19.3467 3 18.75V8.25C3 7.65327 3.23705 7.08097 3.65901 6.65901C4.08097 6.23706 4.65326 6 5.25 6H10"
+              [style]="{stroke: item.area_asignada === 'medicina' ? '#154ECA' : '#154eca5c'}" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</ec-table>
+
+<app-block-ui [show]="isBlockPage()"></app-block-ui>
+
+<app-modal [show]="showListAreas()" [showFooter]="false" title="Asignación de área" (showChange)="onCancelAssignmentArea()">
+  <div class="flex flex-col justify-center items-center gap-6">
+    <div class="obu-input-field cursor-pointer">
+      <label>Asignar área</label>
+
+      <select #assignArea
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option value="" selected disabled>Seleccione área</option>
+        <option value="enfermería">Enfermería</option>
+      </select>
+    </div>
+    <div class="w-full">
+      <div class="flex justify-center items-center gap-4">
+        <button (click)="onUpdateAssignedArea(assignArea.value)"
+                class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100">
+          Asignar
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>

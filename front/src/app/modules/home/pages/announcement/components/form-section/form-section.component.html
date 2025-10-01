@@ -1,0 +1,33 @@
+
+<app-modal [(show)]="showModal" [title]="titleModal"
+           [showFooter]="typeProcess() !== 'show'"
+           (onNext)="createOrUpdateSection()"
+>
+  <form class="space-y-4" [formGroup]="formSection">
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Descripción</label>
+      <textarea formControlName="description"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+      </textarea>
+      <small class="text-red-500"
+             *ngIf="formSection.get('description')?.invalid && formSection.get('description')?.touched && formSection.get('description')?.hasError('required')">
+        La descripción es requerida
+      </small>
+    </div>
+    <div class="grid grid-cols-2 gap-4 ">
+      <div>
+        <label class="block mb-2 text-sm font-medium text-gray-900">Formato</label>
+        <select formControlName="type"
+                class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+          <option selected hidden>Seleccione un formato</option>
+          <option value="form">Formulario</option>
+          <option value="table">Tabla</option>
+        </select>
+        <small class="text-red-500"
+               *ngIf="formSection.get('type')?.invalid && formSection.get('type')?.touched && formSection.get('type')?.hasError('required')">
+          Seleccione un formato
+        </small>
+      </div>
+    </div>
+  </form>
+</app-modal>

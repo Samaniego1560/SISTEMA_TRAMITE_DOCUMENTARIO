@@ -1,0 +1,372 @@
+<app-block-ui [show]="isLoading"></app-block-ui>
+
+<div
+  class="w-full px-8 py-2 overflow-auto pb-24"
+  style="height: calc(100vh - 64px)"
+>
+  <app-toast key="visita-residente"></app-toast>
+  <app-block-ui *ngIf="isLoading"></app-block-ui>
+  
+  <div class="bg-white shadow-sm mb-6">
+    <div class="mx-auto px-2 sm:px-2 lg:px-1 py-6">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            Visitas Residentes
+          </h1>
+        
+        </div>
+        <div class="flex-shrink-0 w-full lg:w-auto max-w-full">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <label for="convocatoria-select" class="text-sm font-medium text-gray-700 whitespace-nowrap flex-shrink-0">
+              Convocatoria:
+            </label>
+            <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
+              <select 
+                id="convocatoria-select"
+                (change)="onConvocatoriaChange($event)"
+                [value]="convocatoriaId"
+                class="w-full sm:min-w-48 lg:min-w-64 max-w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm truncate"
+                [disabled]="isLoadingConvocatorias"
+              >
+                <option value="">Seleccione una convocatoria</option>
+                <option *ngFor="let conv of convocatorias" [value]="conv.id">
+                  {{ conv.nombre }}
+                </option>
+              </select>
+              
+              <div *ngIf="isLoadingConvocatorias" class="flex items-center flex-shrink-0">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto px-2 sm:px-2 lg:px-1">
+
+    <div class="bg-white rounded-lg shadow">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex" aria-label="Tabs">
+          <button
+            (click)="cambiarTab('pendientes')"
+            [class]="activeTab === 'pendientes' 
+              ? 'border-orange-500 text-orange-600 bg-orange-50' 
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            class="flex-1 whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors"
+          >
+            <div class="flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Alumnos por Visitar
+              <span class="ml-2 bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                {{ residentesPendientes.length }}
+              </span>
+            </div>
+          </button>
+          <button
+            (click)="cambiarTab('visitados')"
+            [class]="activeTab === 'visitados' 
+              ? 'border-blue-500 text-blue-600 bg-blue-50' 
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            class="flex-1 whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
+            <div class="flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Visitas Registradas
+              <span class="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                {{ visitaData.length }}
+              </span>
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      <div class="p-6">
+        <div *ngIf="activeTab === 'pendientes'">
+          <div *ngIf="residentesPendientes.length > 0; else noPendientes">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium text-gray-900">Estudiantes por Visitar</h3>
+              <div class="text-sm text-gray-500">
+                {{ residentesPendientes.length }} estudiante(s) pendiente(s)
+              </div>
+            </div>
+            
+            <app-table
+              [columns]="tablePendientesColumns"
+              [data]="residentesPendientes"
+              [actions]="tablePendientesActions"
+              [filters]="tablePendientesFilters"
+              (registerItem)="onRegisterItem($event)"
+            ></app-table>
+          </div>
+          
+          <ng-template #noPendientes>
+            <div class="text-center py-12">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">No hay estudiantes pendientes</h3>
+              <p class="mt-1 text-sm text-gray-500">
+                Todos los estudiantes de esta convocatoria han sido visitados.
+              </p>
+            </div>
+          </ng-template>
+        </div>
+
+        <div *ngIf="activeTab === 'visitados'">
+          <div *ngIf="visitaData.length > 0; else noVisitados">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium text-gray-900">Historial de Visitas</h3>
+              <div class="text-sm text-gray-500">
+                {{ visitaData.length }} visita(s) registrada(s)
+              </div>
+            </div>
+            
+            <app-table
+              [columns]="tableColumns"
+              [data]="visitaData"
+              [actions]="tableActions"
+              [filters]="tableFilters"
+              (viewItem)="onViewItem($event)"
+              (editItem)="onEditItem($event)"
+              (deleteItem)="onDeleteItem($event)"
+            ></app-table>
+          </div>
+          
+          <ng-template #noVisitados>
+            <div class="text-center py-12">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">No hay visitas registradas</h3>
+              <p class="mt-1 text-sm text-gray-500">
+                Comience registrando visitas a los estudiantes pendientes.
+              </p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="mt-6 bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Error</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-modal 
+    [(show)]="showModal"
+    [title]="modalTitle"
+    [buttonSuccess]="modalButtonText"
+    [showButtonCancel]="modoFormulario !== 'ver'"
+    [showFooter]="true"
+    (onNext)="modoFormulario === 'ver' ? (showModal = false) : guardarVisita()"
+  >
+    <form [formGroup]="formVisita" class="space-y-6">
+      <div *ngIf="visitaSeleccionada || residenteSeleccionado" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+        <h4 class="font-semibold text-blue-900 mb-3 flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          Información del Residente
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Nombre:</span>
+            <span class="ml-2 text-gray-900 truncate">
+              {{ visitaSeleccionada?.alumno_nombre || residenteSeleccionado?.nombre }}
+            </span>
+          </div>
+          <div class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Código:</span>
+            <span class="ml-2 text-gray-900">
+              {{ visitaSeleccionada?.alumno_codigo || residenteSeleccionado?.codigo }}
+            </span>
+          </div>
+          <div class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Escuela:</span>
+            <span class="ml-2 text-gray-900 truncate">
+              {{ visitaSeleccionada?.escuela_profesional || residenteSeleccionado?.escuela_profesional }}
+            </span>
+          </div>
+          <div class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Procedencia:</span>
+            <span class="ml-2 text-gray-900 truncate">
+              {{ visitaSeleccionada?.lugar_procedencia || residenteSeleccionado?.lugar_procedencia }}
+            </span>
+          </div>
+          <div *ngIf="residenteSeleccionado" class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Teléfono:</span>
+            <span class="ml-2 text-gray-900">{{ residenteSeleccionado.celular }}</span>
+          </div>
+          <div *ngIf="residenteSeleccionado" class="flex items-center">
+            <span class="font-medium text-gray-700 min-w-0 flex-shrink-0">Dirección:</span>
+            <span class="ml-2 text-gray-900 truncate">{{ residenteSeleccionado.direccion }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="estado" class="block text-sm font-medium text-gray-700">
+          <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Estado de la Visita <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select 
+            id="estado"
+            formControlName="estado"
+            class="w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none bg-white"
+            [class.border-red-500]="esCampoInvalido('estado')"
+          >
+            <option value="" disabled>Seleccione el estado de la visita</option>
+            <option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </option>
+          </select>
+
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div *ngIf="formVisita.get('estado')?.value" class="flex items-center mt-2 p-2 bg-gray-50 rounded-md">
+          <span 
+            class="inline-block w-3 h-3 rounded-full mr-2"
+            [class.bg-orange-500]="formVisita.get('estado')?.value === 'pendiente'"
+            [class.bg-green-500]="formVisita.get('estado')?.value === 'verificado'"
+            [class.bg-red-500]="formVisita.get('estado')?.value === 'observado'"
+          ></span>
+          <span class="text-sm text-gray-700">
+            {{ getEstadoSeleccionado()?.label }}
+          </span>
+          
+        </div>
+        
+        <div *ngIf="esCampoInvalido('estado')" class="text-red-500 text-xs mt-1">
+          <span *ngIf="tieneCampoError('estado', 'required')">Debe seleccionar un estado para la visita</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="comentario" class="block text-sm font-medium text-gray-700">
+          <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+          </svg>
+          Observaciones de la Visita (opcional)
+        </label>
+        <div class="relative">
+          <textarea 
+            id="comentario"
+            formControlName="comentario"
+            rows="4"
+            class="w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+            placeholder="Describa los detalles de la visita, condiciones encontradas, observaciones importantes..."
+          ></textarea>
+          <div class="absolute bottom-3 right-3 text-xs text-gray-400">
+            {{ formVisita.get('comentario')?.value?.length || 0 }} caracteres
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="imagen_url" class="block text-sm font-medium text-gray-700">
+          <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          Evidencia Fotográfica (opcional)
+        </label>
+        <input 
+          type="url"
+          id="imagen_url"
+          formControlName="imagen_url"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="https://ejemplo.com/imagen.jpg"
+        />
+        <p class="text-xs text-gray-500">
+          URL de imagen como evidencia de la visita (opcional)
+        </p>
+      </div>
+
+      <div *ngIf="modoFormulario === 'ver' && visitaSeleccionada" class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h5 class="font-medium text-gray-900 mb-3">Información de Registro</h5>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <label class="block font-medium text-gray-700">Fecha de Creación</label>
+            <p class="mt-1 text-gray-900">{{ visitaSeleccionada.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          <div>
+            <label class="block font-medium text-gray-700">Última Actualización</label>
+            <p class="mt-1 text-gray-900">{{ visitaSeleccionada.fecha_actualizacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          <div>
+            <label class="block font-medium text-gray-700">Usuario Registrador</label>
+            <p class="mt-1 text-gray-900">{{ visitaSeleccionada.usuario_nombre }}</p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </app-modal>
+
+  <app-modal
+    [(show)]="deleteModal"
+    [showHeader]="false"
+    buttonSuccess="Aceptar"
+    [showButtonCancel]="true"
+    (onNext)="deleteUser()"
+  >
+    <div class="flex items-center justify-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-28 h-28 text-amber-300"
+        viewBox="0 0 512 512"
+      >
+        <path
+          d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+          fill="none"
+          stroke="currentColor"
+          stroke-miterlimit="10"
+          stroke-width="32"
+        />
+        <path
+          d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="32"
+        />
+        <path
+          d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z"
+          stroke="currentColor"
+          class="fill-amber-300"
+        />
+      </svg>
+    </div>
+    <div
+      class="flex justify-center items-center text-slate-500 font-bold text-xl"
+    >
+      <span>¿Está seguro de eliminar la visita a {{ visitaSeleccionada?.alumno_nombre || 'este estudiante' }}?</span>
+    </div>
+  </app-modal>
+</div>

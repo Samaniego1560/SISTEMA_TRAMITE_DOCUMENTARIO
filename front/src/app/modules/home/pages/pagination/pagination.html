@@ -1,0 +1,28 @@
+<div class="flex items-center gap-1">
+    <button
+      class="px-3 py-1 border rounded hover:bg-gray-100"
+      [disabled]="currentPage === 1"
+      (click)="goToPage(currentPage - 1)">
+      &#171;
+    </button>
+  
+    <button
+      *ngFor="let page of getDisplayedPages()"
+      class="px-3 py-1 border rounded"
+      [ngClass]="{
+        'bg-blue-500 text-white': page === currentPage,
+        'hover:bg-gray-100': page !== currentPage && page !== '...'
+      }"
+      [disabled]="page === '...'"
+      (click)="page !== '...' && goToPage(page)">
+      {{ page }}
+    </button>
+  
+    <button
+      class="px-3 py-1 border rounded hover:bg-gray-100"
+      [disabled]="currentPage === totalPages"
+      (click)="goToPage(currentPage + 1)">
+      &#187;
+    </button>
+  </div>
+  

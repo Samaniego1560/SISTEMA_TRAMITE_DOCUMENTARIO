@@ -1,0 +1,204 @@
+
+<app-modal [(show)]="showModal" [title]="titleModal"
+           [showFooter]="typeProcess() !== 'show'"
+           (onNext)="createOrUpdateRequirement()"
+>
+<form class="space-y-4" [formGroup]="formRequirement">
+  <div>
+    <label for="name_req" class="block mb-2 text-sm text-gray-500 font-bold">Nombre</label>
+    <input type="text" name="name" formControlName="name" id="name_req"
+           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+           required/>
+    <small class="text-red-500"
+           *ngIf="formRequirement.get('name')?.invalid && formRequirement.get('name')?.touched && formRequirement.get('name')?.hasError('required')">
+      El nombre es requerido
+    </small>
+  </div>
+  <div>
+    <label class="block mb-2 text-sm font-medium text-gray-900">Descripción</label>
+    <textarea formControlName="description"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+      </textarea>
+    <small class="text-red-500"
+           *ngIf="formRequirement.get('description')?.invalid && formRequirement.get('description')?.touched && formRequirement.get('description')?.hasError('required')">
+      La descripción es requerida
+    </small>
+  </div>
+  <div class="grid grid-cols-2 gap-4 ">
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Formato</label>
+      <select formControlName="format" (change)="changeFormat()"
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option selected hidden>Seleccione un formato</option>
+        @for (format of formatOptions; track format) {
+          <option [value]="format.value">{{format.label}}</option>
+        }
+      </select>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('format')?.invalid && formRequirement.get('format')?.touched && formRequirement.get('format')?.hasError('required')">
+        Seleccione un formato
+      </small>
+    </div>
+    <div *ngIf="formRequirement.get('format')?.value === '1' || formRequirement.get('format')?.value === '2'">
+      <label for="file_guia" class="block mb-2 text-sm font-medium text-gray-900">Guía</label>
+      <input type="file" name="file_guia" id="file_guia" (change)="processFile($event)"
+             [disabled]="typeProcess() === 'view'"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             required/>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('guide')?.invalid && formRequirement.get('guide')?.touched && formRequirement.get('guide')?.hasError('required')">
+        La guía es requerida
+      </small>
+    </div>
+    <div *ngIf="formRequirement.get('format')?.value === '4' || formRequirement.get('format')?.value === '5' || formRequirement.get('format')?.value === '6'">
+      <label class="block mb-2 text-sm font-medium text-gray-900">Opciones separado por |</label>
+      <input type="text"
+             formControlName="options"
+             class="form-control h-12 w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-900">
+
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('options')?.invalid && formRequirement.get('options')?.touched && formRequirement.get('options')?.hasError('required')">
+        Ingresa las opciones
+      </small>
+    </div>
+    <div *ngIf="formRequirement.get('format')?.value === '3'">
+      <label class="block mb-2 text-sm font-medium text-gray-900">Tipo de dato</label>
+      <select formControlName="type_input"
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option selected hidden>Seleccione un tipo de dato</option>
+        <option value="text">Texto</option>
+        <option value="number">Númerico</option>
+        <option value="date">Fecha</option>
+      </select>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('text_type')?.invalid && formRequirement.get('text_type')?.touched && formRequirement.get('text_type')?.hasError('required')">
+        Seleccione un tipo de texto
+      </small>
+    </div>
+  </div>
+  <div class="flex justify-between">
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Estado</label>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-500">Inactivo</span>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" formControlName="active">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+        </label>
+        <span class="text-sm text-gray-500">Activo</span>
+      </div>
+    </div>
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Recuperable</label>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-500">Inactivo</span>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" formControlName="is_recoverable">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+        </label>
+        <span class="text-sm text-gray-500">Activo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 ">
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Color de texto</label>
+      <input type="color"
+             formControlName="text_color"
+             class="form-control h-12 w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-900">
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('text_color')?.invalid && formRequirement.get('text_color')?.touched && formRequirement.get('text_color')?.hasError('required')">
+        Seleccione un color
+      </small>
+    </div>
+
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Tipo de texto</label>
+      <select formControlName="text_type"
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option selected hidden>Seleccione un tipo de texto</option>
+        <option value="bold">Negrita</option>
+        <option value="normal">Normal</option>
+        <option value="light">Light</option>
+        <option value="italic">Cursiva</option>
+      </select>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('text_type')?.invalid && formRequirement.get('text_type')?.touched && formRequirement.get('text_type')?.hasError('required')">
+        Seleccione un tipo de texto
+      </small>
+    </div>
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Tamaño de texto</label>
+      <select formControlName="text_size" (change)="changeFormat()"
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        <option selected hidden>Seleccione tamaño de texto</option>
+        <option value="sm">Pequeño</option>
+        <option value="md">Mediano</option>
+        <option value="lg">Grande</option>
+      </select>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('text_size')?.invalid && formRequirement.get('text_size')?.touched && formRequirement.get('text_size')?.hasError('required')">
+        Seleccione un tamaño de texto
+      </small>
+    </div>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-medium text-gray-900">Dependiente</label>
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-500">No</span>
+      <label class="inline-flex items-center cursor-pointer">
+        <input type="checkbox" value="" class="sr-only peer" formControlName="is_dependent">
+        <div
+          class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+      </label>
+      <span class="text-sm text-gray-500">Si</span>
+    </div>
+  </div>
+
+  <div *ngIf="formRequirement.get('is_dependent')?.value" class="grid grid-cols-3 gap-4 ">
+    <div class="w-full max-w-sm">
+      <label class="block mb-2 text-sm font-medium text-gray-900">Campo que depende</label>
+      <select formControlName="field_dependent"
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-12 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 truncate">
+        <option selected hidden>Seleccione el campo</option>
+        @for (name of requirementNames(); track name) {
+          <option value="{{name}}">{{ name }}</option>
+        }
+      </select>
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('field_dependent')?.invalid && formRequirement.get('field_dependent')?.touched && formRequirement.get('text_type')?.hasError('required')">
+        Seleccione el campo
+      </small>
+    </div>
+
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Valor del campo</label>
+      <input type="text"
+             formControlName="value_dependent"
+             class="form-control h-12 w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-900">
+
+      <small class="text-red-500"
+             *ngIf="formRequirement.get('value_dependent')?.invalid && formRequirement.get('value_dependent')?.touched && formRequirement.get('text_color')?.hasError('required')">
+        Seleccione un color
+      </small>
+    </div>
+
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-900">Campo oculto</label>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-500">No</span>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" formControlName="show_dependent">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+        </label>
+        <span class="text-sm text-gray-500">Si</span>
+      </div>
+    </div>
+  </div>
+</form>
+</app-modal>

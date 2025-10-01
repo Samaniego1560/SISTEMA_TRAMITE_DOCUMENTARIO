@@ -1,0 +1,95 @@
+<div class="w-full p-10 flex-col justify-start items-start gap-5 flex" style="height: calc(100vh - 80px - 64px)">
+  <div class="flex-col justify-start items-start gap-4 flex">
+    <div class="text-[#334155] text-2xl font-medium">Lista de atenciones</div>
+  </div>
+
+  <div class="flex items-center justify-between w-full">
+    <div class="flex gap-2">
+      <div class="rounded-sm border border-[#d5d8dc] relative">
+        <div class="absolute top-1/4 left-1 pl-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21 21L15.803 15.803M15.803 15.803C17.2096 14.3965 17.9998 12.4887 17.9998 10.4995C17.9998 8.51035 17.2096 6.60262 15.803 5.19605C14.3965 3.78947 12.4887 2.99927 10.4995 2.99927C8.51035 2.99927 6.60262 3.78947 5.19605 5.19605C3.78947 6.60262 2.99927 8.51035 2.99927 10.4995C2.99927 12.4887 3.78947 14.3965 5.19605 15.803C6.60262 17.2096 8.51035 17.9998 10.4995 17.9998C12.4887 17.9998 14.3965 17.2096 15.803 15.803Z"
+              stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <input [(ngModel)]="dniPatient" class="text-gray-900 focus:outline-none text-sm w-full pl-10 py-2 pr-2"
+               placeholder="DNI paciente">
+      </div>
+
+      <button type="button"
+              class="b-secondary !rounded-l-sm" (click)="searchConsultation()">
+        Buscar atención
+      </button>
+    </div>
+    <button type="button"
+            class="b-primary" (click)="onRegisterConsulting()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="32" d="M256 112v288M400 256H112"/>
+      </svg>
+      Registrar atención
+    </button>
+  </div>
+
+    @if (patientRecord()) {
+      <div class="w-full overflow-y-scroll">
+      <app-consultation-list [patientRecord]="patientRecord()!" (refresh)="onRefresh()"/>
+      </div>
+    } @else {
+      <div class="w-full h-full flex justify-center items-center">
+        <div class="w-[500px]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+            <defs>
+              <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.15"/>
+              </filter>
+            </defs>
+
+            <!-- Ilustración de carpeta médica - movida hacia arriba -->
+            <g transform="translate(85, 15)" filter="url(#shadow)">
+              <!-- Carpeta base -->
+              <path d="M0,0 L70,0 L70,80 L0,80 Z" fill="#F5F5F5" stroke="#0F75BC" stroke-width="2"/>
+
+              <!-- Hojas de papel -->
+              <rect x="10" y="15" width="50" height="60" fill="white" stroke="#CCCCCC" stroke-width="1"/>
+              <rect x="15" y="25" width="40" height="2" fill="#E0E0E0"/>
+              <rect x="15" y="35" width="40" height="2" fill="#E0E0E0"/>
+              <rect x="15" y="45" width="30" height="2" fill="#E0E0E0"/>
+
+              <!-- Cruz médica -->
+              <rect x="55" y="5" width="10" height="10" fill="#0F75BC" rx="2"/>
+              <rect x="57.5" y="7" width="5" height="6" fill="white" rx="1"/>
+              <rect x="55" y="9.5" width="10" height="1" fill="white" rx="0.5"/>
+            </g>
+
+            <!-- Lupa en posición de búsqueda - también movida -->
+            <g transform="translate(150, 60) rotate(45)" filter="url(#shadow)">
+              <circle cx="0" cy="0" r="20" fill="white" stroke="#0F75BC" stroke-width="4"/>
+              <rect x="0" y="20" width="8" height="25" rx="4" fill="#0F75BC"/>
+            </g>
+
+            <!-- Texto instructivo claro - movido abajo, después de los iconos -->
+            <g transform="translate(120, 125)">
+              <rect x="-100" y="0" width="200" height="22" rx="5" fill="#0F75BC" opacity="0.1"/>
+              <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" fill="#0F75BC" text-anchor="middle"
+                    font-weight="bold">Busca atenciones de pacientes
+              </text>
+            </g>
+
+            <!-- Líneas que representan datos faltantes - movidas abajo del texto -->
+            <g transform="translate(45, 155)">
+              <rect x="0" y="0" width="150" height="3" rx="1.5" fill="#E0E0E0"/>
+              <rect x="0" y="10" width="150" height="3" rx="1.5" fill="#E0E0E0"/>
+              <rect x="0" y="20" width="90" height="3" rx="1.5" fill="#E0E0E0"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    }
+</div>
+
+<router-outlet></router-outlet>
+<app-toast></app-toast>
+<app-block-ui [show]="isBlockPage()"></app-block-ui>
+

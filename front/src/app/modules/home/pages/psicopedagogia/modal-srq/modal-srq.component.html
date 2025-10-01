@@ -1,0 +1,77 @@
+<div class="flex justify-end mb-2">
+    <button class="bg-gray-500 text-white px-2 py-1 rounded flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+    </button>
+</div>
+<div class="bg-gray-100">
+    <div class="bg-white shadow-md">
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex-1 border overflow-auto" style="height: 35rem;">
+                <div class="text-white font-bold p-2" style="background: #1ABB9C;">
+                    INFORMACIÓN DEL PACIENTE
+                </div>
+                <div class="p-4 space-y-2">
+                    <p class="border-b pb-2"><strong>Apellidos y Nombres:</strong> {{ student.apellido_estudiante }} {{ student.nombre_estudiante}}</p>
+                    <p class="border-b pb-2"><strong>Edad:</strong> {{ additionalInfoStudent.edad }}</p>
+                    <p class="border-b pb-2"><strong>Lugar de nacimiento:</strong> {{ additionalInfoStudent.lugar_nacimiento }}</p>
+                    <p class="border-b pb-2"><strong>Con quiénes vive actualmente:</strong> {{ student.con_quienes_vive_actualmente }}</p>
+                    <p class="border-b pb-2"><strong>Ciclo Actual:</strong> {{ student.semestre_cursa }}</p>
+                    <p class="border-b pb-2"><strong>Fecha de Nacimiento:</strong> {{ additionalInfoStudent.fecha_nacimiento.split("T")[0] }}</p>
+                    <p class="border-b pb-2"><strong>Colegio de procedencia:</strong> {{ additionalInfoStudent.colegio_procedencia }}</p>
+                    <p class="border-b pb-2"><strong>Modalidad de ingreso a la UNAS:</strong> {{ additionalInfoStudent.modalidad_ingreso}}</p>
+                    <p class="border-b pb-2"><strong>Año que ingresó a la universidad:</strong> {{ additionalInfoStudent.anio_ingreso }}</p>
+                    <p class="border-b pb-2"><strong>Fecha de evaluación:</strong> {{ additionalInfoStudent.created_at.split("T")[0] }}</p>
+
+                    <p class="border-b pb-2"><strong>Motivo de Consulta:</strong> {{ student.motivo_consulta}}</p>
+                    <p class="border-b pb-2"><strong>Situacion Actual:</strong> {{  student.situacion_actual }}</p>
+                    <p class="border-b pb-2"><strong>Otros Procedimientos:</strong> {{ student.otros_procedimientos }}</p>
+                    <p class="border-b pb-2"><strong>Notas de Atención:</strong> {{ student.notas_atencion }}</p>
+                    <p class="border-b pb-2"><strong>Instrumentos Utilizados:</strong> {{ student.instrumentos_utilizados }}</p>
+                    <p class="border-b pb-2"><strong>Resultados Obtenidos:</strong> {{ student.resultados_obtenidos }}</p>
+                    <p class="border-b pb-2"><strong>Dirección:</strong> {{ student.direccion }}</p>
+                    <p class="border-b pb-2"><strong>Facultad:</strong> {{ student.escuela }}</p>
+                </div>
+            </div>
+            <div class="flex-1 overflow-auto" style="height: 35rem;">
+                <div class="text-white font-bold p-2" style="background: #1ABB9C;">
+                    S.R.Q
+                </div>
+                <div *ngIf="questions.length === 0" class="text-center text-gray-600 p-4 italic">
+                    Este paciente no respondió la encuesta S.R.Q 📝
+                </div>
+                <table *ngIf="questions.length > 0" class="min-w-full bg-white border border-gray-200">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="border p-2">#</th>
+                            <th class="border p-2">Pregunta</th>
+                            <th class="border p-2">Sí</th>
+                            <th class="border p-2">No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let question of questions; let i = index">
+                            <td class="border p-2">{{ i + 1 }}</td>
+                            <td class="border p-2">{{ question.texto }}</td>
+                            <td class="border p-2 text-center">{{ question.respuesta === 'SI' ? '✔' : '' }}</td>
+                            <td class="border p-2 text-center">{{ question.respuesta === 'NO' ? '✔' : '' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="flex justify-between mt-2">
+    <button (click)="exitInfoHistory()" class="bg-gray-500 text-white px-2 py-1 rounded flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+            <line x1="19" y1="12" x2="9" y2="12" />
+        </svg>
+    </button>
+</div>

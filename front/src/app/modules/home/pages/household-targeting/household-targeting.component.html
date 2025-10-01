@@ -1,0 +1,169 @@
+<div class="w-full h-full flex p-8 flex-col gap-8">
+  <div class="w-full flex justify-between">
+    <div class="text-slate-500 font-bold text-xl">
+      <span>Focalización de hogares</span>
+    </div>
+    <div class="block space-y-4">
+      <div>
+        <button
+                class="flex items-center justify-center capitalize px-5 py-2 text-sm text-gray-500 transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 512 512">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="32" d="M256 112v288M400 256H112"/>
+          </svg>
+          Registrar
+        </button>
+      </div>
+      <div class="flex space-x-4">
+        <label class="focus:outline-none h-full text-white hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 flex items-center gap-2" style="background: #1abb9c; white-space: nowrap;">
+          <input type="file" class="hidden" (change)="uploadData($event)" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white fill-white" viewBox="0 0 24 24">
+            <g id="file-excel">
+              <path d="M18.53,9,13,3.47a.75.75,0,0,0-.53-.22H8A2.75,2.75,0,0,0,5.25,6V18A2.75,2.75,0,0,0,8,20.75h8A2.75,2.75,0,0,0,18.75,18V9.5A.75.75,0,0,0,18.53,9ZM13.25,5.81l2.94,2.94H13.25ZM16,19.25H8A1.25,1.25,0,0,1,6.75,18V6A1.25,1.25,0,0,1,8,4.75h3.75V9.5a.76.76,0,0,0,.75.75h4.75V18A1.25,1.25,0,0,1,16,19.25Z" />
+              <path d="M14.47,11.91a.77.77,0,0,0-1.06.12L12,13.8,10.59,12A.75.75,0,1,0,9.41,13L11,15,9.41,17a.75.75,0,0,0,1.18.94L12,16.2,13.41,18a.77.77,0,0,0,.59.28A.75.75,0,0,0,14.59,17L13,15l1.63-2A.77.77,0,0,0,14.47,11.91Z" />
+            </g>
+          </svg>
+          Subir datos
+        </label>
+        <div
+          class="inline-flex overflow-hidden bg-white divide-x rounded-lg rtl:flex-row-reverse"
+        >
+          <input
+            type="text"
+            class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none"
+            placeholder="Buscar"
+            (input)="findRequest($event)"
+          />
+          <button
+            class="flex items-center justify-center px-4 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="container mx-auto space-y-4">
+    <div class="mt-6 flex justify-end" *ngIf="false">
+      <div class="inline-flex overflow-hidden bg-white divide-x rounded-lg rtl:flex-row-reverse">
+        <input type="text" class="w-full px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none"
+               placeholder="Buscar"/>
+        <button
+          class="flex items-center justify-center px-4 text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div class="overflow-hidden border border-gray-200 md:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500">
+                  <button class="flex items-center gap-x-3 focus:outline-none">
+                    <span>Dni</span>
+
+                    <svg class="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
+                        fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                      <path
+                        d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
+                        fill="currentColor" stroke="currentColor" stroke-width="0.1"/>
+                      <path
+                        d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
+                        fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+                    </svg>
+                  </button>
+                </th>
+
+                <th scope="col"
+                    class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                  Estado
+                </th>
+
+                <th scope="col"
+                    class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                  Fecha vigente
+                </th>
+                <th scope="col"
+                    class="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                  Acciones
+                </th>
+              </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                @for (householdTargeting of householdsTargeting; track householdTargeting; let i = $index) {
+                  <tr>
+                    <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                      <div>
+                        <h2 class="font-medium text-slate-500">{{ householdTargeting.dni }}</h2>
+                      </div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                      <div>
+                        <h2 class="font-medium text-slate-500">{{ householdTargeting.status }}</h2>
+                      </div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                      <div>
+                        <h2 class="font-medium text-slate-500">{{ householdTargeting.current_date }}</h2>
+                      </div>
+                    </td>
+
+
+                    <td class="px-12 py-4 text-sm font-medium whitespace-nowrap flex gap-4 justify-center">
+                      <div class="cursor-pointer flex justify-center" title="Eliminar"
+                           >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-500" viewBox="0 0 512 512">
+                          <path d="M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320"
+                                fill="none"
+                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                          <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"
+                                d="M80 112h352"/>
+                          <path
+                            d="M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="32"/>
+                        </svg>
+                      </div>
+                      <div class="cursor-pointer flex justify-center"
+
+                           title="Editar ">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-500" viewBox="0 0 512 512">
+                          <path d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48"
+                                fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="32"/>
+                          <path
+                            d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"/>
+                        </svg>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+

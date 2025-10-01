@@ -1,0 +1,29 @@
+<div class="flex flex-col gap-4">
+  <button type="button" class="w-full flex items-center gap-2 t-h2 text-brand-2 font-bold"
+          (click)="active.set(!active())">
+    <div class="cursor-pointer {{active() ? 'rotate-0' : '-rotate-90'}}">
+      <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 6L8 11L3 6" stroke="#1ABB9C" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span>Datos del acompañante (opcional)</span>
+  </button>
+
+  @if (active()) {
+    <form [formGroup]="companionForm" class="grid md:grid-cols-3 lg:grid-cols-4 w-full gap-4">
+      <div class="i-field">
+        <label>N° DNI</label>
+        <input formControlName="dni" type="text">
+      </div>
+      <div class="i-field">
+        <label>Nombres y apellidos</label>
+        <input formControlName="nombres_apellidos" type="text">
+      </div>
+      <div class="i-field">
+        <label>Edad</label>
+        <input formControlName="edad" type="text">
+      </div>
+    </form>
+  }
+</div>
