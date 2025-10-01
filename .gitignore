@@ -10,9 +10,6 @@
 # =====================
 # Angular / Node
 # =====================
-/frontend-angular/node_modules/
-/frontend-angular/dist/
-/frontend-angular/.env
 
 # =====================
 # Logs y temporales
