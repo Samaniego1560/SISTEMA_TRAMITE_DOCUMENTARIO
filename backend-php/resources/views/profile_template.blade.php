@@ -164,7 +164,7 @@
 
     <div style="text-align: right; margin-top: 200px;">
         <p style="border-top:1px solid black; display: inline-block; padding-top: 5px;">Firma de Dirección de Bienestar
-            Universitario</p>
+            Universitarioo</p>
     </div>
 
 </body>
