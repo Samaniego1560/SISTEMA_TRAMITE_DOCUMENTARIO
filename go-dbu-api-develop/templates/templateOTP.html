@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Verificación - DBU</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8edf2;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin: 0;
+        }
+        .content {
+            color: #34495e;
+            line-height: 1.6;
+        }
+        .content p {
+            margin: 0 0 20px 0;
+        }
+        .otp-box {
+            text-align: center;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 20px;
+            border-radius: 10px;
+        }
+        .otp-code {
+            color: #ffffff;
+            font-size: 42px;
+            font-weight: bold;
+            letter-spacing: 12px;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .otp-label {
+            color: #ffffff;
+            font-size: 12px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .expiry-info {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .expiry-info p {
+            color: #856404;
+            margin: 0;
+            font-size: 14px;
+        }
+        .expiry-info .time {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .warning-box {
+            background-color: #fef5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .warning-box p {
+            margin: 0 0 10px 0;
+            color: #721c24;
+        }
+        .warning-box .title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        .warning-box ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+            color: #721c24;
+        }
+        .warning-box ul li {
+            margin: 8px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e8edf2;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 12px;
+            color: #95a5a6;
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎓 UNAS - Dirección de Bienestar Universitario</div>
+            <h1>Código de Verificación</h1>
+            <p>Portal Estudiantil</p>
+        </div>
+
+        <div class="content">
+            <p>Hola <strong>{{.NombreEstudiante}}</strong>,</p>
+
+            <p>Has solicitado acceso al Portal Estudiantil de la Dirección de Bienestar Universitario. Para continuar, utiliza el siguiente código de verificación:</p>
+
+            <div class="otp-box">
+                <div class="otp-label">TU CÓDIGO DE VERIFICACIÓN</div>
+                <p class="otp-code">{{.CodigoOTP}}</p>
+            </div>
+
+            <div class="expiry-info">
+                <p>⏱️ Este código expira en <span class="time">{{.MinutosExpiracion}} minutos</span>.</p>
+                <p style="margin-top: 5px; font-size: 13px;">Por favor, ingrésalo pronto para acceder a tu información.</p>
+            </div>
+
+            <div class="warning-box">
+                <p class="title">⚠️ Importante - Seguridad:</p>
+                <ul>
+                    <li><strong>No compartas</strong> este código con nadie</li>
+                    <li>El personal de la DBU <strong>nunca te pedirá</strong> este código</li>
+                    <li>Si no solicitaste este código, <strong>ignora este correo</strong></li>
+                    <li>Usa este código solo en el <strong>Portal Estudiantil oficial</strong></li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 25px; font-size: 14px; color: #7f8c8d;">
+                Si tienes alguna duda o problema, comunícate con la Dirección de Bienestar Universitario.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad Nacional Agraria de la Selva - UNAS</strong></p>
+            <p>Dirección de Bienestar Universitario</p>
+            <p>Tingo María, Perú</p>
+            <p style="margin-top: 15px; color: #bdc3c7; font-size: 11px;">
+                Este es un correo automático generado por el Sistema DBU. Por favor, no respondas a este mensaje.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
