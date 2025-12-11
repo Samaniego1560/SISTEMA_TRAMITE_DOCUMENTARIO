@@ -7,6 +7,9 @@ use App\Models\Solicitud;
 use App\Models\Convocatoria;
 use App\Models\DetalleSolicitud;
 use App\Models\Servicio;
+use App\Models\Departament;
+use App\Models\Province;
+use App\Models\District;
 use Illuminate\Support\Collection;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -26,7 +29,7 @@ class UserProfilePdfService
                 'link_profile' => $linkProfile,
                 'announcements' => $convocatorias,
                 'first_section' => $primera_seccion,
-                'year' => '2024'
+                'year' => '2025'
             ];
         } catch (\Exception $e) {
             error_log("Error: " . $e->getMessage());
@@ -68,6 +71,24 @@ class UserProfilePdfService
                     $primera_seccion['description'] = $detalle['descripcion'];
                     $primera_seccion['type'] = $detalle['type'];
                     $primera_seccion['requirements'] = $this->processRequirements($detalle['requisitos']);
+                    // Sobrescribir con nombres y apellidos completos si est n disponibles
+                    foreach ($primera_seccion['requirements'] as &$req) {
+                        $nombreCampo = isset($req['name']) ? mb_strtolower(trim($req['name'])) : '';
+                        if ($nombreCampo === 'nombres' && !empty($item['alumno_nombres'] ?? '')) {
+                            $req['value'] = $item['alumno_nombres'];
+                        }
+                        if ($nombreCampo === 'apellidos' && !empty(trim($item['alumno_apellidos'] ?? ''))) {
+                            $req['value'] = $item['alumno_apellidos'];
+                        }
+                    }
+                    unset($req);
+                    // Agregar campo adicional para Ponderado Semestral (PSS)
+                    $primera_seccion['requirements'][] = [
+                        'name'  => 'Ponderado Semestral (PSS)',
+                        'type'  => 0,
+                        'value' => $item['pps'] ?? 'No proporcionado',
+                        'order' => 999,
+                    ];
                     break;
                 }
             }
@@ -100,7 +121,9 @@ class UserProfilePdfService
         foreach ($data as $item) {
             $convocatoria = [
                 'name' => $item['announcement_name'],
-                'details_requests' => $this->processDetailsRequests($item['detalle_solicitudes'])
+                'details_requests' => $this->processDetailsRequests($item['detalle_solicitudes']),
+                'pps' => $item['pps'] ?? null,
+                'solicitud_status' => $item['solicitud_status'] ?? null,
             ];
             $convocatorias[] = $convocatoria;
         }
@@ -112,11 +135,33 @@ class UserProfilePdfService
         $detalles = [];
         foreach ($detalleSolicitudes as $detalle) {
             if ($detalle['descripcion'] != 'Datos Personales') {
-                $detalles[] = [
-                    'description' => $detalle['descripcion'],
-                    'type' => $detalle['type'],
-                    'requirements' => $this->processRequirements($detalle['requisitos'])
-                ];
+                $reqs = $this->processRequirements($detalle['requisitos']);
+                if (($detalle['type'] ?? '') === 'table') {
+                    // Agrupar por 'order' para secciones tipo tabla (p.ej., Composici n familiar)
+                    $grouped = [];
+                    foreach ($reqs as $r) {
+                        $ord = $r['order'] ?? 1;
+                        if (!isset($grouped[$ord])) $grouped[$ord] = [];
+                        $grouped[$ord][] = $r;
+                    }
+                    ksort($grouped);
+                    $rows = array_values($grouped);
+                    $detalles[] = [
+                        'description' => $detalle['descripcion'],
+                        'type' => $detalle['type'],
+                        // Compatibilidad: mantener requirements plano para la vista existente
+                        'requirements' => $reqs,
+                        // Para el PDF: filas agrupadas por integrante
+                        'is_table' => true,
+                        'rows' => $rows,
+                    ];
+                } else {
+                    $detalles[] = [
+                        'description' => $detalle['descripcion'],
+                        'type' => $detalle['type'],
+                        'requirements' => $reqs,
+                    ];
+                }
             }
         }
         return $detalles;
@@ -137,6 +182,18 @@ class UserProfilePdfService
 
             if ($requisito['tipo_requisito_id'] == 4) {
                 $valor_respuesta = $requisito->respuesta->opcion_seleccion ?? 'No proporcionado';
+                // Resolver IDs a descripciones para cat logos geogr ficos
+                $opciones = $requisito['opciones'] ?? ($requisito->opciones ?? null);
+                $seleccion = $requisito->respuesta->opcion_seleccion ?? null;
+                if ($seleccion && is_string($opciones)) {
+                    if ($opciones === 'department') {
+                        $valor_respuesta = Departament::where('id', $seleccion)->value('name') ?? $seleccion;
+                    } elseif ($opciones === 'province') {
+                        $valor_respuesta = Province::where('id', $seleccion)->value('name') ?? $seleccion;
+                    } elseif ($opciones === 'district') {
+                        $valor_respuesta = District::where('id', $seleccion)->value('name') ?? $seleccion;
+                    }
+                }
             }
             $order_respuesta = $requisito['respuesta']['order'] ?? 1;
             $procesados[] = [
@@ -151,11 +208,11 @@ class UserProfilePdfService
 
     public function getData($dni): array
     {
-        // Obtener el último registro del alumno por DNI
+        // Obtener el  ltimo registro del alumno por DNI
         $alumno = Alumno::where('DNI', $dni)->orderBy('created_at', 'desc')->first();
 
         if (!$alumno) {
-            return []; // Si no se encuentra el alumno, devolver un array vacío
+            return []; // Si no se encuentra el alumno, devolver un array vac o
         }
 
         $solicitudes = [];
@@ -165,8 +222,16 @@ class UserProfilePdfService
 
         foreach ($convocatorias as $convocatoria) {
 
+            // Buscar el registro del alumno correspondiente a esta convocatoria (si existe)
+            $alumnoConv = Alumno::where('DNI', $dni)
+                ->where('convocatoria_id', $convocatoria->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $alumnoUsado = $alumnoConv ?: $alumno;
+
             // Obtener las solicitudes del alumno para esta convocatoria
-            $solicitudAlumno = Solicitud::where('alumno_id', $alumno->id)
+            $solicitudAlumno = Solicitud::where('alumno_id', $alumnoUsado->id)
                 ->where('convocatoria_id', $convocatoria->id)
                 ->orderBy('created_at', 'desc') // Ordena por "id" en orden descendente
                 ->first();
@@ -187,11 +252,45 @@ class UserProfilePdfService
 
                 // Agregar el nombre de la convocatoria a la solicitud
                 $solicitudAlumno['announcement_name'] = $convocatoria->nombre;
+                // Adjuntar el PSS (Promedio Ponderado Semestral) del alumno para esta convocatoria
+                $solicitudAlumno['pps'] = $alumnoUsado->pps ?? null;
+                // Adjuntar nombres y apellidos completos desde Alumno
+                $solicitudAlumno['alumno_nombres'] = $alumnoUsado->nombres ?? '';
+                $solicitudAlumno['alumno_apellidos'] = trim(($alumnoUsado->apellido_paterno ?? '') . ' ' . ($alumnoUsado->apellido_materno ?? ''));
+                // Determinar el estado general de la solicitud para esta convocatoria
+                $solicitudAlumno['solicitud_status'] = $this->resolveSolicitudStatus($solicitudAlumno->id);
                 $solicitudes[] = $solicitudAlumno;
             }
         }
 
         return $solicitudes;
+    }
+
+    private function resolveSolicitudStatus(int $solicitudId): string
+    {
+        // Obtiene todos los servicios solicitados y calcula un estado global simple
+        $estados = \App\Models\ServicioSolicitado::where('solicitud_id', $solicitudId)
+            ->pluck('estado')
+            ->filter()
+            ->map(function ($e) { return mb_strtolower(trim($e)); })
+            ->values();
+
+        if ($estados->isEmpty()) {
+            return 'Pendiente';
+        }
+
+        // Prioridad: Aceptado > Rechazado > Pendiente
+        $aceptados = ['aceptado', 'aprobado', 'aprobada', 'aceptada'];
+        $rechazados = ['rechazado', 'denegado', 'denegada', 'rechazada'];
+        $pendientes = ['pendiente', 'en proceso', 'proceso', 'revision', 'revisi n'];
+
+        if ($estados->first(function ($e) use ($aceptados) { return in_array($e, $aceptados, true); })) {
+            return 'Aceptado';
+        }
+        if ($estados->first(function ($e) use ($rechazados) { return in_array($e, $rechazados, true); })) {
+            return 'Rechazado';
+        }
+        return 'Pendiente';
     }
 
     private function cargarSecciones($convocatoria)
@@ -218,7 +317,7 @@ class UserProfilePdfService
                         foreach (array_slice($responses, 1) as $resp) {
                             $nuevo_requisito = clone $requisito; // Clonar el objeto para evitar referencias
                             $nuevo_requisito->respuesta = $resp;
-                            $seccion->requisitos[] = $nuevo_requisito; // Añadir al array de requisitos
+                            $seccion->requisitos[] = $nuevo_requisito; // A adir al array de requisitos
                         }
                     }
                 }
