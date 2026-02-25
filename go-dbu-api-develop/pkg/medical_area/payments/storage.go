@@ -5,7 +5,7 @@ import (
 )
 
 type ServicesPaymentConceptRepository interface {
-	search(area, tipoServicio, nombreServicio string) (*ServicioMedicoConfig, error)
+	search(area, tipoServicio, nombreServicio string) ([]*ServicioMedicoConfig, error)
 	searchPaymentProcedureOdontologia(recibo, servicio string) ([]*PagosServicios, error)
 }
 

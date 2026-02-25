@@ -45,22 +45,21 @@
           @for (section of postulation().secciones; track section; let index =
             $index) {
             <cdk-accordion-item
-              #accordionItem="cdkAccordionItem"
               class="example-accordion-item"
               role="button"
               tabindex="0"
               [attr.id]="'accordion-header-' + index"
-              [attr.aria-expanded]="accordionItem.expanded"
+              [attr.aria-expanded]="isSectionExpanded((section.id || 0).toString())"
               [attr.aria-controls]="'accordion-body-' + index"
             >
               <div
                 class="example-accordion-item-header"
-                (click)="accordionItem.toggle()"
+                (click)="toggleSection((section.id || 0).toString())"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="w-6 h-6 transform {{
-                  accordionItem.expanded && 'rotate-90'
+                  isSectionExpanded((section.id || 0).toString()) && 'rotate-90'
                 }}"
                   fill="#00725c"
                   viewBox="0 0 512 512"
@@ -74,7 +73,7 @@
               <div
                 role="region"
                 class="my-6"
-                [style.display]="accordionItem.expanded ? '' : 'none'"
+                [style.display]="isSectionExpanded((section.id || 0).toString()) ? '' : 'none'"
                 [attr.id]="'accordion-body-' + index"
                 [attr.aria-labelledby]="'accordion-header-' + index"
               >
@@ -88,9 +87,12 @@
                   [recordRequirements]="recordRequirements"></app-section-form>
                 }
                 @if (section.type === 'table') {
-                  <div class="w-full">
-                    <app-table-section [section]="section" [arrayValue]="formPostulation.get(section.id?.toString()!)?.value"
-                                       [recordRequirements]="recordRequirements"
+                  <div class="w-full" [attr.id]="'table-section-' + (section.id || 0)">
+                    <app-table-section
+                      [section]="section"
+                      [formArray]="getFormArray(section.id?.toString()!)"
+                      [recordRequirements]="recordRequirements"
+                      (tableFormStateChange)="onTableFormStateChange($event)"
                     ></app-table-section>
                   </div>
                 }

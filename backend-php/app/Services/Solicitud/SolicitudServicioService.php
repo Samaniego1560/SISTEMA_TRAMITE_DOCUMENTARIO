@@ -17,7 +17,7 @@ class SolicitudServicioService
     {
         $servicioIds = array_column($data['servicios'], 'servicio_id');
         foreach ($data['servicios'] as $key => $value) {
-            if ($value['estado'] != 'pendiente' && $value['estado'] != 'rechazado' && $value['estado'] != 'retirado' && $value['estado'] != 'aceptado' && $value['estado'] != 'aprobado')
+            if ($value['estado'] != 'pendiente' && $value['estado'] != 'rechazado' && $value['estado'] != 'aceptado' && $value['estado'] != 'aprobado')
                 throw new ExceptionGenerate('El estado de quiere actualizar no existe', 200);
             if ($value['estado'] == 'aprobado') {
                 //obtener la convocatoria

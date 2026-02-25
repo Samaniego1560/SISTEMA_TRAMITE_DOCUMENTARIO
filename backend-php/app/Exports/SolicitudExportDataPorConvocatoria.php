@@ -79,21 +79,22 @@ class SolicitudExportDataPorConvocatoria
             $detalle_solicitud = DetalleSolicitud::select(
                 'detalle_solicitudes.*',
             )
-                ->join('solicitudes as s', 'detalle_solicitudes.solicitud_id', '=', 's.id')
-                ->join('alumnos as a', 's.alumno_id', '=', 'a.id')
-                ->where([
-                    ['s.id', $solicitudesIDs[$i]->id],
-                    ['s.convocatoria_id', $convocatoria->id]
-                ])
+                ->where('detalle_solicitudes.solicitud_id', $solicitudesIDs[$i]->id)
                 ->get();
-            for ($j = 22; $j < count($detalle_solicitud); $j++) {
+            for ($j = 0; $j < count($detalle_solicitud); $j++) {
                 $requisito = Requisito::select(
                     'tipo_requisito_id',
-		    'opciones',
+                    'opciones',
                     'nombre',
                     'id'
                 )
                     ->where('id', $detalle_solicitud[$j]->requisito_id)->first();
+
+                // Validar que el requisito exista
+                if (!$requisito) {
+                    continue; // Saltar si el requisito no existe
+                }
+
                 $dato = "";
                 if ($requisito->tipo_requisito_id == 1 || $requisito->tipo_requisito_id == 2 || $requisito->tipo_requisito_id == 8) {
                     $dato = $detalle_solicitud[$j]->url_documento;
@@ -108,14 +109,14 @@ class SolicitudExportDataPorConvocatoria
                     if ($opciones == 'department') {
                         $dato = Departament::where('id', $detalle_solicitud[$j]->opcion_seleccion)->value('name');
                     }
-                
+
                     if ($opciones == 'province') {
                         $dato = Province::where('id', $detalle_solicitud[$j]->opcion_seleccion)->value('name');
                     }
-                
+
                     if ($opciones == 'district') {
                         $dato = District::where('id', $detalle_solicitud[$j]->opcion_seleccion)->value('name');
-                    }  
+                    }
 
                     if ($dato == null) {
                         $dato = $detalle_solicitud[$j]->opcion_seleccion;
@@ -131,10 +132,13 @@ class SolicitudExportDataPorConvocatoria
                 if ($requisito->tipo_requisito_id == 7) {
                     $dato = $detalle_solicitud[$j]->respuesta_formulario;
                 }
-                $solicitudes[$i]->{$requisito->nombre} = $dato;
+
+                // Asignar el dato incluso si es null o vacío
+                $nombreColumna = $requisito->nombre;
+                $solicitudes[$i]->{$nombreColumna} = $dato ?? '';
             }
 
-            
+
             $servicios = Servicio::all();
             for ($k = 0; $k < count($servicios); $k++) {
                 try {
@@ -149,12 +153,12 @@ class SolicitudExportDataPorConvocatoria
                             ['servicio_solicitado.solicitud_id', $solicitudesIDs[$i]->id]
                         ])
                         ->first();
-                        $estado = "";
-                        if ($servicio_solicitado && $servicio_solicitado->estado) {
-                            $estado = $servicio_solicitado->estado;
-                        }
-                        $solicitudes[$i]->{$servicios[$k]->nombre} = $estado;
-                        
+                    $estado = "";
+                    if ($servicio_solicitado && $servicio_solicitado->estado) {
+                        $estado = $servicio_solicitado->estado;
+                    }
+                    $solicitudes[$i]->{$servicios[$k]->nombre} = $estado;
+
                 } catch (ExceptionGenerate $e) {
                     $solicitudes[$i]->{$i . '-' . $k} = '';
                 }

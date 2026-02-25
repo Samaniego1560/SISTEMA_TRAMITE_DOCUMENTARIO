@@ -25,18 +25,32 @@ func NewPaymentConceptService(repository ServicesPaymentConceptRepository, user 
 }
 
 func (s *service) Search(dni, area, tipoServicio, nombreServicio, recibo string) (*PagoTesoreria, int, error) {
-	paymentConcept, err := s.repository.search(area, tipoServicio, nombreServicio)
+	paymentConcepts, err := s.repository.search(area, tipoServicio, nombreServicio)
 	if err != nil {
 		logger.Error.Println(s.txID, " - error searching payment concept:", err)
 		return nil, 3, fmt.Errorf("error searching payment concept")
 	}
 
-	if paymentConcept == nil {
+	if len(paymentConcepts) == 0 {
 		logger.Error.Println(s.txID, " - not exist payment concept:", err)
 		return nil, 255, fmt.Errorf("not exist payment concept")
 	}
 
-	if paymentConcept.RequierePago == false {
+	requiresPayment := false
+	var codigoConceptos []int
+	for _, concept := range paymentConcepts {
+		if concept == nil {
+			continue
+		}
+		if concept.RequierePago {
+			requiresPayment = true
+		}
+		if concept.CodigoConcepto != nil {
+			codigoConceptos = append(codigoConceptos, *concept.CodigoConcepto)
+		}
+	}
+
+	if !requiresPayment {
 		return nil, 256, nil
 	}
 
@@ -57,7 +71,7 @@ func (s *service) Search(dni, area, tipoServicio, nombreServicio, recibo string)
 		return nil, 251, fmt.Errorf("couldn't decode response")
 	}
 
-	payment, code := s.getPaymentByReceipt(recibo, paymentConcept.CodigoConcepto, detailPayment)
+	payment, code := s.getPaymentByReceipt(recibo, codigoConceptos, detailPayment)
 	if payment == nil {
 		logger.Error.Println(s.txID, " - not exist payment", err)
 		return nil, code, fmt.Errorf("not exist payment")
@@ -72,19 +86,25 @@ func (s *service) Search(dni, area, tipoServicio, nombreServicio, recibo string)
 	return payment, 254, nil
 }
 
-func (s *service) getPaymentByReceipt(recibo string, codigoConcepto *int, detailPayment DetallePagoTesoreria) (*PagoTesoreria, int) {
+func (s *service) getPaymentByReceipt(recibo string, codigoConceptos []int, detailPayment DetallePagoTesoreria) (*PagoTesoreria, int) {
 	existReceipt := validateExistReceipt(recibo, detailPayment)
 	if existReceipt == false {
 		return nil, 250
 	}
 
-	for _, pago := range detailPayment.PagosRealizados {
-		if (pago.CodRecibo != nil && *pago.CodRecibo == recibo) && pago.CodigoConcepto == *codigoConcepto {
-			return &pago, 254
-		}
+	if len(codigoConceptos) == 0 {
+		return nil, 255
+	}
 
-		if (pago.CodReciboCanje != nil && *pago.CodReciboCanje == recibo) && pago.CodigoConcepto == *codigoConcepto {
-			return &pago, 254
+	for _, pago := range detailPayment.PagosRealizados {
+		for _, codigo := range codigoConceptos {
+			if (pago.CodRecibo != nil && *pago.CodRecibo == recibo) && pago.CodigoConcepto == codigo {
+				return &pago, 254
+			}
+
+			if (pago.CodReciboCanje != nil && *pago.CodReciboCanje == recibo) && pago.CodigoConcepto == codigo {
+				return &pago, 254
+			}
 		}
 	}
 

@@ -25,7 +25,7 @@ export class HomeComponent {
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const routesWithoutHeader = ['/home/cuestionario'];
+        const routesWithoutHeader = ['/home/cuestionario', '/home/encuesta-hijos-estudios'];
         this.showHeaderAndMenu = !routesWithoutHeader.some(route => event.url.startsWith(route));
       }
     });

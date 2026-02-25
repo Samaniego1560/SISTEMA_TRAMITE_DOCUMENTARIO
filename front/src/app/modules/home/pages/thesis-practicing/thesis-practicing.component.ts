@@ -1,14 +1,14 @@
-import {Component, computed, OnInit} from '@angular/core';
-import {ThesisPracticing} from '../../../../core/models/ThesisPracticing';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ToastComponent} from '../../../../core/ui/toast/toast.component';
-import {BlockUiComponent} from '../../../../core/ui/block-ui/block-ui.component';
-import {ModalComponent} from '../../../../core/ui/modal/modal.component';
-import {ToastService} from '../../../../core/services/toast/toast.service';
-import {NgFor, NgIf} from '@angular/common';
-import {Subscription} from 'rxjs';
-import {ManagerService} from '../../../../core/services/manager/manager.service';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Component, computed, OnInit } from '@angular/core';
+import { ThesisPracticing } from '../../../../core/models/ThesisPracticing';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import { ToastComponent } from '../../../../core/ui/toast/toast.component';
+import { BlockUiComponent } from '../../../../core/ui/block-ui/block-ui.component';
+import { ModalComponent } from '../../../../core/ui/modal/modal.component';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { NgFor, NgIf } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { ManagerService } from '../../../../core/services/manager/manager.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   DatasetEscuelaProfesional,
   DatasetFaculad,
@@ -16,12 +16,12 @@ import {
   DatasetSexo
 } from '../../../../core/contans/postulation';
 import * as XLSX from "xlsx";
-import {ExportComponent} from "../../../../core/utils/export/export.component";
+import { ExportComponent } from "../../../../core/utils/export/export.component";
 
 @Component({
   selector: 'app-thesis-practicing',
   standalone: true,
-  imports: [ToastComponent, BlockUiComponent, ModalComponent, ReactiveFormsModule, NgIf, NgFor, ExportComponent],
+  imports: [ToastComponent, BlockUiComponent, ModalComponent, ReactiveFormsModule, FormsModule, NgIf, NgFor, ExportComponent],
   templateUrl: './thesis-practicing.component.html',
   styleUrl: './thesis-practicing.component.scss',
   providers: [ToastService]
@@ -31,14 +31,16 @@ export class ThesisPracticingComponent implements OnInit {
   private typeModal: string = '';
   protected modalTitle: string = 'Crear Tesistas o practicantes';
   protected thesisPracticings: ThesisPracticing[] = [];
+  protected allThesisPracticings: ThesisPracticing[] = []; // Array completo sin filtrar
+  protected searchTerm: string = ''; // Término de búsqueda actual
   protected formThesisPracticing: FormGroup;
   protected isLoading: boolean = false;
   protected thesisPracticingSelected!: ThesisPracticing;
   public _announcements: { name: string, value: number }[] = [];
   public typeStudents: { name: string, value: string }[] = [
-    {name: 'Estudiante', value: 'Estudiante'},
-    {name: 'Tesista', value: 'Tesista'},
-    {name: 'Practicante', value: 'Practicante'},
+    { name: 'Estudiante', value: 'Estudiante' },
+    { name: 'Tesista', value: 'Tesista' },
+    { name: 'Practicante', value: 'Practicante' },
   ];
   public DatasetSexo: { name: string, value: string }[] = DatasetSexo;
   public DatasetFaculad: { name: string, value: string }[] = DatasetFaculad;
@@ -80,7 +82,7 @@ export class ThesisPracticingComponent implements OnInit {
           this.isLoading = false;
           if (!res.detalle) {
             this.isLoading = false;
-            this._toastService.add({type: 'error', message: res.msg});
+            this._toastService.add({ type: 'error', message: res.msg });
             return;
           }
 
@@ -93,7 +95,7 @@ export class ThesisPracticingComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           this.isLoading = false;
-          this._toastService.add({type: 'error', message: 'No se pudo obtener la convocatoria'});
+          this._toastService.add({ type: 'error', message: 'No se pudo obtener la convocatoria' });
           console.error(err)
         }
       })
@@ -134,7 +136,7 @@ export class ThesisPracticingComponent implements OnInit {
 
   protected saveThesisPracticing(): void {
     if (this.formThesisPracticing.invalid) {
-      this._toastService.add({type: 'error', message: 'Complete todos los campos correctamente.'});
+      this._toastService.add({ type: 'error', message: 'Complete todos los campos correctamente.' });
       this.formThesisPracticing.markAllAsTouched();
       return;
     }
@@ -171,19 +173,19 @@ export class ThesisPracticingComponent implements OnInit {
         next: (res: any) => {
           this.isLoading = false;
           if (!res.detalle) {
-            this._toastService.add({type: 'error', message: res.msg});
+            this._toastService.add({ type: 'error', message: res.msg });
             return;
           }
 
           this.getThesisPracticing();
-          this._toastService.add({type: 'success', message: 'Tesista o practicante agregado correctamente.'});
+          this._toastService.add({ type: 'success', message: 'Tesista o practicante agregado correctamente.' });
           this.typeModal = '';
           this.showModal = false;
 
         },
         error: (err: any) => {
           this.isLoading = false;
-          this._toastService.add({type: 'error', message: 'No se pudo crear el usuario, intente nuevamente'});
+          this._toastService.add({ type: 'error', message: 'No se pudo crear el usuario, intente nuevamente' });
         }
       })
     );
@@ -213,7 +215,7 @@ export class ThesisPracticingComponent implements OnInit {
         next: (res: any) => {
           this.isLoading = false;
           if (!res.detalle) {
-            this._toastService.add({type: 'error', message: res.msg});
+            this._toastService.add({ type: 'error', message: res.msg });
             return;
           }
 
@@ -254,6 +256,7 @@ export class ThesisPracticingComponent implements OnInit {
           }
 
           this.thesisPracticings = res.detalle;
+          this.allThesisPracticings = [...res.detalle]; // Guardar copia de todos los datos
         },
         error: (err: any) => {
           console.error(err);
@@ -276,7 +279,7 @@ export class ThesisPracticingComponent implements OnInit {
           this.isLoading = false;
 
           if (!res.detalle) {
-            this._toastService.add({type: 'error', message: res.msg});
+            this._toastService.add({ type: 'error', message: res.msg });
             return;
           }
 
@@ -285,7 +288,7 @@ export class ThesisPracticingComponent implements OnInit {
         },
         error: (err: any) => {
           console.error(err);
-          this._toastService.add({type: 'error', message: 'No se pudo borrar al usuario, intente nuevamente.'});
+          this._toastService.add({ type: 'error', message: 'No se pudo borrar al usuario, intente nuevamente.' });
           this.isLoading = false;
         }
       })
@@ -308,7 +311,58 @@ export class ThesisPracticingComponent implements OnInit {
 
 
   findRequest($event: Event) {
+    const searchValue = ($event.target as HTMLInputElement).value.trim();
+    this.searchTerm = searchValue;
 
+    // Si no hay término de búsqueda, mostrar todos
+    if (!searchValue) {
+      this.thesisPracticings = [...this.allThesisPracticings];
+      return;
+    }
+
+    // Normalizar el término de búsqueda (sin acentos, minúsculas)
+    const normalizedSearch = this.normalizeText(searchValue);
+
+    // Filtrar por múltiples campos
+    this.thesisPracticings = this.allThesisPracticings.filter(item => {
+      // Buscar en DNI
+      const dniMatch = item.dni?.toLowerCase().includes(normalizedSearch);
+
+      // Buscar en nombre completo (nombre + apellidos)
+      const fullName = `${item.name || ''} ${item.appaterno || ''} ${item.apmaterno || ''}`;
+      const nameMatch = this.normalizeText(fullName).includes(normalizedSearch);
+
+      // Buscar en email
+      const emailMatch = item.email?.toLowerCase().includes(normalizedSearch);
+
+      // Buscar en tipo de estudiante
+      const typeMatch = this.normalizeText(item.type_student || '').includes(normalizedSearch);
+
+      // Buscar en código de estudiante
+      const codMatch = item.cod_student?.toLowerCase().includes(normalizedSearch);
+
+      // Retornar true si coincide con algún campo
+      return dniMatch || nameMatch || emailMatch || typeMatch || codMatch;
+    });
+
+    // Opcional: Mostrar mensaje si no hay resultados
+    if (this.thesisPracticings.length === 0) {
+      console.log('No se encontraron resultados para:', searchValue);
+    }
+  }
+
+  // Limpiar búsqueda
+  protected clearSearch(): void {
+    this.searchTerm = '';
+    this.thesisPracticings = [...this.allThesisPracticings];
+  }
+
+  // Función auxiliar para normalizar texto (quitar acentos, convertir a minúsculas)
+  private normalizeText(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, ''); // Remover acentos
   }
 
   orderByField(field: keyof ThesisPracticing) {

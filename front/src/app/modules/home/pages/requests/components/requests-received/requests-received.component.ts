@@ -1,20 +1,20 @@
-import {Component, effect, Input, input, model, OnInit} from '@angular/core';
-import {NgClass, NgIf} from "@angular/common";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ManagerService} from "../../../../../../core/services/manager/manager.service";
-import {Subscription} from "rxjs";
-import {IAnnouncement} from "../../../../../../core/models/announcement";
-import {ToastService} from "../../../../../../core/services/toast/toast.service";
-import {IRequest, IUpdateService} from "../../../../../../core/models/requests";
+import { Component, effect, Input, input, model, OnInit } from '@angular/core';
+import { NgClass, NgIf, DecimalPipe } from "@angular/common";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ManagerService } from "../../../../../../core/services/manager/manager.service";
+import { Subscription } from "rxjs";
+import { IAnnouncement } from "../../../../../../core/models/announcement";
+import { ToastService } from "../../../../../../core/services/toast/toast.service";
+import { IRequest, IUpdateService } from "../../../../../../core/models/requests";
 import * as XLSX from "xlsx";
-import {saveAs} from "file-saver";
-import {FilterService} from "../../../../../../core/services/filter/filter.service";
-import {ModalComponent} from "../../../../../../core/ui/modal/modal.component";
-import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
-import {PostulationFormComponent} from "../../../../../../core/components/postulation-form/postulation-form.component";
-import {BlockUiComponent} from "../../../../../../core/ui/block-ui/block-ui.component";
-import {RequestEvaluationComponent} from "./components/request-evaluation/request-evaluation.component";
-import {Student} from "../../../../../../core/models/student";
+import { saveAs } from "file-saver";
+import { FilterService } from "../../../../../../core/services/filter/filter.service";
+import { ModalComponent } from "../../../../../../core/ui/modal/modal.component";
+import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { PostulationFormComponent } from "../../../../../../core/components/postulation-form/postulation-form.component";
+import { BlockUiComponent } from "../../../../../../core/ui/block-ui/block-ui.component";
+import { RequestEvaluationComponent } from "./components/request-evaluation/request-evaluation.component";
+import { Student } from "../../../../../../core/models/student";
 import {
   PostulationDynamicComponent
 } from "../../../../../../core/components/postulation-dynamic/postulation-dynamic.component";
@@ -25,11 +25,13 @@ import {
   imports: [
     NgIf,
     NgClass,
+    DecimalPipe,
     ReactiveFormsModule,
     PostulationFormComponent,
     BlockUiComponent,
     RequestEvaluationComponent,
-    PostulationDynamicComponent
+    PostulationDynamicComponent,
+    ModalComponent
   ],
   templateUrl: './requests-received.component.html',
   styleUrl: './requests-received.component.scss'
@@ -40,13 +42,13 @@ export class RequestsReceivedComponent {
 
   announcement = input.required<IAnnouncement>();
 
-  @Input({alias: 'departments', required: true}) departmentsMap: Record<string, string> = {};
-  @Input({alias: 'provinces', required: true}) provincesMap: Record<string, string> = {};
-  @Input({alias: 'districts', required: true}) districtsMap: Record<string, string> = {};
+  @Input({ alias: 'departments', required: true }) departmentsMap: Record<string, string> = {};
+  @Input({ alias: 'provinces', required: true }) provincesMap: Record<string, string> = {};
+  @Input({ alias: 'districts', required: true }) districtsMap: Record<string, string> = {};
 
   protected postulation: IAnnouncement = {} as IAnnouncement;
 
-  protected dataServices: {comedor: number, internado: number} = {comedor: 0, internado: 0};
+  protected dataServices: { comedor: number, internado: number } = { comedor: 0, internado: 0 };
 
   protected requestsDisplay: IRequest[] = [];
 
@@ -76,10 +78,24 @@ export class RequestsReceivedComponent {
   public countServiceWomen: number = 0;
   public countServiceMen: number = 0;
 
+  // Variables para actualización masiva
+  protected showBulkUpdateModal: boolean = false;
+  protected bulkUpdateAction: 'aceptado' | 'aprobado' | '' = '';
+  protected bulkUpdateProgress: number = 0;
+  protected bulkUpdateTotal: number = 0;
+  protected bulkUpdateCurrent: number = 0;
+  protected isBulkUpdating: boolean = false;
+  protected bulkUpdateResults: { success: number, failed: number } = { success: 0, failed: 0 };
+
+  // Variables para selección de servicios
+  protected showServiceSelectionModal: boolean = false;
+  protected selectedServices: number[] = [];
+  protected selectAllServices: boolean = false;
+
   constructor(private _managerService: ManagerService,
-              private _toastService: ToastService,
-              private _filterService: FilterService,
-              ) {
+    private _toastService: ToastService,
+    private _filterService: FilterService,
+  ) {
     this.messageService = new FormControl<string>('', Validators.required);
     effect(() => {
       this.getRequests();
@@ -159,7 +175,7 @@ export class RequestsReceivedComponent {
 
             this.saveAsExcelFile(excelBuffer, this.announcement().nombre);
           }
-          this._toastService.add({type: 'info', message: "Archivo exportado correctamente"});
+          this._toastService.add({ type: 'info', message: "Archivo exportado correctamente" });
 
         },
         error: (err: HttpErrorResponse) => {
@@ -213,7 +229,7 @@ export class RequestsReceivedComponent {
         next: (res: any) => {
           this.isLoading = false;
           if (!res.detalle) {
-            this._toastService.add({type: 'info', message: res.msg});
+            this._toastService.add({ type: 'info', message: res.msg });
             return;
           }
           this.view = 'student';
@@ -274,7 +290,7 @@ export class RequestsReceivedComponent {
         next: (res: any) => {
           this.isLoading = false;
           if (!res.detalle) {
-            this._toastService.add({type: 'error', message: res.msg});
+            this._toastService.add({ type: 'error', message: res.msg });
             return;
           }
 
@@ -328,5 +344,263 @@ export class RequestsReceivedComponent {
     this.studentForm = event.student;
     this.view = 'postulation';
     this.showModelAddPostulation = false;
+  }
+
+  // ==================== FUNCIONES DE ACTUALIZACIÓN MASIVA ====================
+
+  /**
+   * Inicia el proceso de actualización masiva
+   * @param action - 'aceptado' o 'aprobado'
+   */
+  protected initBulkUpdate(action: 'aceptado' | 'aprobado'): void {
+    this.bulkUpdateAction = action;
+
+    // Mostrar modal de selección de servicios
+    this.selectedServices = [];
+    this.selectAllServices = false;
+    this.showServiceSelectionModal = true;
+  }
+
+  /**
+   * Cuenta las solicitudes que se pueden actualizar según la acción y servicios seleccionados
+   */
+  private getPendingRequestsCount(action: 'aceptado' | 'aprobado', serviceIds?: number[]): number {
+    let count = 0;
+
+    this.requests.forEach(request => {
+      request.servicios_solicitados.forEach(servicio => {
+        // Filtrar por servicio si se especificaron IDs
+        if (serviceIds && serviceIds.length > 0 && !serviceIds.includes(servicio.servicio_id)) {
+          return;
+        }
+
+        if (action === 'aceptado' && servicio.estado === 'pendiente') {
+          count++;
+        } else if (action === 'aprobado' && servicio.estado === 'aceptado') {
+          count++;
+        }
+      });
+    });
+
+    return count;
+  }
+
+  /**
+   * Confirma y ejecuta la actualización masiva
+   */
+  protected async confirmBulkUpdate(): Promise<void> {
+    this.isBulkUpdating = true;
+    this.bulkUpdateCurrent = 0;
+    this.bulkUpdateProgress = 0;
+    this.bulkUpdateResults = { success: 0, failed: 0 };
+
+    const requestsToUpdate: { requestId: number, serviceId: number }[] = [];
+
+    // Recopilar todas las solicitudes a actualizar
+    this.requests.forEach(request => {
+      request.servicios_solicitados.forEach(servicio => {
+        // Filtrar por servicios seleccionados
+        if (this.selectedServices.length > 0 && !this.selectedServices.includes(servicio.servicio_id)) {
+          return;
+        }
+
+        const shouldUpdate =
+          (this.bulkUpdateAction === 'aceptado' && servicio.estado === 'pendiente') ||
+          (this.bulkUpdateAction === 'aprobado' && servicio.estado === 'aceptado');
+
+        if (shouldUpdate) {
+          requestsToUpdate.push({
+            requestId: request.id,
+            serviceId: servicio.id
+          });
+        }
+      });
+    });
+
+    // Actualizar uno por uno
+    for (const item of requestsToUpdate) {
+      await this.updateSingleService(item.requestId, item.serviceId);
+      this.bulkUpdateCurrent++;
+      this.bulkUpdateProgress = Math.round((this.bulkUpdateCurrent / this.bulkUpdateTotal) * 100);
+    }
+
+    // Finalizar
+    this.isBulkUpdating = false;
+
+    // Mostrar resumen
+    const successMsg = `✓ ${this.bulkUpdateResults.success} solicitudes actualizadas`;
+    const failMsg = this.bulkUpdateResults.failed > 0
+      ? ` | ✗ ${this.bulkUpdateResults.failed} errores`
+      : '';
+
+    this._toastService.add({
+      type: this.bulkUpdateResults.failed > 0 ? 'warning' : 'success',
+      message: successMsg + failMsg
+    });
+
+    // Recargar datos
+    this.getRequests();
+
+    // Cerrar modal después de 2 segundos
+    setTimeout(() => {
+      this.showBulkUpdateModal = false;
+      this.bulkUpdateAction = '';
+    }, 2000);
+  }
+
+  /**
+   * Actualiza un solo servicio (llamada asíncrona al API)
+   */
+  private updateSingleService(requestId: number, serviceId: number): Promise<void> {
+    return new Promise((resolve) => {
+      const data: IUpdateService = {
+        solicitud_id: requestId,
+        servicios: [
+          {
+            servicio_id: serviceId,
+            estado: this.bulkUpdateAction,
+            detalle_rechazo: '-'
+          }
+        ]
+      };
+
+      this._subscriptions.add(
+        this._managerService.updateStatusService(data).subscribe({
+          next: (res: any) => {
+            if (res.detalle) {
+              this.bulkUpdateResults.success++;
+            } else {
+              this.bulkUpdateResults.failed++;
+            }
+            resolve();
+          },
+          error: () => {
+            this.bulkUpdateResults.failed++;
+            resolve(); // Continuar aunque falle
+          }
+        })
+      );
+    });
+  }
+
+  /**
+   * Cancela la actualización masiva
+   */
+  protected cancelBulkUpdate(): void {
+    this.showBulkUpdateModal = false;
+    this.bulkUpdateAction = '';
+    this.isBulkUpdating = false;
+  }
+
+  /**
+   * Obtiene el mensaje descriptivo para el modal
+   */
+  protected getBulkUpdateMessage(): string {
+    const action = this.bulkUpdateAction === 'aceptado' ? 'aceptar' : 'aprobar';
+    const count = this.bulkUpdateTotal;
+    return `¿Está seguro de ${action} ${count} ${count === 1 ? 'solicitud' : 'solicitudes'}?`;
+  }
+
+  // ==================== FUNCIONES DE SELECCIÓN DE SERVICIOS ====================
+
+  /**
+   * Alterna la selección de un servicio individual
+   */
+  protected toggleService(serviceId: number): void {
+    const index = this.selectedServices.indexOf(serviceId);
+    if (index > -1) {
+      this.selectedServices.splice(index, 1);
+      this.selectAllServices = false;
+    } else {
+      this.selectedServices.push(serviceId);
+      // Si se seleccionaron ambos servicios manualmente, marcar "Ambos"
+      if (this.selectedServices.length === 2) {
+        this.selectAllServices = true;
+      }
+    }
+  }
+
+  /**
+   * Alterna la selección de todos los servicios
+   */
+  protected toggleAllServices(): void {
+    this.selectAllServices = !this.selectAllServices;
+    if (this.selectAllServices) {
+      this.selectedServices = [1, 2];
+    } else {
+      this.selectedServices = [];
+    }
+  }
+
+  /**
+   * Verifica si un servicio está seleccionado
+   */
+  protected isServiceSelected(serviceId: number): boolean {
+    return this.selectedServices.includes(serviceId);
+  }
+
+  /**
+   * Confirma la selección de servicios y procede con la actualización masiva
+   */
+  protected confirmServiceSelection(): void {
+    if (this.selectedServices.length === 0) {
+      this._toastService.add({
+        type: 'warning',
+        message: 'Debe seleccionar al menos un servicio'
+      });
+      return;
+    }
+
+    // Validar que bulkUpdateAction tenga un valor válido
+    if (!this.bulkUpdateAction || (this.bulkUpdateAction !== 'aceptado' && this.bulkUpdateAction !== 'aprobado')) {
+      this._toastService.add({
+        type: 'error',
+        message: 'Error: acción no válida'
+      });
+      this.showServiceSelectionModal = false;
+      return;
+    }
+
+    // Contar solicitudes con los servicios seleccionados
+    const pendingCount = this.getPendingRequestsCount(this.bulkUpdateAction, this.selectedServices);
+
+    if (pendingCount === 0) {
+      const statusName = this.bulkUpdateAction === 'aceptado' ? 'aceptar' : 'aprobar';
+      const serviceNames = this.getSelectedServiceNames();
+      this._toastService.add({
+        type: 'info',
+        message: `No hay solicitudes pendientes para ${statusName} en ${serviceNames}`
+      });
+      this.showServiceSelectionModal = false;
+      return;
+    }
+
+    // Cerrar modal de selección y abrir modal de confirmación
+    this.showServiceSelectionModal = false;
+    this.bulkUpdateTotal = pendingCount;
+    this.showBulkUpdateModal = true;
+  }
+
+  /**
+   * Cancela la selección de servicios
+   */
+  protected cancelServiceSelection(): void {
+    this.showServiceSelectionModal = false;
+    this.selectedServices = [];
+    this.selectAllServices = false;
+  }
+
+  /**
+   * Obtiene los nombres de los servicios seleccionados
+   */
+  private getSelectedServiceNames(): string {
+    if (this.selectedServices.length === 2) {
+      return 'Comedor y Residencia';
+    } else if (this.selectedServices.includes(1)) {
+      return 'Comedor';
+    } else if (this.selectedServices.includes(2)) {
+      return 'Residencia';
+    }
+    return '';
   }
 }

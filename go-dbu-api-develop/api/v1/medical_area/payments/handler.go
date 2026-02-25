@@ -6,9 +6,10 @@ import (
 	"dbu-api/internal/models"
 	"dbu-api/pkg/medical_area"
 	"dbu-api/pkg/orchestrator/response_messages"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
-	"net/http"
 )
 
 type handler struct {

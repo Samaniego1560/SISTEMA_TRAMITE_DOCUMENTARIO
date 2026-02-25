@@ -37,11 +37,21 @@ class ShowSolicitudService
         // Vinculamos requisitos con sus respuestas
         foreach ($solicitud->detalle_solicitudes as $seccion) {
             foreach ($seccion->requisitos as $requisito) {
+                $respuestas = []; // Inicializar array para recopilar todas las respuestas
+
                 foreach ($solicitud_detalle as $detalle) {
                     if ($requisito->id == $detalle->requisito_id) {
-                        $requisito->respuesta = $detalle;
-                        break; // cuando encuentra la coincidencia, ya no sigue buscando
+                        $respuestas[] = $detalle; // Recopilar todas las coincidencias
                     }
+                }
+
+                // Para compatibilidad: si solo hay una respuesta, asignarla directamente
+                if (count($respuestas) === 1) {
+                    $requisito->respuesta = $respuestas[0];
+                } elseif (count($respuestas) > 1) {
+                    $requisito->respuesta = $respuestas; // Múltiples respuestas como array
+                } else {
+                    $requisito->respuesta = null; // Sin respuestas
                 }
             }
         }

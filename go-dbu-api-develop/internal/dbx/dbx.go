@@ -10,7 +10,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	// _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 	_ "github.com/go-sql-driver/mysql"
 )
 

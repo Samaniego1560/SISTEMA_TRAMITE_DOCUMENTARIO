@@ -31,6 +31,8 @@ class CargaSolicitudAlumnoService
         'Nombres' => $alumno->nombres,
         'Apellidos' => $alumno->apellido_paterno . ' ' . $alumno->apellido_materno,
         'Sexo' => $alumno->sexo,
+        'Ponderado Semestral (PSS)' => $alumno->pps,
+        'PSS' => $alumno->pps,
         'Facultad' => $alumno->facultad,
         'Escuela profesional' => $alumno->escuela_profesional,
         'Modalidad de ingreso' => $alumno->modalidad_ingreso,

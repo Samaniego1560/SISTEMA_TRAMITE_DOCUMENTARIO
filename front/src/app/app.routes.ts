@@ -6,6 +6,12 @@ import {authRoutes} from "./modules/auth/auth.routes";
 
 export const routes: Routes = [
   {
+    path: 'encuesta-hijos-estudios',
+    loadComponent: () =>
+      import('./modules/student-parent-survey/student-parent-survey.component')
+        .then(m => m.StudentParentSurveyComponent)
+  },
+  {
     path: 'home',
     component: HomeComponent,
     children: homesRoutes

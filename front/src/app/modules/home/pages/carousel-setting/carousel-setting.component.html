@@ -1,0 +1,167 @@
+<div class="px-8 py-12 overflow-auto w-full pb-24" style="height: calc(100vh - 64px)">
+    <div class="flex justify-center">
+        <section class="container px-4 mx-auto">
+            <!-- Header -->
+            <div class="mt-6 md:flex md:items-center md:justify-between">
+                <div
+                    class="flex overflow-hidden uppercase bg-white divide-x text-2xl w-full font-bold text-slate-500 justify-center items-center rounded-lg rtl:flex-row-reverse">
+                    <span>GESTIÓN DE CARRUSEL</span>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-slate-700 mb-4">
+                    {{ editingId ? 'Editar Carrusel' : 'Nuevo Carrusel' }}
+                </h3>
+
+                <form [formGroup]="formCarousel" (ngSubmit)="saveForm()">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Image Upload -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Imagen del Carrusel <span class="text-red-500">*</span>
+                            </label>
+                            <input type="file" accept="image/*" (change)="onFileSelected($event)"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
+                            <small class="text-gray-500">Formatos: JPG, PNG, WEBP. Tamaño máximo: 5MB</small>
+
+                            <!-- Image Preview -->
+                            <div *ngIf="imagePreview" class="mt-4">
+                                <img [src]="imagePreview" alt="Preview"
+                                    class="max-h-64 rounded-lg shadow-md object-contain">
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Título (Opcional)
+                            </label>
+                            <input type="text" formControlName="title" placeholder="Título del carrusel"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
+                        </div>
+
+                        <!-- Button Text -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Texto del Botón (Opcional)
+                            </label>
+                            <input type="text" formControlName="button_text" placeholder="Ej: Más información"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Descripción (Opcional)
+                            </label>
+                            <textarea formControlName="description" rows="3" placeholder="Descripción del carrusel"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"></textarea>
+                        </div>
+
+                        <!-- Button Link -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Enlace del Botón (Opcional)
+                            </label>
+                            <input type="url" formControlName="button_link" placeholder="https://ejemplo.com"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
+                        </div>
+
+                        <!-- Order -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Orden
+                            </label>
+                            <input type="number" formControlName="order" min="0"
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
+                        </div>
+
+                        <!-- Enabled -->
+                        <div class="flex items-center">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" formControlName="is_enabled"
+                                    class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                                <span class="ml-2 text-sm font-medium text-slate-700">Habilitado</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 mt-6">
+                        <button type="submit"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                            {{ editingId ? 'Actualizar' : 'Guardar' }}
+                        </button>
+                        <button type="button" (click)="resetForm()"
+                            class="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- List Section -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold text-slate-700 mb-4">Carruseles Existentes</h3>
+
+                <div *ngIf="carouselSettings.length === 0" class="text-center py-8 text-gray-500">
+                    No hay carruseles configurados
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div *ngFor="let carousel of carouselSettings"
+                        class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <!-- Image -->
+                        <div class="relative h-48 bg-gray-100">
+                            <img [src]="carousel.image_url" [alt]="carousel.title || 'Carousel image'"
+                                class="w-full h-full object-cover" />
+                            <div class="absolute top-2 right-2 px-3 py-1 rounded-full text-xs font-semibold"
+                                [class.bg-green-500]="carousel.is_enabled" [class.bg-red-500]="!carousel.is_enabled"
+                                [class.text-white]="true">
+                                {{ carousel.is_enabled ? 'Activo' : 'Inactivo' }}
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-4">
+                            <h4 class="font-semibold text-slate-700 mb-2">
+                                {{ carousel.title || 'Sin título' }}
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+                                {{ carousel.description || 'Sin descripción' }}
+                            </p>
+                            <div class="text-xs text-gray-500 mb-3">
+                                Orden: {{ carousel.order }}
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex gap-2">
+                                <button (click)="editCarousel(carousel)"
+                                    class="flex-1 px-3 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors">
+                                    Editar
+                                </button>
+                                <button (click)="toggleEnabled(carousel)"
+                                    class="flex-1 px-3 py-2 text-sm rounded transition-colors"
+                                    [class.bg-green-500]="!carousel.is_enabled"
+                                    [class.hover:bg-green-600]="!carousel.is_enabled"
+                                    [class.bg-gray-500]="carousel.is_enabled"
+                                    [class.hover:bg-gray-600]="carousel.is_enabled" [class.text-white]="true">
+                                    {{ carousel.is_enabled ? 'Desactivar' : 'Activar' }}
+                                </button>
+                                <button (click)="deleteCarousel(carousel.id!)"
+                                    class="px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<app-block-ui [show]="isLoading"></app-block-ui>
+<app-toast></app-toast>

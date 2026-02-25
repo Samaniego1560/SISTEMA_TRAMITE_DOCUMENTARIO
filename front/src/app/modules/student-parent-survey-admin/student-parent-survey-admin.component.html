@@ -1,0 +1,94 @@
+<div class="admin-page">
+  <div class="admin-hero">
+    <div>
+      <span class="admin-badge">Admin</span>
+      <h2>Encuesta estudiantes - Panel de resultados</h2>
+      <p>Resumen general y desglose por escuela profesional.</p>
+    </div>
+    <button type="button" (click)="downloadExcel()">Exportar Excel</button>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="loading" *ngIf="loading">Cargando estadísticas...</div>
+
+  <ng-container *ngIf="!loading && totals">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span>Total encuestados</span>
+        <strong>{{ totals.total }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span>Con hijos</span>
+        <strong>{{ totals.has_children }}</strong>
+        <small>{{ percent(totals.has_children, totals.total) }}</small>
+      </div>
+      <div class="kpi-card">
+        <span>Sin hijos</span>
+        <strong>{{ totals.no_children }}</strong>
+        <small>{{ percent(totals.no_children, totals.total) }}</small>
+      </div>
+      <div class="kpi-card">
+        <span>Gestación</span>
+        <strong>{{ totals.gestation }}</strong>
+        <small>{{ percent(totals.gestation, totals.total) }}</small>
+      </div>
+      <div class="kpi-card">
+        <span>Embarazo actual</span>
+        <strong>{{ totals.pregnant }}</strong>
+        <small>{{ percent(totals.pregnant, totals.total) }}</small>
+      </div>
+      <div class="kpi-card">
+        <span>Promedio hijos &lt; 5</span>
+        <strong>{{ avgChildren(totals.avg_children) }}</strong>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Distribución: cantidad de hijos menores de 5</h3>
+      <div class="bar-list">
+        <div class="bar-row" *ngFor="let c of childrenCounts">
+          <span class="bar-label">{{ c.children_count === null ? 'Sin dato' : c.children_count }}</span>
+          <div class="bar">
+            <div class="bar-fill" [style.width]="percent(c.total, totals.total)"></div>
+          </div>
+          <span class="bar-value">{{ c.total }} ({{ percent(c.total, totals.total) }})</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Escuelas profesionales</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Escuela</th>
+              <th>Total</th>
+              <th>Con hijos</th>
+              <th>Sin hijos</th>
+              <th>Gestación</th>
+              <th>% Con hijos</th>
+              <th>% Gestación</th>
+              <th>Prom. hijos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of bySchool">
+              <td>{{ s.school }}</td>
+              <td>{{ s.total }}</td>
+              <td>{{ s.has_children }}</td>
+              <td>{{ s.no_children }}</td>
+              <td>{{ s.gestation }}</td>
+              <td>{{ percent(s.has_children, s.total) }}</td>
+              <td>{{ percent(s.gestation, s.total) }}</td>
+              <td>{{ avgChildren(s.avg_children) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</div>

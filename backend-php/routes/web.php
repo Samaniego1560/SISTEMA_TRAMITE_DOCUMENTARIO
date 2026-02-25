@@ -26,6 +26,7 @@ $router->group([], function ($router) {
     $router->post('/solicitud/validacion/thesis_practicing_student', 'SolicitudController@validacionSolicitud');
     $router->post('/solicitud/create', 'SolicitudController@create');
     $router->post('/solicitud/uploadDocument', 'SolicitudController@uploadDocument');
+    $router->put('/solicitud/replaceDocument', 'SolicitudController@replaceDocument');
     $router->get('/solicitud/alumno/{dni}', 'SolicitudController@cargaSolicitudAlumno');
     $router->get('/solicitud/convocatoria/alumno/{convocatoriaId}/{dni}', 'SolicitudController@cargaSolicitudConvocatoriaAlumno');
     $router->get('/solicitud/servicioSolicitado/{dni}', 'SolicitudController@servicioSolicitadoSolicitante');
@@ -60,7 +61,11 @@ $router->group([], function ($router) {
     // application notice
     $router->get('/application/notice/list', 'ApplicationNoticeControlador@index');
 
+    // carousel settings (public)
+    $router->get('/carousel/settings/public', 'CarouselSettingController@indexPublic');
+
     $router->get('/DatosAlumnoAcademico/show/{DNI}', 'DatosAlumnoAcademicoController@show');
+
 });
 
 // Rutas que requieren nivel de acceso 1
@@ -82,6 +87,7 @@ $router->group(['middleware' => ['auth', 'restriclevel1']], function ($router) {
 
 
     $router->get('/DatosAlumnoAcademico', 'DatosAlumnoAcademicoController@index');
+
 
 
     // thesis or practicing
@@ -106,7 +112,7 @@ $router->group(['middleware' => ['auth', 'restriclevel2']], function ($router) {
 $router->group(['middleware' => ['auth', 'restriclevel3']], function ($router) {
     // application-notice
     $router->post('/application/notice/update', 'ApplicationNoticeControlador@update');
-    
+
     //Solicitud
     $router->get('/solicitudes/{id}', 'SolicitudController@index');
     $router->get('/solicitud/show/{id}', 'SolicitudController@show');
@@ -130,4 +136,11 @@ $router->group(['middleware' => ['auth', 'restriclevel3']], function ($router) {
 
     // application-notice
     $router->post('/application/notice/update', 'ApplicationNoticeControlador@update');
+
+    // carousel settings (admin)
+    $router->get('/carousel/settings', 'CarouselSettingController@index');
+    $router->post('/carousel/settings/create', 'CarouselSettingController@create');
+    $router->post('/carousel/settings/update/{id}', 'CarouselSettingController@updateSingle');
+    $router->post('/carousel/settings/update', 'CarouselSettingController@update');
+    $router->delete('/carousel/settings/destroy/{id}', 'CarouselSettingController@destroy');
 });

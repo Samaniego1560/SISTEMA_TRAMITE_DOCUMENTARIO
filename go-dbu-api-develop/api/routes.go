@@ -14,6 +14,7 @@ import (
 	"dbu-api/api/v1/medical_area/nursing_consultation_assignment"
 	"dbu-api/api/v1/medical_area/patients"
 	"dbu-api/api/v1/medical_area/payments"
+	"dbu-api/api/v1/medical_area/pharmacy_medicines"
 	"dbu-api/api/v1/medical_area/reports"
 	"dbu-api/api/v1/normative"
 	"dbu-api/api/v1/normative/articles"
@@ -28,6 +29,7 @@ import (
 	"dbu-api/api/v1/residence/residences"
 	"dbu-api/api/v1/residence/rooms"
 	"dbu-api/api/v1/sanction/faults"
+	"dbu-api/api/v1/survey/student_parent"
 	"dbu-api/api/v1/student/assignment"
 	studentAuth "dbu-api/api/v1/student/auth"
 	"dbu-api/api/v1/submission/submissions"
@@ -123,7 +125,8 @@ func loadRoutes(app *fiber.App, TxID string, db *sqlx.DB, smtpService *smtp.SMTP
 	announcement_signatures.RouterMedicalArea(app, db, TxID)         // Firmas de anuncios
 	reports.RouterMedicalArea(app, db, TxID)                         // Reportes médicos
 	exam_toxicologico.RouterMedicalArea(app, db, TxID)               // Exámenes toxicológicos
-	payments.Router(app, db, TxID)
+	payments.Router(app, db, TxID)                                   // Pagos
+	pharmacy_medicines.RouterPharmacyMedicines(app, db, TxID)        // Farmacia - Medicamentos
 	// Normative
 	resolutions.RouterResoluciones(app, db, TxID)
 	articles.RouterArticles(app, db, TxID)
@@ -145,4 +148,7 @@ func loadRoutes(app *fiber.App, TxID string, db *sqlx.DB, smtpService *smtp.SMTP
 	psicopedagogia.RouterPsicopedagogia(app, db, TxID)
 	visita_general.RouterVisitaGeneral(app, db, TxID)
 	visita_residente.RouterVisitaResidente(app, db, TxID)
+
+	// Encuesta estudiantes (padres/madres)
+	student_parent.RouterStudentParentSurvey(app, db, TxID)
 }

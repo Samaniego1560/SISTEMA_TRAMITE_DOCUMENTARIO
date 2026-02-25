@@ -1,0 +1,305 @@
+<div class="survey-page">
+  <div class="survey-hero">
+    <div class="hero-text">
+      <span class="survey-badge">Encuesta</span>
+      <h2>“Hijos, estudios y sueños: conozcamos tu experiencia universitaria”</h2>
+      <p class="survey-subtitle">
+      El objetivo del presente formulario es conocer la realidad familiar y académica de los(as) estudiantes que son madres o padres, con el propósito de identificar sus necesidades y promover estrategias de apoyo integral desde el Área de Bienestar Universitario.
+      </p>
+      <p class="survey-callout">Empieza con tu DNI. La verificación es automática y toma segundos.</p>
+    </div>
+    <div class="hero-brand">
+      <img src="assets/logos/logo.svg" alt="Logo Bienestar Universitario" />
+      <div>
+        <div class="brand-title">Dirección de Bienestar Universitario</div>
+        <div class="brand-subtitle">UNAS · Tingo María</div>
+        <div class="brand-year">2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="alreadyAnswered">
+    Ya registraste tu respuesta.
+  </div>
+
+  <div class="alert alert-warning" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="alert alert-warning" *ngIf="formMessage">
+    {{ formMessage }}
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <section class="card" id="section-student">
+      <h3>I. Información del estudiante</h3>
+      <div class="row">
+        <label>DNI</label>
+        <input type="text" formControlName="dni" maxlength="12" />
+        <div class="dni-hint">{{ dniHint }}</div>
+      </div>
+
+      <div class="info" *ngIf="verified">
+        <div class="alert alert-warning">
+          Verifica tus datos. Si están incorrectos, edítalos antes de continuar.
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Código de estudiante</label>
+            <input type="text" formControlName="student_code" />
+          </div>
+          <div>
+            <label>Escuela profesional</label>
+            <select formControlName="school">
+              <option *ngIf="showPlaceholder(schoolCtrl)" [ngValue]="null">Seleccione</option>
+              <option *ngFor="let s of schoolOptions" [ngValue]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div>
+            <label>Ciclo académico</label>
+            <input type="text" formControlName="academic_cycle" />
+          </div>
+          <div>
+            <label>Edad</label>
+            <input type="number" min="15" max="90" formControlName="age" />
+          </div>
+          <div>
+            <label>Sexo</label>
+            <select formControlName="gender">
+              <option *ngIf="showPlaceholder(genderCtrl)" [ngValue]="null">Seleccione</option>
+              <option [ngValue]="'F'">F</option>
+              <option [ngValue]="'M'">M</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" *ngIf="verified" id="section-family">
+      <h3>II. Estado familiar actual</h3>
+
+      <label>¿Estás embarazada o tu pareja está embarazada?</label>
+      <select formControlName="is_pregnant">
+        <option *ngIf="showPlaceholder(isPregnantCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <label>¿Tienes hijos(as)?</label>
+      <select formControlName="has_children">
+        <option *ngIf="showPlaceholder(hasChildrenCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+    </section>
+
+    <section class="card" *ngIf="verified && showSectionIII" id="section-children">
+      <h3>III. Información sobre los hijos menores</h3>
+
+      <div class="children-layout">
+        <div class="children-options">
+          <label>¿Cuántos hijos menores de 5 años tienes?</label>
+          <input type="hidden" formControlName="children_count" />
+          <input type="hidden" formControlName="gestation_selected" />
+          <div class="pill-group">
+            <button
+              type="button"
+              class="pill-option"
+              [class.selected]="hasGestationSelected"
+              (click)="toggleGestation()"
+              [attr.aria-pressed]="hasGestationSelected"
+            >
+              Gestación
+            </button>
+
+            <button
+              type="button"
+              class="pill-option"
+              [class.selected]="childrenCountValue === 1"
+              (click)="selectChildrenCount(1)"
+              [attr.aria-pressed]="childrenCountValue === 1"
+            >
+              1 hijo
+            </button>
+
+            <button
+              type="button"
+              class="pill-option"
+              [class.selected]="childrenCountValue === 2"
+              (click)="selectChildrenCount(2)"
+              [attr.aria-pressed]="childrenCountValue === 2"
+            >
+              2 hijos
+            </button>
+
+            <button
+              type="button"
+              class="pill-option"
+              [class.selected]="childrenCountValue === 3"
+              (click)="selectChildrenCount(3)"
+              [attr.aria-pressed]="childrenCountValue === 3"
+            >
+              3 hijos
+            </button>
+
+            <button
+              type="button"
+              class="pill-option"
+              [class.selected]="childrenCountValue === 4"
+              (click)="selectChildrenCount(4)"
+              [attr.aria-pressed]="childrenCountValue === 4"
+            >
+              4 hijos
+            </button>
+          </div>
+        </div>
+
+        <div class="children-ages">
+          <label>Indique la edad de su(s) hijo(s) (solo las casillas habilitadas):</label>
+          <div class="age-row" [class.inactive]="!hasGestationSelected">
+            <span>Gestación</span>
+            <div class="age-input">
+              <input type="number" [value]="hasGestationSelected ? 0 : ''" disabled />
+              <div class="age-note" *ngIf="hasGestationSelected">Se registra automáticamente en 0.</div>
+            </div>
+          </div>
+          <div class="age-row">
+            <span>Edad hijo 1</span>
+            <div class="age-input">
+              <input type="number" min="0" max="5" formControlName="child_1_age" [disabled]="!hasChild1" />
+              <div class="age-note" *ngIf="hasChild1">Digite la edad (0 a 5).</div>
+            </div>
+          </div>
+          <div class="age-row">
+            <span>Edad hijo 2</span>
+            <div class="age-input">
+              <input type="number" min="0" max="5" formControlName="child_2_age" [disabled]="!hasChild2" />
+              <div class="age-note" *ngIf="hasChild2">Digite la edad (0 a 5).</div>
+            </div>
+          </div>
+          <div class="age-row">
+            <span>Edad hijo 3</span>
+            <div class="age-input">
+              <input type="number" min="0" max="5" formControlName="child_3_age" [disabled]="!hasChild3" />
+              <div class="age-note" *ngIf="hasChild3">Digite la edad (0 a 5).</div>
+            </div>
+          </div>
+          <div class="age-row">
+            <span>Edad hijo 4</span>
+            <div class="age-input">
+              <input type="number" min="0" max="5" formControlName="child_4_age" [disabled]="!hasChild4" />
+              <div class="age-note" *ngIf="hasChild4">Digite la edad (0 a 5).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" *ngIf="verified && showSectionIV" id="section-support">
+      <h3>IV. Condiciones y necesidades de apoyo</h3>
+
+      <label>¿Dónde reside actualmente?</label>
+      <select formControlName="residence_type">
+        <option *ngIf="showPlaceholder(residenceTypeCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="'familiar'">Vivienda familiar</option>
+        <option [ngValue]="'alquiler'">Cuarto alquilado</option>
+        <option [ngValue]="'residencia'">Residencia universitaria</option>
+        <option [ngValue]="'otro'">Otro</option>
+      </select>
+
+      <input *ngIf="residenceTypeValue === 'otro'" type="text" placeholder="Especifique" formControlName="residence_other" />
+
+      <label>¿Actualmente vives con el padre o madre de tu(s) hijo(s)?</label>
+      <select formControlName="lives_with_partner">
+        <option *ngIf="showPlaceholder(livesWithPartnerCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <label>¿Actualmente vives con tu(s) hijo(s)?</label>
+      <select formControlName="lives_with_children">
+        <option *ngIf="showPlaceholder(livesWithChildrenCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <div *ngIf="livesWithChildrenCtrl.value === false" class="followup">
+        <label>¿Con quién vive(n) tu(s) hijo(s)?</label>
+        <select formControlName="caregiver_type">
+          <option *ngIf="showPlaceholder(caregiverTypeCtrl)" [ngValue]="null">Seleccione</option>
+          <option [ngValue]="'familia'">Abuelos / Tíos (familia)</option>
+          <option [ngValue]="'padre'">Padre</option>
+          <option [ngValue]="'madre'">Madre</option>
+          <option [ngValue]="'otro'">Otro</option>
+        </select>
+
+        <input *ngIf="caregiverTypeValue === 'otro'" type="text" placeholder="Especifique" formControlName="caregiver_other" />
+      </div>
+
+      <label>¿El padre o la madre de tu(s) hijo(s) participa en su crianza?</label>
+      <select formControlName="participates_in_upbringing">
+        <option *ngIf="showPlaceholder(participatesCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <label>¿El padre o la madre contribuye económicamente?</label>
+      <select formControlName="economic_support">
+        <option *ngIf="showPlaceholder(economicSupportCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <div class="currency-field" *ngIf="economicSupportValue">
+        <span class="currency-prefix">S/</span>
+        <input type="number" min="0" max="99999999.99" step="0.01" placeholder="Monto mensual" formControlName="monthly_amount" />
+        <span class="currency-suffix">Soles</span>
+      </div>
+
+      <label>¿Cuentas con apoyo para el cuidado de tus hijo(s) durante tus horas académicas?</label>
+      <select formControlName="has_academic_support">
+        <option *ngIf="showPlaceholder(academicSupportCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+
+      <label *ngIf="hasAcademicSupportValue">¿Indique quién brinda el apoyo?</label>
+      <select *ngIf="hasAcademicSupportValue" formControlName="support_provider">
+        <option *ngIf="showPlaceholder(supportProviderCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="'ambos'">Ambos padres</option>
+        <option [ngValue]="'familia'">Tíos / parientes cercanos</option>
+        <option [ngValue]="'padre'">Padre</option>
+        <option [ngValue]="'madre'">Madre</option>
+        <option [ngValue]="'otro'">Otro</option>
+      </select>
+
+      <input *ngIf="supportProviderValue === 'otro'" type="text" placeholder="Especifique" formControlName="support_provider_other" />
+
+      <label>¿Has tenido que interrumpir o aplazar algún semestre por maternidad/paternidad?</label>
+      <select formControlName="interrupted_semester">
+        <option *ngIf="showPlaceholder(interruptedSemesterCtrl)" [ngValue]="null">Seleccione</option>
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
+    </section>
+
+    <div class="survey-actions">
+      <button type="submit" [disabled]="!canSubmit">Enviar encuesta</button>
+    </div>
+  </form>
+
+  <footer class="survey-footer">
+    <div>
+      <div class="footer-title">Dirección de Bienestar Universitario</div>
+      <div class="footer-subtitle">© 2024 - 2026 Área de Soporte Informático</div>
+    </div>
+    <div>
+      <div class="footer-title">Universidad Nacional Agraria de la Selva</div>
+      <div class="footer-subtitle">UNAS / Tingo María - Perú</div>
+    </div>
+  </footer>
+</div>

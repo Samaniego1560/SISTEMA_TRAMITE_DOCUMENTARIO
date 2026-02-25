@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {IResponse} from "../../models/response";
-import {IAnnouncement} from "../../models/announcement";
+import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { IResponse } from "../../models/response";
+import { IAnnouncement } from "../../models/announcement";
 import {
   Estudiante,
   IBodyRequest,
@@ -11,18 +11,18 @@ import {
   IStatusRequest,
   IUpdateService
 } from "../../models/requests";
-import {IDebtsStudent, IValidationUser} from "../../models/user";
-import {EnvServiceFactory} from "../env/env.service.provider";
-import {IStatistics} from "../../models/statistics";
+import { IDebtsStudent, IValidationUser } from "../../models/user";
+import { EnvServiceFactory } from "../env/env.service.provider";
+import { IStatistics } from "../../models/statistics";
 import { ThesisPracticing } from '../../models/ThesisPracticing';
 import { Departamento, Distrito, IVisitaGeneral, Provincia } from '../../models/visita-general';
 import { ExamenToxicologico, CreateExamenToxicologicoRequest, UpdateExamenToxicologicoRequest } from '../../models/exam_toxicologico';
 import { CreateVisitaResidenteRequest, ExportDataExcel, LugarProcedencia, ReportePorEscuelaProfesional, ReporteVisitaResidente, UpdateVisitaResidenteRequest, VisitaResidente, VisitasPorDepartamento } from '../../models/visita-residente';
 import { Residence, ResidenceRequest, ResidenceResponse } from '../../models/residence';
-import {InformationPayment} from "../../models/trasury.model";
-import {Response} from "../../models/global.model";
+import { InformationPayment } from "../../models/trasury.model";
+import { Response } from "../../models/global.model";
 import { Base64 } from '../../utils/statics/base64';
-import {forkJoin, Observable} from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class ManagerService {
   private urlBaseAnnouncementGo = this.urlBaseGo + '/v1/convocatorias';
   private urlBaseAreaMedicaGo = this.urlBaseGo + '/v1/area_medica';
 
-  private base_64: string =  Base64;
+  private base_64: string = Base64;
   constructor(
     private http: HttpClient
   ) {
@@ -78,6 +78,22 @@ export class ManagerService {
 
   public uploadRequestFile(file: IFileRequest): Observable<IResponse<IResponseFile>> {
     return this.http.post<IResponse<IResponseFile>>(this.urlRequest + '/uploadDocument', file);
+  }
+
+  /**
+   * Reemplaza un archivo existente
+   */
+  public replaceRequestFile(data: {
+    detalle_solicitud_id: number;
+    id_convocatoria: number;
+    dni_alumno: string;
+    name_file: string;
+    file: string; // Base64
+  }): Observable<IResponse<IResponseFile>> {
+    return this.http.put<IResponse<IResponseFile>>(
+      this.urlRequest + '/replaceDocument',
+      data
+    );
   }
 
   public createRequest(data: IBodyRequest): Observable<IResponse> {
@@ -121,11 +137,11 @@ export class ManagerService {
   }
 
   public exportRequest(): Observable<Blob> {
-    return this.http.get(this.urlRequest + '/export', {responseType: 'blob'});
+    return this.http.get(this.urlRequest + '/export', { responseType: 'blob' });
   }
 
   public exportRequestById(id: number): Observable<Blob> {
-    return this.http.get(this.urlRequest + '/export/convocatoria/' + id, {responseType: 'blob'});
+    return this.http.get(this.urlRequest + '/export/convocatoria/' + id, { responseType: 'blob' });
   }
 
   public exportDataRequestById(id: number): Observable<any> {
@@ -141,7 +157,7 @@ export class ManagerService {
   }
 
   public getStatisticsAndService(code: number, typeService: number): Observable<IResponse<IStatistics>> {
-    return this.http.get<IResponse<IStatistics>>(this.urlBaseAnnouncement + '/reporte/' + code+ '/' + typeService);
+    return this.http.get<IResponse<IStatistics>>(this.urlBaseAnnouncement + '/reporte/' + code + '/' + typeService);
   }
 
   // register thesis o praticacing
@@ -159,7 +175,7 @@ export class ManagerService {
   }
 
   public getThesisPracticing(): Observable<IResponse<ThesisPracticing[]>> {
-    return this.http.get<IResponse<ThesisPracticing[]>>(this.urlThesisPracticing );
+    return this.http.get<IResponse<ThesisPracticing[]>>(this.urlThesisPracticing);
   }
 
 
@@ -300,7 +316,7 @@ export class ManagerService {
   }
 
   public updateVisitaGeneral(data: Partial<IVisitaGeneral>, id: string): Observable<IResponse<IVisitaGeneral>> {
-    const requestData = {id, ...data};
+    const requestData = { id, ...data };
     return this.http.put<IResponse<IVisitaGeneral>>(this.urlVisitas, requestData);
   }
   public geDepartamentos(): Observable<IResponse<Departamento[]>> {
@@ -312,7 +328,7 @@ export class ManagerService {
   public getDistritosByProvincia(provinciaId: string): Observable<IResponse<Distrito[]>> {
     return this.http.get<IResponse<Distrito[]>>(`${this.urlVisitas}/provincias/${provinciaId}/distritos`);
   }
-  public createCita(data: any): Observable<IResponse<any>>  {
+  public createCita(data: any): Observable<IResponse<any>> {
     const url = `${this.urlPsicodagogia}/citas`;
     return this.http.post<IResponse<any>>(url, data);
   }
@@ -332,7 +348,7 @@ export class ManagerService {
     return this.http.get<Response<string>>(this.urlPsicodagogia + '/estadistica/chart-barras?' + queryParams);
   }
 
-  public getReportAttentionsPsicology(params: Record<string, string>){
+  public getReportAttentionsPsicology(params: Record<string, string>) {
     const queryParams = new URLSearchParams(params).toString();
     return this.http.get<Response<string>>(this.urlPsicodagogia + '/reporte/atenciones?' + queryParams);
   }
@@ -367,8 +383,7 @@ export class ManagerService {
 
   //end
   // visita residente
-  public getAllVisitaResidente():Observable<IResponse<VisitaResidente[]>>
-  {
+  public getAllVisitaResidente(): Observable<IResponse<VisitaResidente[]>> {
     return this.http.get<IResponse<VisitaResidente[]>>(this.urlVisitasResidente);
   }
   public getVisitaResidenteById(id: string): Observable<IResponse<VisitaResidente>> {
@@ -395,7 +410,7 @@ export class ManagerService {
   public getLugarProcedencia(): Observable<IResponse<LugarProcedencia[]>> {
     return this.http.get<IResponse<LugarProcedencia[]>>(`${this.urlVisitasResidente}/estadisticas/lugar-procedencia`);
   }
-  public getAllVisitasPorDepartamento(convocatoriaId: number, departamento:string): Observable<IResponse<VisitasPorDepartamento[]>> {
+  public getAllVisitasPorDepartamento(convocatoriaId: number, departamento: string): Observable<IResponse<VisitasPorDepartamento[]>> {
     return this.http.get<IResponse<VisitasPorDepartamento[]>>(`${this.urlVisitasResidente}/alumnos-pendientes/departamento?convocatoria_id=${convocatoriaId}&departamento=${departamento}`);
   }
   public getExportDataExcel(convocatoriaId: number): Observable<IResponse<ExportDataExcel>> {

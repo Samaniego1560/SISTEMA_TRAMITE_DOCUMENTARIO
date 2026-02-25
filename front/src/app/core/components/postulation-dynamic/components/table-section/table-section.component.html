@@ -1,7 +1,7 @@
 @if(!activeForm) {
   <button type="button" (click)="loadFormSection(section().requisitos)"
           class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100 mt-2 mb-8">
-    Agregar una fila
+    Agregar un integrante de hogar
   </button>
 }
 
@@ -59,7 +59,7 @@
       </tr>
       </thead>
       <tbody>
-        @for(item of arrayValue(); track item; let i = $index) {
+        @for(item of rows; track item; let i = $index) {
           <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
             <td class="px-4 py-3 text-center font-medium">
               {{i + 1}}
@@ -67,7 +67,7 @@
             @for (req of section().requisitos; track req) {
               <td class="px-4 py-3 text-center">
                 <div class="font-medium">
-                  {{item[req.id?.toString()!]}}
+                  {{item.value[req.id?.toString()!]}}
                 </div>
               </td>
             }
@@ -111,7 +111,7 @@
                 <button
                   class="text-blue-500 hover:text-blue-700 transition-colors p-2 rounded-full hover:bg-blue-50"
                   title="Editar tesista o practicante"
-                  (click)="editRow(item, i)"
+                  (click)="editRow(item.value, i)"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

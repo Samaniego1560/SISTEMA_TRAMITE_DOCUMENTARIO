@@ -11,6 +11,7 @@ import (
 	"dbu-api/pkg/medical_area/dentistry_consultation_buccal_procedure"
 	"dbu-api/pkg/medical_area/dentistry_consultation_buccal_test"
 	"dbu-api/pkg/medical_area/dentistry_consultation_odontogram_review"
+	"dbu-api/pkg/medical_area/exam_toxicologico"
 	"dbu-api/pkg/medical_area/medical_consultation"
 	"dbu-api/pkg/medical_area/medical_general_medicine_consultation"
 	"dbu-api/pkg/medical_area/nursing_consultation_accompanying_data"
@@ -25,8 +26,9 @@ import (
 	"dbu-api/pkg/medical_area/nursing_consultation_visual_test"
 	"dbu-api/pkg/medical_area/patient_background"
 	"dbu-api/pkg/medical_area/patients"
-	"dbu-api/pkg/medical_area/exam_toxicologico"
 	paymentsconcept "dbu-api/pkg/medical_area/payments"
+	"dbu-api/pkg/medical_area/pharmacy_medicines"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -56,6 +58,7 @@ type ServerMedicalArea struct {
 	SrvConsultationAssignment                  consultation_assignment.PortsServerConsultationAssignment
 	SrvMedicalGeneralMedicineConsultation      medical_general_medicine_consultation.PortsServerGeneralMedicineConsultation
 	SrvPaymentsConcept                         paymentsconcept.PortsServerPaymentConcept
+	SrvPharmacyMedicines                       pharmacy_medicines.PortsServerMedicine
 }
 
 func NewServerMedicalArea(db *sqlx.DB, usr *models.User, txID string) *ServerMedicalArea {
@@ -85,5 +88,6 @@ func NewServerMedicalArea(db *sqlx.DB, usr *models.User, txID string) *ServerMed
 		SrvConsultationAssignment:                  consultation_assignment.NewConsultationAssignmentService(consultation_assignment.FactoryStorage(db, txID), usr, txID),
 		SrvMedicalGeneralMedicineConsultation:      medical_general_medicine_consultation.NewGeneralMedicineConsultationService(medical_general_medicine_consultation.FactoryStorage(db, txID), usr, txID),
 		SrvPaymentsConcept:                         paymentsconcept.NewPaymentConceptService(paymentsconcept.FactoryStorage(db, txID), usr, txID),
+		SrvPharmacyMedicines:                       pharmacy_medicines.NewMedicineService(pharmacy_medicines.FactoryStorage(db, txID), usr, txID),
 	}
 }

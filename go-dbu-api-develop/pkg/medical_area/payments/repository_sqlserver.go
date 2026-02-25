@@ -20,11 +20,11 @@ func newPaymentConceptSqlServerRepository(db *sqlx.DB, txID string) *sqlserver {
 	}
 }
 
-func (s *sqlserver) search(area, tipoServicio, nombreServicio string) (*ServicioMedicoConfig, error) {
-	ml := &ServicioMedicoConfig{}
+func (s *sqlserver) search(area, tipoServicio, nombreServicio string) ([]*ServicioMedicoConfig, error) {
+	var ml []*ServicioMedicoConfig
 	const query = `SELECT id, area, tipo_servicio, nombre_servicio, requiere_pago, codigo_concepto, obligatorio_estudiante, obligatorio_docente, obligatorio_administrativo, estado, created_at, updated_at FROM servicios_medicos_config
 	WHERE area = ? AND tipo_servicio = ? AND nombre_servicio = ?`
-	err := s.DB.Get(ml, query, area, tipoServicio, nombreServicio)
+	err := s.DB.Select(&ml, query, area, tipoServicio, nombreServicio)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

@@ -6,6 +6,7 @@ use App\Exceptions\ExceptionGenerate;
 use App\Http\Requests\Solicitud\SolicitudRequest;
 use App\Http\Requests\Solicitud\SolicitudServicioRequest;
 use App\Http\Requests\Solicitud\UploadDocumentRequest;
+use App\Http\Requests\Solicitud\ReplaceDocumentRequest;
 use App\Http\Requests\Solicitud\ValidarDatosAlumnoRequest;
 use App\Http\Requests\Solicitud\ValidarDatosTesistaPracticanteAlumno;
 use App\Http\Resources\ServicioSolicitado\ServicioSolicitadoResource;
@@ -101,6 +102,20 @@ class SolicitudController extends Controller
             return Response::res($e->getMessage(), null, $e->getStatusCode());
         }
     }
+
+    /**
+     * Reemplaza un documento existente
+     */
+    public function replaceDocument(ReplaceDocumentRequest $request, CreateSolicitudService $createService)
+    {
+        try {
+            $result = $createService->replaceFile($request->validated());
+            return Response::res('Archivo reemplazado correctamente', $result);
+        } catch (ExceptionGenerate $e) {
+            return Response::res($e->getMessage(), null, $e->getStatusCode());
+        }
+    }
+
     public function cargaSolicitudAlumno($dni, CargaSolicitudAlumnoService $cargaSolicitudAlumnoService)
     {
         try {

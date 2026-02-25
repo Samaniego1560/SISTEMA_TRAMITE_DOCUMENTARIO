@@ -1,16 +1,16 @@
-import {Component, EventEmitter, input, model, Output} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
-import {Subscription} from "rxjs";
-import {ToastService} from "../../services/toast/toast.service";
-import {ManagerService} from "../../services/manager/manager.service";
-import {IDebtsStudent, IValidationUser} from "../../models/user";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ModalComponent} from "../../ui/modal/modal.component";
-import {AlertDebtsComponent} from "./components/alert-debts/alert-debts.component";
-import {IAnnouncement} from "../../models/announcement";
-import {BlockUiComponent} from "../../ui/block-ui/block-ui.component";
-import {Student} from "../../models/student";
+import { Component, EventEmitter, input, model, Output } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { NgForOf, NgIf } from "@angular/common";
+import { Subscription } from "rxjs";
+import { ToastService } from "../../services/toast/toast.service";
+import { ManagerService } from "../../services/manager/manager.service";
+import { IDebtsStudent, IValidationUser } from "../../models/user";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ModalComponent } from "../../ui/modal/modal.component";
+import { AlertDebtsComponent } from "./components/alert-debts/alert-debts.component";
+import { IAnnouncement } from "../../models/announcement";
+import { BlockUiComponent } from "../../ui/block-ui/block-ui.component";
+import { Student } from "../../models/student";
 
 @Component({
   selector: 'app-postulation-form',
@@ -34,8 +34,8 @@ export class PostulationFormComponent {
   roleId = input.required<number>();
   public showModalDebt: boolean = false;
 
-  @Output() onPostulation: EventEmitter<{postulation: IAnnouncement, student: Student}> =
-    new EventEmitter<{postulation: IAnnouncement, student: Student}>();
+  @Output() onPostulation: EventEmitter<{ postulation: IAnnouncement, student: Student }> =
+    new EventEmitter<{ postulation: IAnnouncement, student: Student }>();
 
   protected isLoading: boolean = false;
   private _subscriptions: Subscription = new Subscription();
@@ -49,8 +49,8 @@ export class PostulationFormComponent {
   ];
 
   constructor(private _fb: FormBuilder,
-              private _toastService: ToastService,
-              private _managerService: ManagerService,) {
+    private _toastService: ToastService,
+    private _managerService: ManagerService,) {
     this.formPostulation = this._fb.group({
       dni_student: ['', Validators.required],
       type_student: ['Estudiante', Validators.required],
@@ -68,23 +68,24 @@ export class PostulationFormComponent {
     }
 
     if (!this.formPostulation.value.eat_service && !this.formPostulation.value.resident_service) {
-      this.createMessage('error','Seleccione al menos un servicio!')
+      this.createMessage('error', 'Seleccione al menos un servicio!')
       return;
     }
 
     const typeStudent = this.formPostulation.value.type_student;
     const dni = this.formPostulation.value.dni_student;
     const email = this.formPostulation.value.email_student
-
+    // COMENTAR ESTAS LÍNEAS PARA DESACTIVAR VALIDACIÓN DE DEUDAS
     const responseDebts = await this.validateStudentDebtsPromise(dni);
-    if (responseDebts.error) {debugger
+    if (responseDebts.error) {
+      debugger
       this.createMessage(responseDebts.type, responseDebts.msg)
       return;
     }
-debugger
-    if (!this.evaluateDebts(responseDebts.data)) return;
+    debugger
+    if (this.evaluateDebts(responseDebts.data)) return;
 
-        const data: IValidationUser = {
+    const data: IValidationUser = {
       type_student: typeStudent,
       correo: email,
       DNI: dni,
@@ -128,17 +129,17 @@ debugger
       eat_service: eatService,
       resident_service: residentService
     }
-    this.onPostulation.emit({postulation: responseStudent.data, student: student});
+    this.onPostulation.emit({ postulation: responseStudent.data, student: student });
   }
 
-  private validateStudentThesisOrPracticingPromise(dataValid: IValidationUser) : Promise<{error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info'}> {
+  private validateStudentThesisOrPracticingPromise(dataValid: IValidationUser): Promise<{ error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info' }> {
     this.isLoading = true;
     return new Promise<any>(resolve => {
       this._subscriptions.add(
         this._managerService.validateStudentThesisOrPracticingOrStudent(dataValid).subscribe({
           next: async (resp: any) => {
             this.isLoading = false;
-            resolve({error: false, msg: resp.msg, data: resp.detalle, type: 'success',});
+            resolve({ error: false, msg: resp.msg, data: resp.detalle, type: 'success', });
           },
           error: (err: HttpErrorResponse) => {
             debugger
@@ -150,14 +151,14 @@ debugger
     })
   }
 
-  private validateStudentPermissionPromise(dataValid: IValidationUser) : Promise<{error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info'}> {
+  private validateStudentPermissionPromise(dataValid: IValidationUser): Promise<{ error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info' }> {
     this.isLoading = true;
     return new Promise<any>(resolve => {
       this._subscriptions.add(
         this._managerService.validateStudentPermission(dataValid).subscribe({
           next: async (resp: any) => {
             this.isLoading = false;
-            resolve({error: false, msg: resp.msg, data: resp.detalle, type: 'success',});
+            resolve({ error: false, msg: resp.msg, data: resp.detalle, type: 'success', });
           },
           error: (err: HttpErrorResponse) => {
             this.isLoading = false;
@@ -168,14 +169,14 @@ debugger
     })
   }
 
-  private validateStudentSignAreasPromise(dni: string) : Promise<{error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info'}> {
+  private validateStudentSignAreasPromise(dni: string): Promise<{ error: boolean, msg: string, data: any, type: 'error' | 'success' | 'warning' | 'info' }> {
     this.isLoading = true;
     return new Promise<any>(resolve => {
       this._subscriptions.add(
         this._managerService.validateSignAreas(dni).subscribe({
           next: (resp: any) => {
             this.isLoading = false;
-            resolve({error: false, msg: resp.msg, data: resp.detalle, type: 'success',});
+            resolve({ error: false, msg: resp.msg, data: resp.detalle, type: 'success', });
           },
           error: (err: HttpErrorResponse) => {
             this.isLoading = false;
@@ -186,16 +187,16 @@ debugger
     })
   }
 
-  private getDataAnnouncementAndStudent(postulationId: number, dni: string) : Promise<{error: boolean, msg: string, data: IAnnouncement, type: 'error' | 'success' | 'warning' | 'info'}> {
+  private getDataAnnouncementAndStudent(postulationId: number, dni: string): Promise<{ error: boolean, msg: string, data: IAnnouncement, type: 'error' | 'success' | 'warning' | 'info' }> {
     this.isLoading = true;
     return new Promise<any>(resolve => {
       this._subscriptions.add(
         this._managerService.getDataAnnouncementAndStudent(postulationId, dni).subscribe({
           next: async (resp: any) => {
             this.isLoading = false;
-            if (!resp.detalle)  resolve({error: true, msg: resp.msg, data: resp.detalle, type: 'error',});
+            if (!resp.detalle) resolve({ error: true, msg: resp.msg, data: resp.detalle, type: 'error', });
 
-            resolve({error: false, msg: resp.msg, data: resp.detalle, type: 'success',});
+            resolve({ error: false, msg: resp.msg, data: resp.detalle, type: 'success', });
           },
           error: (err: HttpErrorResponse) => {
             this.isLoading = false;
@@ -211,13 +212,13 @@ debugger
     if (debts.length !== 0) {
       const debtsEat = debts.filter(
         (d) => d.concepto_deuda === 'COMEDOR (DEUDA OAEBU)'
-        && d.monto_deuda === "0.00"
+          && d.monto_deuda !== "0.00"
       );
       if (debtsEat && debtsEat.length) this.debts.push(...debtsEat);
 
       const debtsInt = debts.filter(
         (d) => d.concepto_deuda === 'INTERNADO UNAS (DEUDA)'
-          && d.monto_deuda === "0.00"
+          && d.monto_deuda !== "0.00"
       );
       if (debtsInt && debtsInt.length) this.debts.push(...debtsInt);
 
@@ -241,14 +242,14 @@ debugger
     })
   }
 
-  private validateStudentDebtsPromise(dni: string) : Promise<{error: boolean, msg: string, data: IDebtsStudent[], type: 'error' | 'success' | 'warning' | 'info'}> {
+  private validateStudentDebtsPromise(dni: string): Promise<{ error: boolean, msg: string, data: IDebtsStudent[], type: 'error' | 'success' | 'warning' | 'info' }> {
     this.isLoading = true;
     return new Promise<any>(resolve => {
       this._subscriptions.add(
         this._managerService.validateStudentDebts(dni).subscribe({
           next: async (resp: any) => {
             this.isLoading = false;
-            resolve({error: false, msg: '', data: resp, type: 'success',});
+            resolve({ error: false, msg: '', data: resp, type: 'success', });
           },
           error: (err: HttpErrorResponse) => {
             this.isLoading = false;

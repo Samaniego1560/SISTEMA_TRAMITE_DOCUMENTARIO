@@ -1,15 +1,15 @@
 (function (window) {
   window.__env = window.__env || {};
   //window.__env.API_DBU = "http://localhost:8000";
-  window.__env.API_DBU = "https://bienestar.unas.edu.pe/backend";
-  //window.__env.API_DBU = "https://php.dev-bienestar-universitario-unas.site";
-  //window.__env.API_GO = "https://api-bienestar.unas.edu.pe";
-  window.__env.API_GO = "https://api.dev-bienestar-universitario-unas.site";
+  //window.__env.API_DBU = "https://bienestar.unas.edu.pe/backend";
+  window.__env.API_DBU = "https://php.dev-bienestar-universitario-unas.site";
+  window.__env.API_GO = "https://api-bienestar.unas.edu.pe";
+  //window.__env.API_GO = "https://api.dev-bienestar-universitario-unas.site";
 
   //window.__env.API_GO = "http://127.0.0.1:4021";
-  // window.__env.API_DBU = "https://bienestar.unas.edu.pe/backend";
-  //window.__env.API_CAJA = "https://tesoreria.unas.edu.pe";
-  window.__env.URL_FROND = "https://bienestar.unas.edu.pe";
+  //window.__env.API_DBU = "https://bienestar.unas.edu.pe/backend";
+  window.__env.API_CAJA = "https://tesoreria.unas.edu.pe";
+  //window.__env.URL_FROND = "https://bienestar.unas.edu.pe";
   //window.__env.URL_FROND = "https://www.dev-bienestar-universitario-unas.site";
   window.__env.ROLE_PSICOPEDAGOGIA = 4;
 
@@ -167,6 +167,24 @@
       tipo_requisito_id: 3,
       activo: true,
       type_input: 'text',
+      text_color: 'default',
+      text_type: 'normal',
+      text_size: 'md',
+      is_recoverable: false,
+      is_dependent: false,
+      field_dependent: '',
+      value_dependent: '',
+      show_dependent: false,
+    },
+    {
+      nombre: "Ponderado Semestral (PSS)",
+      descripcion: "PSS",
+      url_guia: '',
+      url_plantilla: '',
+      opciones: '',
+      tipo_requisito_id: 3,
+      activo: true,
+      type_input: 'number',
       text_color: 'default',
       text_type: 'normal',
       text_size: 'md',
@@ -983,7 +1001,7 @@
     }
   ];
 
-  window.__env.SECTIONS_FAMILY_COMPOSITION  = [
+  window.__env.SECTIONS_FAMILY_COMPOSITION = [
     {
       nombre: "Nombres y apellidos",
       descripcion: "",
@@ -1094,7 +1112,7 @@
     },
   ];
 
-  window.__env.SECTIONS_DWELLING  = [
+  window.__env.SECTIONS_DWELLING = [
     {
       nombre: "Tenencia Hogar",
       descripcion: "",

@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* You can add global styles to this file, and also import other style files */
@@ -40,18 +39,23 @@
 .b-base {
   @apply h-10 px-4 py-3 rounded-lg flex t-body items-center gap-2 hover:opacity-80 active:opacity-60 outline-none focus:ring-2 focus:ring-brand;
 }
+
 .b-primary {
   @apply b-base bg-brand text-white;
 }
+
 .b-secondary {
   @apply b-base bg-brand-2 text-white;
 }
+
 .b-disabled {
   @apply b-base text-white bg-[#1abb9c54];
 }
+
 .b-normal {
   @apply b-base bg-white border border-gray-200;
 }
+
 .b-link {
   @apply flex items-center gap-2 underline text-gray-600 t-body hover:opacity-80 active:opacity-60 focus:ring-2 focus:ring-brand;
 }
@@ -70,14 +74,19 @@
 
 .i-field {
   @apply flex flex-col gap-1;
+
   label {
     @apply label-default;
   }
-  input, select, textarea {
+
+  input,
+  select,
+  textarea {
     @apply i-default;
   }
 
-  input:disabled, textarea:disabled {
+  input:disabled,
+  textarea:disabled {
     @apply cursor-not-allowed;
   }
 }
@@ -105,37 +114,45 @@
 .tag-success {
   @apply tag-base bg-emerald-100 text-emerald-600;
 }
+
 .tag-warning {
   @apply tag-base bg-amber-100 text-amber-600;
 }
 
 .ec-table {
   @apply bg-white;
+
   thead {
     font-style: normal;
     font-weight: 700;
     font-size: 12px;
     line-height: 15px;
+
     tr {
       @apply text-gray-400 border-b border-gray-200;
+
       th {
         @apply p-2 text-left;
       }
     }
   }
+
   tbody {
     font-style: normal;
     font-weight: 400;
     @apply text-sm;
 
     line-height: 19px;
+
     tr {
       @apply h-8 hover:bg-[#F0F0F0] border-b border-gray-200;
+
       td {
         @apply p-2 text-left font-normal text-[#334155];
         min-height: 48px;
       }
     }
+
     tr:nth-child(even) {
       //@apply bg-[#F9F9F9];
     }
@@ -177,4 +194,375 @@ t-h3 {
   font-weight: 700;
   font-size: 12px;
   line-height: 15px;
+}
+
+/* ========================================
+   MODAL OVERLAY - GLOBAL STYLES
+   ======================================== */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ========================================
+   STUDENT SURVEY - GLOBAL STYLES (moved from component for budget)
+   ======================================== */
+
+.survey-page {
+  max-width: 1100px;
+  margin: 24px auto 40px;
+  padding: 0 20px 40px;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.survey-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(200, 230, 242, 0.45) 0%, rgba(255, 255, 255, 0.6) 100%),
+    radial-gradient(circle at 20% 20%, rgba(14, 165, 164, 0.25), transparent 55%),
+    url('/assets/encuesta/encuesta-bg.png') center / cover no-repeat;
+  z-index: -1;
+}
+
+.survey-hero {
+  display: block;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f766e 0%, #0ea5a4 55%, #1f2937 100%);
+  color: #ffffff;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 40px;
+}
+
+.hero-text {
+  max-width: 100%;
+}
+
+.survey-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 8px;
+}
+
+.survey-hero h2 {
+  margin: 0 0 6px;
+  font-size: 34px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: none;
+  text-transform: uppercase;
+}
+
+.survey-subtitle {
+  margin: 0;
+  font-size: 15px;
+  opacity: 1;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.survey-callout {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.18);
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  width: min(360px, 60%);
+  position: absolute;
+  right: 20px;
+  bottom: 8px;
+}
+
+.hero-brand img {
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.brand-year {
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.survey-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 13px;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.footer-title {
+  font-weight: 700;
+  color: #0f766e;
+  margin-bottom: 4px;
+}
+
+.footer-subtitle {
+  color: #94a3b8;
+}
+
+.children-grid {
+  display: grid;
+  gap: 10px;
+  max-width: 720px;
+}
+
+.pill-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.pill-option {
+  appearance: none;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(248, 250, 252, 0.6);
+  color: #94a3b8;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.pill-option.selected {
+  border-color: #2563eb;
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+}
+
+.pill-option:focus-visible {
+  outline: 2px solid rgba(14, 165, 164, 0.35);
+  outline-offset: 2px;
+}
+
+.children-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.children-options label {
+  margin-top: 0;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  align-items: center;
+  margin: 0;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option-row input[type="radio"],
+.option-row input[type="checkbox"] {
+  flex: 0 0 16px;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 16px;
+  max-width: 16px;
+  display: inline-block;
+  background: transparent;
+  accent-color: #0ea5a4;
+}
+
+.option-row > span {
+  flex: 1;
+}
+
+.option-row input[type="radio"],
+.option-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  accent-color: #0ea5a4;
+}
+
+.option-row input[type="radio"] {
+  border-radius: 999px;
+}
+
+.option-row:has(input:checked) {
+  border-color: #0ea5a4;
+  box-shadow: 0 0 0 2px rgba(14, 165, 164, 0.15);
+  background: #f0fdfa;
+}
+
+.option-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.children-ages {
+  border-left: 1px solid #e2e8f0;
+  padding-left: 16px;
+}
+
+.children-ages label {
+  margin-top: 0;
+}
+
+.age-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.age-row.inactive {
+  opacity: 0.6;
+}
+
+.age-row input {
+  max-width: 140px;
+}
+
+.age-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.age-note {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.currency-field {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.currency-prefix,
+.currency-suffix {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 0 4px;
+}
+
+@media (max-width: 900px) {
+  .survey-hero {
+    padding-bottom: 20px;
+  }
+  .hero-brand {
+    width: 100%;
+    position: static;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .survey-page {
+    padding: 0 14px 32px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .survey-actions {
+    justify-content: stretch;
+  }
+
+  .survey-footer {
+    flex-direction: column;
+  }
+
+  .children-grid {
+    max-width: 100%;
+  }
+
+  .option-row {
+    flex-wrap: wrap;
+  }
+
+  .children-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .children-ages {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .age-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .age-row input {
+    width: 100%;
+    max-width: 100%;
+  }
 }

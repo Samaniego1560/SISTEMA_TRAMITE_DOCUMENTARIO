@@ -1,0 +1,48 @@
+<!-- Modal para reemplazar archivo -->
+<app-modal [(show)]="showReplaceModal" title="Reemplazar Archivo" buttonSuccess="Reemplazar" (onNext)="replaceFile()"
+    [showButtonCancel]="true">
+    <div class="space-y-4">
+        <div class="text-gray-600">
+            <p class="font-semibold mb-2">Archivo actual:</p>
+            <p class="text-sm text-gray-500" *ngIf="selectedRequirement">
+                {{ selectedRequirement.nombre }}
+            </p>
+        </div>
+
+        <div class="border-t pt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Seleccionar nuevo archivo:
+            </label>
+            <input type="file" (change)="onFileSelected($event)" class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100
+                    cursor-pointer" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+
+            <p class="mt-2 text-xs text-gray-500" *ngIf="selectedFile">
+                Archivo seleccionado: {{ selectedFile.name }}
+            </p>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4" *ngIf="selectedFile">
+            <div class="flex">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        El archivo anterior será eliminado permanentemente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-center" *ngIf="isUploadingFile">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+    </div>
+</app-modal>

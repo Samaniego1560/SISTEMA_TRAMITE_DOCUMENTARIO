@@ -17,7 +17,8 @@ class ListSolicitudService
             throw new ExceptionGenerate('Convocatoria no encontrada', 200);
 
 
-        $solicitudesTemporales = Solicitud::where('convocatoria_id', $convocatoria->id)
+        $solicitudesTemporales = Solicitud::with(['alumno', 'servicioSolicitados'])
+            ->where('convocatoria_id', $convocatoria->id)
             ->orderBy('created_at', 'desc')
             ->get();
         $solicitudes = new Collection();

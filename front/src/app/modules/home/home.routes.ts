@@ -1,18 +1,18 @@
-import {Routes} from "@angular/router";
-import {CalendarComponent} from "./pages/calendar/calendar.component";
-import {ServicesComponent} from "./pages/services/services.component";
-import {DataStatisticComponent} from "./pages/data-statistic/data-statistic.component";
-import {StatuteRegulationsComponent} from "./pages/statute-regulations/statute-regulations.component";
-import {PostulationComponent} from "./pages/postulation/postulation.component";
-import {AnnouncementComponent} from "./pages/announcement/announcement.component";
-import {authGuard} from "../../core/guards/auth.guard";
-import {UsersComponent} from "./pages/users/users.component";
-import {RequestsComponent} from "./pages/requests/requests.component";
+import { Routes } from "@angular/router";
+import { CalendarComponent } from "./pages/calendar/calendar.component";
+import { ServicesComponent } from "./pages/services/services.component";
+import { DataStatisticComponent } from "./pages/data-statistic/data-statistic.component";
+import { StatuteRegulationsComponent } from "./pages/statute-regulations/statute-regulations.component";
+import { PostulationComponent } from "./pages/postulation/postulation.component";
+import { AnnouncementComponent } from "./pages/announcement/announcement.component";
+import { authGuard } from "../../core/guards/auth.guard";
+import { UsersComponent } from "./pages/users/users.component";
+import { RequestsComponent } from "./pages/requests/requests.component";
 import { ThesisPracticingComponent } from "./pages/thesis-practicing/thesis-practicing.component";
-import {CalendarSettingComponent} from "./pages/calendar-setting/calendar-setting.component";
-import {HouseholdTargetingComponent} from "./pages/household-targeting/household-targeting.component";
-import {ScholarshipStudentsComponent} from "./pages/scholarship-students/scholarship-students.component";
-import {ApplicationNoticeComponent} from "./pages/application-notice/application-notice.component";
+import { CalendarSettingComponent } from "./pages/calendar-setting/calendar-setting.component";
+import { HouseholdTargetingComponent } from "./pages/household-targeting/household-targeting.component";
+import { ScholarshipStudentsComponent } from "./pages/scholarship-students/scholarship-students.component";
+import { ApplicationNoticeComponent } from "./pages/application-notice/application-notice.component";
 import { VisitaGeneralComponent } from "./pages/visitas/visita-general/visita-general.component";
 import { VisitaResidenteComponent } from "./pages/visitas/visita-residente/visita-residente.component";
 import { ExamenToxicologicoComponent } from './pages/exam_toxicologico/examen_toxicologico/examen_toxicologico.component';
@@ -20,14 +20,14 @@ import { ReporteVisitasComponent } from "./pages/visitas/reporte-visitas/reporte
 
 import { ResidencesComponent } from "./pages/residences/residences.component";
 import { ReportResidencesComponent } from "./pages/report-residences/report-residences.component";
-import {PatientsComponent} from "../health-areas/patients/patients.component";
-import {NursingComponent} from "../health-areas/nursing/nursing.component";
-import {DentistryComponent} from "../health-areas/dentistry/dentistry.component";
-import {MedicineComponent} from "../health-areas/medicine/medicine.component";
+import { PatientsComponent } from "../health-areas/patients/patients.component";
+import { NursingComponent } from "../health-areas/nursing/nursing.component";
+import { DentistryComponent } from "../health-areas/dentistry/dentistry.component";
+import { MedicineComponent } from "../health-areas/medicine/medicine.component";
 import { StudentsResidencesComponent } from "./pages/students-residences/students-residences.component";
-import {ReportsNursingComponent} from "../health-areas/reports/reports-nursing/reports-nursing.component";
-import {ReportsMedicineComponent} from "../health-areas/reports/reports-medicine/reports-medicine.component";
-import {ReportsDentistryComponent} from "../health-areas/reports/reports-dentistry/reports-dentistry.component";
+import { ReportsNursingComponent } from "../health-areas/reports/reports-nursing/reports-nursing.component";
+import { ReportsMedicineComponent } from "../health-areas/reports/reports-medicine/reports-medicine.component";
+import { ReportsDentistryComponent } from "../health-areas/reports/reports-dentistry/reports-dentistry.component";
 import { ResultadoCuestionarioComponent } from "./pages/psicopedagogia/resultado-cuestionario/resultado-cuestionario.component";
 import { AtencionesComponent } from "./pages/psicopedagogia/atenciones/atenciones.component";
 import { ExpedientesComponent } from "./pages/psicopedagogia/expedientes/expedientes.component";
@@ -35,8 +35,10 @@ import { QuestionnairesComponent } from "./pages/psicopedagogia/questionnaires/q
 import { SurveysComponent } from "./pages/psicopedagogia/surveys/surveys.component";
 import { CitasPsicologicasComponent } from "./pages/psicopedagogia/citas-psicologicas/citas-psicologicas.component";
 import { DataStatisticSrqComponent } from "./pages/psicopedagogia/data-statistic-srq/data-statistic-srq.component";
-import {moduleGuard} from "../../core/guards/module-guard.guard";
-import {ReportsAdminComponent} from "../health-areas/reports/reports-admin/reports-admin.component";
+import { moduleGuard } from "../../core/guards/module-guard.guard";
+import { ReportsAdminComponent } from "../health-areas/reports/reports-admin/reports-admin.component";
+import { StudentParentSurveyComponent } from "../student-parent-survey/student-parent-survey.component";
+import { StudentParentSurveyAdminComponent } from "../student-parent-survey-admin/student-parent-survey-admin.component";
 
 export const homesRoutes: Routes = [
   {
@@ -108,7 +110,7 @@ export const homesRoutes: Routes = [
     component: ResidencesComponent,
     canActivate: [authGuard],
     data: {
-      role: [1,9]
+      role: [1, 9]
     }
   },
   {
@@ -121,11 +123,19 @@ export const homesRoutes: Routes = [
 
   },
   {
+    path: 'carousel-setting',
+    loadComponent: () => import('./pages/carousel-setting/carousel-setting.component').then(m => m.CarouselSettingComponent),
+    canActivate: [authGuard],
+    data: {
+      role: [1]
+    }
+  },
+  {
     path: 'residences/reports',
     component: ReportResidencesComponent,
     canActivate: [authGuard],
     data: {
-      role: [1,9]
+      role: [1, 9]
     }
 
   },
@@ -143,7 +153,7 @@ export const homesRoutes: Routes = [
     component: StudentsResidencesComponent,
     canActivate: [authGuard],
     data: {
-      role: [1,9]
+      role: [1, 9]
     }
 
   },
@@ -171,7 +181,8 @@ export const homesRoutes: Routes = [
       role: [7]
     }
   },
-  {path: 'patients',
+  {
+    path: 'patients',
     component: PatientsComponent,
     canActivate: [authGuard],
     data: {
@@ -329,6 +340,18 @@ export const homesRoutes: Routes = [
   {
     path: 'examen-toxicologico',
     component: ExamenToxicologicoComponent,
+    canActivate: [authGuard],
+    data: {
+      role: [1]
+    }
+  },
+  {
+    path: 'encuesta-hijos-estudios',
+    component: StudentParentSurveyComponent
+  },
+  {
+    path: 'encuesta-estudiantes-admin',
+    component: StudentParentSurveyAdminComponent,
     canActivate: [authGuard],
     data: {
       role: [1]
